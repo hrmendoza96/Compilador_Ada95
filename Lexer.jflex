@@ -16,7 +16,7 @@ numeros = [0-9]
 PARDER = [)]
 PARIZQ = [(]
 SEMICOLON = [;]
-COMENTARIO = {guionesComentario}({letras} | {numeros} | " " | {signosPuntuacion} | {signosEspeciales} | {OPREL} | {PARDER} | {PARIZQ})*"\n"
+COMENTARIO = {guionesComentario}({letras} | {numeros} | " " | {signosPuntuacion} | {signosEspeciales} | {OPREL} | {PARDER} | {PARIZQ})*
 
 /*Operaciones*/
 DECLARACION = [:]
@@ -48,7 +48,7 @@ CHAR = "\'"({letras} | {numeros} | {espacios} | {signosPuntuacion} | {signosEspe
 /*Identificador*/
 ID = {letras}+({guionBajo}({letras}|{numeros})+)*
 
-/*IMPORTS*/
+/*Imports*/
 IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
 
 
