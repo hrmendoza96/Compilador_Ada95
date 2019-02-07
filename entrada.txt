@@ -8,6 +8,8 @@ procedure MyProg is
 begin
     Put_Line("What is your name?");
     Get(Name);
+    
+    2+3*5/4-3*2
 
     if ( Name = "Apple" ) then
         Put_Line("Hallo" & Name & 's');

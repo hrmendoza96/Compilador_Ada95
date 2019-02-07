@@ -21,6 +21,16 @@ COMENTARIO = {guionesComentario}({letras} | {numeros} | " " | {signosPuntuacion}
 /*Operaciones*/
 DECLARACION = [:]
 OPREL = "=" | "/=" | "<" | "<=" | ">" | ">="
+AND = ("and")
+OR = ("OR")
+XOR = ("XOR")
+NOT = ("NOT")
+SUMA = "+"
+RESTA = "-"
+MULTIPLICACION = "*"
+DIVISION = "/"
+/*EXPONENTES = {ASTERISCO}{ASTERISCO}*/
+
 
 /*Decisiones*/
 BEGIN = ("begin")
@@ -55,6 +65,38 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
 %%
 
 <YYINITIAL> {
+
+    {XOR} {
+        System.out.println("XOR");
+    }
+
+    {NOT} {
+        System.out.println("<NOT>");
+    }
+
+    {OR} {
+        System.out.println("<OR>");
+    }
+
+    {AND} {
+        System.out.println("<AND>");
+    }
+
+    {DIVISION} {
+        System.out.println("<DIVISION>");
+    }
+
+    {RESTA} {
+        System.out.println("<RESTA>");
+    }
+
+    {SUMA} {
+        System.out.println("<SUMA>");
+    }
+
+    {MULTIPLICACION} {
+        System.out.println("<MULTIPLICACION>");
+    }
 
     {COMENTARIO} {
         System.out.println("<COMENTARIO, \""+yytext()+"\">");
