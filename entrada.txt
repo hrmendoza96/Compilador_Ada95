@@ -10,7 +10,7 @@ begin
     Get(Name);
 
     if ( Name = "Apple" ) then
-        Put_Line("Hallo" & Name);
+        Put_Line("Hallo" & Name & 's');
     else
         Put_Line("I don't know you.");
     end if;
