@@ -4,7 +4,7 @@ use Ada.Text_IO
 procedure MyProg is
 
     Name : String (1 .. 5);
-
+    -- Este es un comentario
 begin
     Put_Line("What is your name?");
     Get(Name);

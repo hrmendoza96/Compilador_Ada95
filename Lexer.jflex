@@ -10,12 +10,13 @@ signosPuntuacion = ","|";"|"."|":"|"'"|"!"|"?"|"¡"|"¿"|"_"|"-"|"{"|"}"|"["|"]"
 signosEspeciales = "@" | "#" | "$" | "%" | "^" | "&" | "*" 
 espacios = [" "\t\r\n]
 guionBajo = [_]
+guionesComentario = "--"
 letras = [a-zA-Z] 
 numeros = [0-9]
 PARDER = [)]
 PARIZQ = [(]
 SEMICOLON = [;]
-
+COMENTARIO = {guionesComentario}({letras} | {numeros} | " " | {signosPuntuacion} | {signosEspeciales} | {OPREL} | {PARDER} | {PARIZQ})*"\n"
 
 /*Operaciones*/
 DECLARACION = [:]
@@ -54,6 +55,10 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
 %%
 
 <YYINITIAL> {
+
+    {COMENTARIO} {
+        System.out.println("<COMENTARIO, \""+yytext()+"\">");
+    }
 
     {IMPORT} {
         System.out.println("<IMPORT, \""+yytext()+"\">");
