@@ -29,6 +29,7 @@ SUMA = "+"
 RESTA = "-"
 MULTIPLICACION = "*"
 DIVISION = "/"
+MOD = ("mod")
 /*EXPONENTES = {ASTERISCO}{ASTERISCO}*/
 
 
@@ -39,6 +40,7 @@ END = ("end")
 ENDIF = ("end if")
 IF = ("if")
 THEN = ("then")
+ELSEIF = ("elseif")
 
 /*Palabras Reservadas*/
 GET = ("Get")
@@ -47,6 +49,44 @@ PROCEDURE = ("Procedure")
 USE = ("use")
 WITH = ("with")
 IS = ("is")
+
+ABORT = ("abort")
+ABS = ("abs")
+ABSTRACT = ("abstract")
+ACCEPT = ("accept")
+ACCESS = ("access")
+ALIASED = ("aliased")
+ALL = ("all")
+ARRAY = ("array")
+AT = ("at")
+BODY = ("body")
+CASE = ("case")
+CONSTANT = ("constant")
+DECLARE = ("declare")
+DELAY = ("delay")
+DELTA = ("delta")
+DIGITS = ("digits")
+DO = ("do")
+ENTRY = ("entry")
+EXCEPTION = ("exception")
+EXIT = ("exit")
+FUNCTION = ("function")
+GENERIC = ("generic")
+GOTO = ("goto")
+IN = ("in")
+INTERFACE = ("interface")
+LIMITED = ("limited")
+
+/*For, While, Loop*/
+FOR = ("for")
+WHILE = ("while")
+LOOP = ("loop")
+
+
+
+
+
+
 
 /*Numeros*/
 NUM = {numeros}+
@@ -65,6 +105,124 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
 %%
 
 <YYINITIAL> {
+
+    {ABORT} {
+        System.out.println("<ABORT>");
+    }
+
+    {ABS} {
+        System.out.println("<ABS>");
+    }
+    {ABSTRACT} {
+        System.out.println("<ABSTRACT>");
+    }
+
+    {ACCEPT} {
+        System.out.println("<ACCEPT>");
+    }
+
+    {ACCESS} {
+        System.out.println("<ACCESS>");
+    }
+
+    {ALIASED} {
+        System.out.println("<ALIASED>");
+    }
+
+    {ALL} {
+        System.out.println("<ALL>");
+    }
+    {ARRAY} {
+        System.out.println("<ARRAY>");
+    }
+
+    {AT} {
+        System.out.println("<AT>");
+    }
+
+    {BODY} {
+        System.out.println("<BODY>");
+    }
+
+    {CASE} {
+        System.out.println("<CASE>");
+    }
+
+    {CONSTANT} {
+        System.out.println("<CONSTANT>");
+    }
+
+    {DECLARE} {
+        System.out.println("<DECLARE>");
+    }
+
+    {DELAY} {
+        System.out.println("<DELAY>");
+    }
+
+    {DELTA} {
+        System.out.println("<DELTA>");
+    }
+
+    {DIGITS} {
+        System.out.println("<DIGITS>");
+    }
+
+    {DO} {
+        System.out.println("<DO>");
+    }
+
+    {ENTRY} {
+        System.out.println("<ENTRY>");
+    }
+
+    {EXCEPTION} {
+        System.out.println("<EXCEPTION>");
+    }
+
+    {EXIT} {
+        System.out.println("<EXIT>");
+    }
+    
+    {FUNCTION} {
+        System.out.println("<FUNCTION>");
+    } 
+
+    {GENERIC} {
+        System.out.println("<GENERIC>");
+    }
+
+    {GOTO} {
+        System.out.println("<GOTO>");
+    }
+
+    {IN} {
+        System.out.println("<IN>");
+    }
+
+    {INTERFACE} {
+        System.out.println("<INTERFACE>");
+    }
+
+    {LIMITED} {
+        System.out.println("<LIMITED>");
+    }
+
+    {MOD} {
+        System.out.println("<MOD>");
+    }
+
+    {FOR} {
+        System.out.println("<FOR>");
+    }
+
+    {WHILE} {
+        System.out.println("<WHILE>");
+    }
+
+    {LOOP} {
+        System.out.println("<LOOP>");
+    }
 
     {XOR} {
         System.out.println("XOR");
@@ -124,6 +282,10 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
 
     {IF} {
         System.out.println("<IF>");
+    }
+
+    {ELSEIF} {
+        System.out.println("<ELSEIF>");
     }
 
     {ELSE} {
