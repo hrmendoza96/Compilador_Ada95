@@ -76,17 +76,38 @@ GOTO = ("goto")
 IN = ("in")
 INTERFACE = ("interface")
 LIMITED = ("limited")
+NEW = ("new")
+NULL = ("null")
+OF = ("of")
+OTHERS = ("others")
+OUT = "OUT"
+OVERRIDING = ("overriding")
+PACKAGE = ("package")
+PRAGMA = ("pragma")
+PRIVATE = ("private")
+PROTECTED = ("protected")
+RAISE = ("raise")
+RANGE = ("range")
+RECORD = ("record")
+REM = ("rem")
+RENAMES = ("renames")
+REQUEUE = ("requeue")
+RETURN = ("return")
+REVERSE = ("reverse")
+SELECT = ("select")
+SEPARATE = ("separate")
+SUBTYPE = ("subtype")
+SYNCHRONIZED = ("synchronized")
+TAGGED = ("tagged")
+TASK = ("task")
+TERMINATE = ("terminate")
+TYPE = ("type")
+UNTIL = ("until")
 
 /*For, While, Loop*/
 FOR = ("for")
 WHILE = ("while")
 LOOP = ("loop")
-
-
-
-
-
-
 
 /*Numeros*/
 NUM = {numeros}+
@@ -210,6 +231,114 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
 
     {MOD} {
         System.out.println("<MOD>");
+    }
+
+    {NEW} {
+        System.out.println("<NEW>");
+    }
+
+    {NULL} {
+        System.out.println("<NULL>");
+    }
+
+    {OF} {
+        System.out.println("<OF>");
+    }
+
+    {OTHERS} {
+        System.out.println("<OTHERS>");
+    }
+
+    {OUT} {
+        System.out.println("<OUT>");
+    }
+
+    {OVERRIDING} {
+        System.out.println("<OVERRIDING>");
+    }
+
+    {PACKAGE} {
+        System.out.println("<PACKAGE>");
+    }
+
+    {PRAGMA} {
+        System.out.println("<PRAGMA>");
+    }
+
+    {PRIVATE} {
+        System.out.println("<PRIVATE>");
+    }
+
+    {PROTECTED} {
+        System.out.println("<PROTECTED>");
+    }
+
+    {RAISE} {
+        System.out.println("<RAISE>");
+    }
+    
+    {RANGE} {
+        System.out.println("<RANGE>");
+    }
+
+    {RECORD} {
+        System.out.println("<RECORD>");
+    }
+
+    {REM} {
+        System.out.println("<REM>");
+    }
+
+    {RENAMES} {
+        System.out.println("<RENAMES>");
+    }
+
+    {REQUEUE} {
+        System.out.println("<REQUEUE>");
+    }
+
+    {RETURN} {
+        System.out.println("<RETURN>");
+    }
+
+    {REVERSE} {
+        System.out.println("<REVERSE>");
+    }
+
+    {SELECT} {
+        System.out.println("<SELECT>");
+    }
+
+    {SEPARATE} {
+        System.out.println("<SEPARATE>");
+    }
+
+    {SUBTYPE} {
+        System.out.println("<SUBTYPE>");
+    }
+    
+    {SYNCHRONIZED} {
+        System.out.println("<SYNCHRONIZED>");
+    }
+
+    {TAGGED} {
+        System.out.println("<TAGGED>");
+    }
+    
+    {TASK} {
+        System.out.println("<TASK>");
+    }
+
+    {TERMINATE} {
+        System.out.println("<TERMINATE>");
+    }
+
+    {TYPE} {
+        System.out.println("<TYPE>");
+    } 
+
+    {UNTIL} {
+        System.out.println("<UNTIL>");
     }
 
     {FOR} {
