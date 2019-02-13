@@ -17,6 +17,7 @@ PARDER = [)]
 PARIZQ = [(]
 SEMICOLON = [;]
 COMENTARIO = {guionesComentario}({letras} | {numeros} | " " | {signosPuntuacion} | {signosEspeciales} | {OPREL} | {PARDER} | {PARIZQ})*
+NEWLINE = "\n"
 
 /*Operaciones*/
 DECLARACION = [:]
@@ -25,10 +26,8 @@ AND = ("and")
 OR = ("OR")
 XOR = ("XOR")
 NOT = ("NOT")
-SUMA = "+"
-RESTA = "-"
-MULTIPLICACION = "*"
-DIVISION = "/"
+OPSUMA = "+" | "-"
+OPMULTIPLICACION = "*" | "/"
 MOD = ("mod")
 /*EXPONENTES = {ASTERISCO}{ASTERISCO}*/
 
@@ -40,7 +39,7 @@ END = ("end")
 ENDIF = ("end if")
 IF = ("if")
 THEN = ("then")
-ELSEIF = ("elseif")
+ELSIF = ("elsif")
 
 /*Palabras Reservadas*/
 GET = ("Get")
@@ -96,6 +95,7 @@ RETURN = ("return")
 REVERSE = ("reverse")
 SELECT = ("select")
 SEPARATE = ("separate")
+STRINGTYPE = ("String")
 SUBTYPE = ("subtype")
 SYNCHRONIZED = ("synchronized")
 TAGGED = ("tagged")
@@ -103,6 +103,7 @@ TASK = ("task")
 TERMINATE = ("terminate")
 TYPE = ("type")
 UNTIL = ("until")
+WHEN = ("when")
 
 /*For, While, Loop*/
 FOR = ("for")
@@ -111,6 +112,13 @@ LOOP = ("loop")
 
 /*Numeros*/
 NUM = {numeros}+
+
+/*Tipos*/
+INTEGER = ("integer")
+DOUBLE = ("double")
+BOOLEAN = ("boolean")
+CHARACTER = ("character")
+
 
 /*Strings y Chars*/
 STRING ="\""({letras} | {numeros} | {espacios} | {signosPuntuacion} | {signosEspeciales} | {OPREL} | {PARDER} | {PARIZQ})*"\"" 
@@ -221,6 +229,22 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<IN>");
     }
 
+    {INTEGER} {
+        System.out.println("<INTEGER>");
+    }
+
+    {DOUBLE} {
+        System.out.println("<DOUBLE>");
+    }
+
+    {BOOLEAN} {
+        System.out.println("<BOOLEAN>");
+    }
+
+    {CHARACTER} {
+        System.out.println("<CHARACTER>");
+    }
+
     {INTERFACE} {
         System.out.println("<INTERFACE>");
     }
@@ -235,6 +259,10 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
 
     {NEW} {
         System.out.println("<NEW>");
+    }
+
+    {NEWLINE} {
+        System.out.println("<NEWLINE>");
     }
 
     {NULL} {
@@ -369,20 +397,12 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<AND>");
     }
 
-    {DIVISION} {
-        System.out.println("<DIVISION>");
+    {OPSUMA} {
+        System.out.println("<OPSUMA>");
     }
 
-    {RESTA} {
-        System.out.println("<RESTA>");
-    }
-
-    {SUMA} {
-        System.out.println("<SUMA>");
-    }
-
-    {MULTIPLICACION} {
-        System.out.println("<MULTIPLICACION>");
+    {OPMULTIPLICACION} {
+        System.out.println("<OPMULTIPLICACION>");
     }
 
     {COMENTARIO} {
@@ -413,8 +433,8 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<IF>");
     }
 
-    {ELSEIF} {
-        System.out.println("<ELSEIF>");
+    {ELSIF} {
+        System.out.println("<ELSIF>");
     }
 
     {ELSE} {
@@ -454,6 +474,14 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<SEMICOLON>");
     }
 
+    {signosEspeciales} {
+        System.out.println("<SIGNO ESPECIAL, " + yytext() + ">");
+    }
+
+    {signosPuntuacion} {
+        System.out.println("<SIGNO PUNTUACION, " + yytext() + ">");
+    }
+
     {THEN} {
         System.out.println("<THEN>");
     }
@@ -462,12 +490,20 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<USE>");
     }
 
+    {WHEN} {
+        System.out.println("<WHEN>");
+    }
+
     {WITH} {
         System.out.println("<WITH>");
     }
 
     {NUM} {
         System.out.println("<NUM, \""+yytext()+"\">");
+    }
+
+    {STRINGTYPE} {
+        System.out.println("<STRING>");
     }
 
     {ID} {

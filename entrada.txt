@@ -1,19 +1,13 @@
-with Ada.Text_IO
-use Ada.Text_IO
+--  file: stacks.ads
 
-procedure MyProg is
-
-    Name : String (1 .. 5);
-    -- Este es un comentario
-begin
-    Put_Line("What is your name?");
-    Get(Name);
-    
-    2+3*5/4-3*2
-
-    if ( Name = "Apple" ) then
-        Put_Line("Hallo" & Name & 's');
-    else
-        Put_Line("I don't know you.");
-    end if;
-end MyProg;
+package Stacks is
+   type Stack is private;
+   procedure Push (Item : Character; On : in out Stack);
+   procedure Pop (Item : out Character; From : in out Stack);
+   function Is_Empty (S : Stack) return Boolean;
+private
+  type Stack is record
+     top : Integer := 0;
+     Contents : String (1 .. 80) := (others => '*');
+  end record;
+end Stacks;
