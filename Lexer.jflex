@@ -115,7 +115,7 @@ NUM = {numeros}+
 
 /*Tipos*/
 INTEGER = ("integer")
-DOUBLE = ("double")
+FLOAT = ("float")
 BOOLEAN = ("boolean")
 CHARACTER = ("character")
 
@@ -233,8 +233,8 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<INTEGER>");
     }
 
-    {DOUBLE} {
-        System.out.println("<DOUBLE>");
+    {FLOAT} {
+        System.out.println("<FLOAT>");
     }
 
     {BOOLEAN} {
