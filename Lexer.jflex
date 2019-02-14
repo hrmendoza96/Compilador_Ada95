@@ -45,15 +45,11 @@ ELSIF = ("elsif")
 
 /*Palabras Reservadas*/
 GET = ("Get")
+PUT = ("put")
 PUT_LINE = ("Put_Line")
 PROCEDURE = ("Procedure")
-USE = ("use")
-WITH = ("with")
 IS = ("is")
 
-ABORT = ("abort")
-ABS = ("abs")
-ABSTRACT = ("abstract")
 ACCEPT = ("accept")
 ACCESS = ("access")
 ALIASED = ("aliased")
@@ -83,13 +79,11 @@ OF = ("of")
 OTHERS = ("others")
 OUT = "OUT"
 OVERRIDING = ("overriding")
-PACKAGE = ("package")
 PRAGMA = ("pragma")
 PRIVATE = ("private")
 PROTECTED = ("protected")
 RAISE = ("raise")
 RANGE = ("range")
-RECORD = ("record")
 REM = ("rem")
 RENAMES = ("renames")
 REQUEUE = ("requeue")
@@ -103,7 +97,6 @@ SYNCHRONIZED = ("synchronized")
 TAGGED = ("tagged")
 TASK = ("task")
 TERMINATE = ("terminate")
-TYPE = ("type")
 UNTIL = ("until")
 WHEN = ("when")
 
@@ -136,18 +129,6 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
 %%
 
 <YYINITIAL> {
-
-    {ABORT} {
-        System.out.println("<ABORT>");
-    }
-
-    {ABS} {
-        System.out.println("<ABS>");
-    }
-    {ABSTRACT} {
-        System.out.println("<ABSTRACT>");
-    }
-
     {ACCEPT} {
         System.out.println("<ACCEPT>");
     }
@@ -287,9 +268,6 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<OVERRIDING>");
     }
 
-    {PACKAGE} {
-        System.out.println("<PACKAGE>");
-    }
 
     {PRAGMA} {
         System.out.println("<PRAGMA>");
@@ -311,9 +289,6 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<RANGE>");
     }
 
-    {RECORD} {
-        System.out.println("<RECORD>");
-    }
 
     {REM} {
         System.out.println("<REM>");
@@ -363,9 +338,6 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<TERMINATE>");
     }
 
-    {TYPE} {
-        System.out.println("<TYPE>");
-    } 
 
     {UNTIL} {
         System.out.println("<UNTIL>");
@@ -472,6 +444,10 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<PUT_LINE>");
     }
 
+    {PUT} {
+        System.out.println("<PUT>");
+    }
+
     {PROCEDURE} {
         System.out.println("<PROCEDURE>");
     }
@@ -492,21 +468,10 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<THEN>");
     }
 
-    {USE} {
-        System.out.println("<USE>");
-    }
 
     {WHEN} {
         System.out.println("<WHEN>");
-    }
-
-    {WITH} {
-        System.out.println("<WITH>");
-    }
-
-    {NUM} {
-        System.out.println("<NUM, \""+yytext()+"\">");
-    }
+    }  
 
     {STRINGTYPE} {
         System.out.println("<STRING>");
@@ -522,6 +487,10 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
 
     {CHAR} {
         System.out.println("<CHAR, "+yytext()+">");
+    }
+
+    {NUM} {
+        System.out.println("<NUM, \""+yytext()+"\">");
     }
 
     {espacios} {}
