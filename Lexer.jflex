@@ -2,6 +2,8 @@
 %unicode
 %class Lexer
 %int
+%line
+%column
 %standalone
 %ignorecase 
 
@@ -29,7 +31,7 @@ NOT = ("NOT")
 OPSUMA = "+" | "-"
 OPMULTIPLICACION = "*" | "/"
 MOD = ("mod")
-/*EXPONENTES = {ASTERISCO}{ASTERISCO}*/
+EXPONENTES = "**"
 
 
 /*Decisiones*/
@@ -401,6 +403,10 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<OPSUMA>");
     }
 
+    {EXPONENTES} {
+        System.out.println("<EXPONENTE>");
+    }
+
     {OPMULTIPLICACION} {
         System.out.println("<OPMULTIPLICACION>");
     }
@@ -521,6 +527,6 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
     {espacios} {}
 
     . {
-        System.out.println("-----------ERROR: [\""+yytext()+"\"]");
+        System.out.println("-----------ERROR: [\""+yytext()+"\"] Line:["+ yyline + "], Column:[" + yycolumn+"]");
     }
 }
