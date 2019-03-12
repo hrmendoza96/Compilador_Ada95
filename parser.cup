@@ -1,0 +1,19 @@
+import java_cup.runtime.*;
+
+non terminal D;
+non terminal Integer L;
+terminal ID, COMA, INT, PUNTO_Y_COMA, ASIGNACION;
+terminal String NUM;
+
+D   ::= L:l {: System.out.println(l.intValue()); :}
+    ;
+
+L   ::= L:l COMA ID INT PUNTO_Y_COMA {::}
+    | ID INT PUNTO_Y_COMA {::}
+    | L:l COMA ID {::}
+    | ID {::}
+    | L:l COMA ID INT ASINACION NUM PUNTO_Y_COMA {::}
+    | ID INT ASIGNACION NUM PUNTO_Y_COMA {::}
+    ;
+
+
