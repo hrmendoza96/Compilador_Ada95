@@ -49,7 +49,6 @@ PUT_LINE = ("Put_Line")
 PROCEDURE = ("Procedure")
 IS = ("is")
 ARRAY = ("array")
-CASE = ("case")
 CONSTANT = ("constant")
 DECLARE = ("declare")
 DO = ("do")
@@ -93,10 +92,6 @@ ID = {letras}+({guionBajo}({letras}|{numeros})+)*
 <YYINITIAL> {
     {ARRAY} {
         System.out.println("<ARRAY>");
-    }
-
-    {CASE} {
-        System.out.println("<CASE>");
     }
 
     {CONSTANT} {
