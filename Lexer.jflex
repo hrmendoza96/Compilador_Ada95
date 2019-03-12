@@ -26,7 +26,6 @@ DECLARACION = [:]
 OPREL = "=" | "/=" | "<" | "<=" | ">" | ">="
 AND = ("and")
 OR = ("OR")
-XOR = ("XOR")
 NOT = ("NOT")
 OPSUMA = "+" | "-"
 OPMULTIPLICACION = "*" | "/"
@@ -49,56 +48,20 @@ PUT = ("put")
 PUT_LINE = ("Put_Line")
 PROCEDURE = ("Procedure")
 IS = ("is")
-
-ACCEPT = ("accept")
-ACCESS = ("access")
-ALIASED = ("aliased")
-ALL = ("all")
 ARRAY = ("array")
-AT = ("at")
-BODY = ("body")
 CASE = ("case")
 CONSTANT = ("constant")
 DECLARE = ("declare")
-DELAY = ("delay")
-DELTA = ("delta")
-DIGITS = ("digits")
 DO = ("do")
-ENTRY = ("entry")
-EXCEPTION = ("exception")
 EXIT = ("exit")
 FUNCTION = ("function")
-GENERIC = ("generic")
-GOTO = ("goto")
 IN = ("in")
-INTERFACE = ("interface")
-LIMITED = ("limited")
-NEW = ("new")
 NULL = ("null")
-OF = ("of")
-OTHERS = ("others")
 OUT = "OUT"
-OVERRIDING = ("overriding")
-PRAGMA = ("pragma")
 PRIVATE = ("private")
 PROTECTED = ("protected")
-RAISE = ("raise")
-RANGE = ("range")
-REM = ("rem")
-RENAMES = ("renames")
-REQUEUE = ("requeue")
 RETURN = ("return")
-REVERSE = ("reverse")
-SELECT = ("select")
-SEPARATE = ("separate")
 STRINGTYPE = ("String")
-SUBTYPE = ("subtype")
-SYNCHRONIZED = ("synchronized")
-TAGGED = ("tagged")
-TASK = ("task")
-TERMINATE = ("terminate")
-UNTIL = ("until")
-WHEN = ("when")
 
 /*For, While, Loop*/
 FOR = ("for")
@@ -122,38 +85,14 @@ CHAR = "\'"({letras} | {numeros} | {espacios} | {signosPuntuacion} | {signosEspe
 /*Identificador*/
 ID = {letras}+({guionBajo}({letras}|{numeros})+)*
 
-/*Imports*/
-IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
+
 
 
 %%
 
 <YYINITIAL> {
-    {ACCEPT} {
-        System.out.println("<ACCEPT>");
-    }
-
-    {ACCESS} {
-        System.out.println("<ACCESS>");
-    }
-
-    {ALIASED} {
-        System.out.println("<ALIASED>");
-    }
-
-    {ALL} {
-        System.out.println("<ALL>");
-    }
     {ARRAY} {
         System.out.println("<ARRAY>");
-    }
-
-    {AT} {
-        System.out.println("<AT>");
-    }
-
-    {BODY} {
-        System.out.println("<BODY>");
     }
 
     {CASE} {
@@ -168,28 +107,8 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<DECLARE>");
     }
 
-    {DELAY} {
-        System.out.println("<DELAY>");
-    }
-
-    {DELTA} {
-        System.out.println("<DELTA>");
-    }
-
-    {DIGITS} {
-        System.out.println("<DIGITS>");
-    }
-
     {DO} {
         System.out.println("<DO>");
-    }
-
-    {ENTRY} {
-        System.out.println("<ENTRY>");
-    }
-
-    {EXCEPTION} {
-        System.out.println("<EXCEPTION>");
     }
 
     {EXIT} {
@@ -199,15 +118,7 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
     {FUNCTION} {
         System.out.println("<FUNCTION>");
     } 
-
-    {GENERIC} {
-        System.out.println("<GENERIC>");
-    }
-
-    {GOTO} {
-        System.out.println("<GOTO>");
-    }
-
+ 
     {IN} {
         System.out.println("<IN>");
     }
@@ -228,21 +139,10 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<CHARACTER>");
     }
 
-    {INTERFACE} {
-        System.out.println("<INTERFACE>");
-    }
-
-    {LIMITED} {
-        System.out.println("<LIMITED>");
-    }
-
     {MOD} {
         System.out.println("<MOD>");
     }
 
-    {NEW} {
-        System.out.println("<NEW>");
-    }
 
     {NEWLINE} {
         System.out.println("<NEWLINE>");
@@ -251,26 +151,9 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
     {NULL} {
         System.out.println("<NULL>");
     }
-
-    {OF} {
-        System.out.println("<OF>");
-    }
-
-    {OTHERS} {
-        System.out.println("<OTHERS>");
-    }
-
+   
     {OUT} {
         System.out.println("<OUT>");
-    }
-
-    {OVERRIDING} {
-        System.out.println("<OVERRIDING>");
-    }
-
-
-    {PRAGMA} {
-        System.out.println("<PRAGMA>");
     }
 
     {PRIVATE} {
@@ -281,67 +164,11 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
         System.out.println("<PROTECTED>");
     }
 
-    {RAISE} {
-        System.out.println("<RAISE>");
-    }
-    
-    {RANGE} {
-        System.out.println("<RANGE>");
-    }
-
-
-    {REM} {
-        System.out.println("<REM>");
-    }
-
-    {RENAMES} {
-        System.out.println("<RENAMES>");
-    }
-
-    {REQUEUE} {
-        System.out.println("<REQUEUE>");
-    }
 
     {RETURN} {
         System.out.println("<RETURN>");
     }
 
-    {REVERSE} {
-        System.out.println("<REVERSE>");
-    }
-
-    {SELECT} {
-        System.out.println("<SELECT>");
-    }
-
-    {SEPARATE} {
-        System.out.println("<SEPARATE>");
-    }
-
-    {SUBTYPE} {
-        System.out.println("<SUBTYPE>");
-    }
-    
-    {SYNCHRONIZED} {
-        System.out.println("<SYNCHRONIZED>");
-    }
-
-    {TAGGED} {
-        System.out.println("<TAGGED>");
-    }
-    
-    {TASK} {
-        System.out.println("<TASK>");
-    }
-
-    {TERMINATE} {
-        System.out.println("<TERMINATE>");
-    }
-
-
-    {UNTIL} {
-        System.out.println("<UNTIL>");
-    }
 
     {FOR} {
         System.out.println("<FOR>");
@@ -353,10 +180,6 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
 
     {LOOP} {
         System.out.println("<LOOP>");
-    }
-
-    {XOR} {
-        System.out.println("XOR");
     }
 
     {NOT} {
@@ -385,10 +208,6 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
 
     {COMENTARIO} {
         System.out.println("<COMENTARIO, \""+yytext()+"\">");
-    }
-
-    {IMPORT} {
-        System.out.println("<IMPORT, \""+yytext()+"\">");
     }
 
     {IS} {
@@ -466,12 +285,7 @@ IMPORT = "Ada."{letras}+({guionBajo}({letras}|{numeros})+)*{SEMICOLON}*
 
     {THEN} {
         System.out.println("<THEN>");
-    }
-
-
-    {WHEN} {
-        System.out.println("<WHEN>");
-    }  
+    } 
 
     {STRINGTYPE} {
         System.out.println("<STRING>");
