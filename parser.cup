@@ -3,7 +3,33 @@ import java_cup.runtime.*;
 // Terminales
 terminal PROCEDURE,FUNCTION,RETURN,ARRAY,CONSTANT,IS,DECLARE,BEGIN,END,IF,THEN,ELSE,ELSIF,FOR,IN,OUT,WHILE,LOOP;
 terminal DO,AND,OR,XOR,NOT,MOD,EXPONENTES,FALSE,TRUE,EXIT,WHEN,PRIVATE,PROTECTED,NULL,GET,PUT,PUT_LINE;
-terminal INTEGER,FLOAT
+terminal INTEGER,FLOAT,BOOLEAN,CHARACTER,STRINGTYPE;
+terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,CAJA,SEMICOLON,COMA;
+terminal String ID;
+terminal Integer NUM;
+terminal STRING,CHAR;
+
+// No Terminales
+non terminal cuerpo_principal, comienza_cuerpo_principal;
+non terminal paramateros_principal;
+non terminal tipo_variable;
+
+// Gramatica
+
+/* Cuerpo principal contiene el procedimiento o la funcion principal
+Declaramos primero un procedure y una function en su forma principal, seguidamente
+se declaran las posiciones en las que se podrian encontrar errores.*/
+cuerpo_principal    ::= PROCEDURE ID paramateros_principal IS comienza_cuerpo_principal
+                    | FUNCTION ID paramateros_principal RETURN tipo_variable IS comienza_cuerpo_principal
+                    | error ID paramateros_principal IS comienza_cuerpo_principal
+                    | PROCEDURE error paramateros_principal IS comienza_cuerpo_principal
+                    | PROCEDURE ID paramateros_principal error comienza_cuerpo_principal
+                    | FUNCTION error paramateros_principal IS comienza_cuerpo_principal
+                    | FUNCTION ID paramateros_principal error comienza_cuerpo_principal
+                    ; 
+
+
+                    
 
 
 
