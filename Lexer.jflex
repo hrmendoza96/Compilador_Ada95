@@ -164,5 +164,5 @@ LOOP = ("loop")
     {COMENTARIO} {}
     {espacios} {}
 
-    . { System.out.println("-----------ERROR: [\""+yytext()+"\"] Line:["+ yycolumn + "], Column:[" + yyline+"]"); }
+    . { System.out.println("-----------ERROR: [\""+yytext()+"\"] Line:["+ yyline + "], Column:[" + yycolumn+"]"); }
 }
