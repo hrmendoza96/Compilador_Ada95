@@ -1,4 +1,8 @@
+import java_cup.runtime.*;
+
 %%
+
+%cup
 %unicode
 %class Lexer
 %int
@@ -6,305 +10,159 @@
 %column
 %standalone
 %ignorecase 
+%eofval{
+	return new Symbol(sym.EOF,new String("Fin del archivo"));
+%eofval}
 
-/*Variables*/
-signosPuntuacion = ","|";"|"."|":"|"'"|"!"|"?"|"¡"|"¿"|"_"|"-"|"{"|"}"|"["|"]"
-signosEspeciales = "@" | "#" | "$" | "%" | "^" | "&" | "*" 
-espacios = [" "\t\r\n]
-guionBajo = [_]
-guionesComentario = "--"
+// Caracteres
 letras = [a-zA-Z] 
 numeros = [0-9]
-PARDER = [)]
-PARIZQ = [(]
-SEMICOLON = [;]
-COMENTARIO = {guionesComentario}({letras} | {numeros} | " " | {signosPuntuacion} | {signosEspeciales} | {OPREL} | {PARDER} | {PARIZQ})*
-NEWLINE = "\n"
+espacios = \t|" "|\f|\r|\n
+signosEspeciales = ","|";"|"."|":"|"'"|"!"|"?"|"¡"|"¿"|"_"|"-"|"{"|"}"|"["|"]"|"@"|"#"|"$"|"%"|"^"|"&"|"*" 
+guionBajo = "_"
+signoNegativo = "-"
+guionesComentario = "--"
+punto = "."
 
-/*Operaciones*/
-DECLARACION = [:]
-OPREL = "=" | "/=" | "<" | "<=" | ">" | ">="
-AND = ("and")
-OR = ("OR")
-NOT = ("NOT")
-OPSUMA = "+" | "-"
+// Delimitadores
+ASIGNACION = ":="
+DECLARACION = ":"
+OPREL = "="|"/="|"<"|"<="|">"|">="
 OPMULTIPLICACION = "*" | "/"
+OPSUMA = "+" | "-"
+PARIZQ = "("
+PARDER = "("
+SEMICOLON = ";"
+COMA = ","
+CAJA = "<>"
+DOSPUNTOS = ".."
+
+// Identificador
+ID = {letras}+({guionBajo}({letras}|{numeros})+)*
+
+// Para los numeros
+NUM = ({signoNegativo}|""){numeros}+(({punto}{numeros}+)|"")
 MOD = ("mod")
 EXPONENTES = "**"
 
+// Para los comentarios
+COMENTARIO = {guionesComentario}({letras}|{numeros}|" "|{signosEspeciales}|{OPREL}|{PARDER}|{PARIZQ})*
 
-/*Decisiones*/
+// Para los Strings y Chars
+STRING ="\""({letras}|{numeros}|{espacios}|{signosEspeciales}|{OPREL}|{PARDER}|{PARIZQ})*"\"" 
+CHAR = "\'"({letras}|{numeros}|" "|{signosEspeciales}|"="|">"|"<"|{PARDER}|{PARIZQ})"\'" 
+
+// Tipos de variables
+BOOLEAN = ("boolean")
+CHARACTER = ("character")
+FLOAT = ("float")
+INTEGER = ("integer")
+
+// Operaciones
+AND = ("and")
+OR = ("OR")
+XOR = ("XOR")
+NOT = ("NOT")
+
+// Decisiones
 BEGIN = ("begin")
 ELSE = ("else")
 END = ("end")
-ENDIF = ("end if")
 IF = ("if")
 THEN = ("then")
 ELSIF = ("elsif")
 
-/*Palabras Reservadas*/
-GET = ("Get")
-PUT = ("put")
-PUT_LINE = ("Put_Line")
-PROCEDURE = ("Procedure")
-IS = ("is")
+// Palabras Reservadas
 ARRAY = ("array")
 CONSTANT = ("constant")
 DECLARE = ("declare")
 DO = ("do")
 EXIT = ("exit")
 FUNCTION = ("function")
+GET = ("Get")
+PUT = ("put")
 IN = ("in")
+IS = ("is")
 NULL = ("null")
-OUT = "OUT"
+OUT = ("OUT")
 PRIVATE = ("private")
+PROCEDURE = ("Procedure")
 PROTECTED = ("protected")
+PUT_LINE = ("Put_Line")
 RETURN = ("return")
 STRINGTYPE = ("String")
+TRUE = ("true")
+FALSE = ("false")
+WHEN = ("when")
 
-/*For, While, Loop*/
+// For, While y Loop
 FOR = ("for")
 WHILE = ("while")
 LOOP = ("loop")
 
-/*Numeros*/
-NUM = {numeros}+
-
-/*Tipos*/
-INTEGER = ("integer")
-FLOAT = ("float")
-BOOLEAN = ("boolean")
-CHARACTER = ("character")
-
-
-/*Strings y Chars*/
-STRING ="\""({letras} | {numeros} | {espacios} | {signosPuntuacion} | {signosEspeciales} | {OPREL} | {PARDER} | {PARIZQ})*"\"" 
-CHAR = "\'"({letras} | {numeros} | {espacios} | {signosPuntuacion} | {signosEspeciales} | {OPREL} | {PARDER} | {PARIZQ})"\'" 
-
-/*Identificador*/
-ID = {letras}+({guionBajo}({letras}|{numeros})+)*
-
-
-
-
 %%
 
 <YYINITIAL> {
-    {ARRAY} {
-        System.out.println("<ARRAY>");
-    }
 
-    {CONSTANT} {
-        System.out.println("<CONSTANT>");
-    }
+    {PROCEDURE} { return new Symbol(sym.PROCEDURE, yycolumn, yyline, yytext()); }  
+    {FUNCTION} { return new Symbol(sym.FUNCTION, yycolumn, yyline, yytext()); } 
+    {RETURN} { return new Symbol(sym.RETURN, yycolumn, yyline, yytext()); }
+    {ARRAY} { return new Symbol(sym.ARRAY, yycolumn, yyline, yytext()); }
+    {CONSTANT} { return new Symbol(sym.CONSTANT, yycolumn, yyline, yytext()); }
+    {IS} { return new Symbol(sym.IS, yycolumn, yyline, yytext()); }
+    {DECLARE} { return new Symbol(sym.DECLARE, yycolumn, yyline, yytext()); }
+    {BEGIN} { return new Symbol(sym.BEGIN, yycolumn, yyline, yytext()); }
+    {END} { return new Symbol(sym.END, yycolumn, yyline, yytext()); }
+    {IF} { return new Symbol(sym.IF, yycolumn, yyline, yytext()); }
+    {THEN} { return new Symbol(sym.THEN, yycolumn, yyline, yytext()); } 
+    {ELSE} { return new Symbol(sym.ELSE, yycolumn, yyline, yytext()); }
+    {ELSIF} { return new Symbol(sym.ELSIF, yycolumn, yyline, yytext()); }
+    {FOR} { return new Symbol(sym.FOR, yycolumn, yyline, yytext()); }
+    {IN} { return new Symbol(sym.IN, yycolumn, yyline, yytext()); }
+    {OUT} { return new Symbol(sym.OUT, yycolumn, yyline, yytext()); }
+    {WHILE} { return new Symbol(sym.WHILE, yycolumn, yyline, yytext()); }
+    {LOOP} { return new Symbol(sym.LOOP, yycolumn, yyline, yytext()); }
+    {DO} { return new Symbol(sym.DO, yycolumn, yyline, yytext()); }
+    {AND} { return new Symbol(sym.AND, yycolumn, yyline, yytext()); }
+    {OR} { return new Symbol(sym.OR, yycolumn, yyline, yytext()); }
+    {XOR} { return new Symbol(sym.XOR, yycolumn, yyline, yytext()); }
+    {NOT} { return new Symbol(sym.NOT, yycolumn, yyline, yytext()); }
+    {MOD} { return new Symbol(sym.MOD, yycolumn, yyline, yytext()); }
+    {EXPONENTES} { return new EXPONENTES(sym.MOD, yycolumn, yyline, yytext()); }
+    {FALSE} { return new Symbol(sym.FALSE, yycolumn, yyline, yytext()); }
+    {TRUE} { return new Symbol(sym.TRUE, yycolumn, yyline, yytext()); }
+    {EXIT} { return new Symbol(sym.EXIT, yycolumn, yyline, yytext()); }
+    {WHEN} { return new Symbol(sym.WHEN, yycolumn, yyline, yytext()); }
+    {PRIVATE} { return new Symbol(sym.PRIVATE, yycolumn, yyline, yytext()); }
+    {PROTECTED} { return new Symbol(sym.PROTECTED, yycolumn, yyline, yytext()); }
+    {NULL} { return new Symbol(sym.NULL, yycolumn, yyline, yytext()); }
 
-    {DECLARE} {
-        System.out.println("<DECLARE>");
-    }
+    {GET} { return new Symbol(sym.GET, yycolumn, yyline, yytext()); }
+    {PUT} { return new Symbol(sym.PUT, yycolumn, yyline, yytext()); }
+    {PUT_LINE} { return new Symbol(sym.PUT_LINE, yycolumn, yyline, yytext()); }
 
-    {DO} {
-        System.out.println("<DO>");
-    }
+    {INTEGER} { return new Symbol(sym.INTEGER, yycolumn, yyline, yytext()); }
+    {FLOAT} { return new Symbol(sym.FLOAT, yycolumn, yyline, yytext()); }
+    {BOOLEAN} { return new Symbol(sym.BOOLEAN, yycolumn, yyline, yytext()); }
+    {CHARACTER} { return new Symbol(sym.CHARACTER, yycolumn, yyline, yytext()); }
 
-    {EXIT} {
-        System.out.println("<EXIT>");
-    }
+    {ASIGNACION} { return new Symbol(sym.ASIGNACION, yycolumn, yyline, yytext()); }
+    {DECLARACION} { return new Symbol(sym.DECLARACION, yycolumn, yyline, yytext()); }
+    {OPREL} { return new Symbol(sym.OPREL, yycolumn, yyline, yytext()); }
+    {OPMULTIPLICACION} { return new Symbol(sym.OPMULTIPLICACION, yycolumn, yyline, yytext()); }
+    {OPSUMA} { return new Symbol(sym.OPSUMA, yycolumn, yyline, yytext()); }
+    {PARDER} { return new Symbol(sym.PARDER, yycolumn, yyline, yytext()); }
+    {PARIZQ} { return new Symbol(sym.PARIZQ, yycolumn, yyline, yytext()); }
+    {CAJA} { return new Symbol(sym.OPREL, yycolumn, yyline, yytext()); }
+    {SEMICOLON} { return new Symbol(sym.SEMICOLON, yycolumn, yyline, yytext()); }
+    {COMA} { return new Symbol(sym.COMA, yycolumn, yyline, yytext()); }
     
-    {FUNCTION} {
-        System.out.println("<FUNCTION>");
-    } 
- 
-    {IN} {
-        System.out.println("<IN>");
-    }
-
-    {INTEGER} {
-        System.out.println("<INTEGER>");
-    }
-
-    {FLOAT} {
-        System.out.println("<FLOAT>");
-    }
-
-    {BOOLEAN} {
-        System.out.println("<BOOLEAN>");
-    }
-
-    {CHARACTER} {
-        System.out.println("<CHARACTER>");
-    }
-
-    {MOD} {
-        System.out.println("<MOD>");
-    }
-
-
-    {NEWLINE} {
-        System.out.println("<NEWLINE>");
-    }
-
-    {NULL} {
-        System.out.println("<NULL>");
-    }
-   
-    {OUT} {
-        System.out.println("<OUT>");
-    }
-
-    {PRIVATE} {
-        System.out.println("<PRIVATE>");
-    }
-
-    {PROTECTED} {
-        System.out.println("<PROTECTED>");
-    }
-
-
-    {RETURN} {
-        System.out.println("<RETURN>");
-    }
-
-
-    {FOR} {
-        System.out.println("<FOR>");
-    }
-
-    {WHILE} {
-        System.out.println("<WHILE>");
-    }
-
-    {LOOP} {
-        System.out.println("<LOOP>");
-    }
-
-    {NOT} {
-        System.out.println("<NOT>");
-    }
-
-    {OR} {
-        System.out.println("<OR>");
-    }
-
-    {AND} {
-        System.out.println("<AND>");
-    }
-
-    {OPSUMA} {
-        System.out.println("<OPSUMA>");
-    }
-
-    {EXPONENTES} {
-        System.out.println("<EXPONENTE>");
-    }
-
-    {OPMULTIPLICACION} {
-        System.out.println("<OPMULTIPLICACION>");
-    }
-
-    {COMENTARIO} {
-        System.out.println("<COMENTARIO, \""+yytext()+"\">");
-    }
-
-    {IS} {
-        System.out.println("<IS>");
-    }
-
-    {BEGIN} {
-        System.out.println("<BEGIN>");
-    }
-
-    {OPREL} {
-        System.out.println("<OPERADOR RELACIONAL, \""+yytext()+"\">");
-    }
-
-    {DECLARACION} {
-        System.out.println("<DECLARACION>");
-    }
-
-    {IF} {
-        System.out.println("<IF>");
-    }
-
-    {ELSIF} {
-        System.out.println("<ELSIF>");
-    }
-
-    {ELSE} {
-        System.out.println("<ELSE>");
-    }
-
-    {END} {
-        System.out.println("<END>");
-    }
-
-    {ENDIF} {
-        System.out.println("<ENDIF>");
-    }
-
-    {GET} {
-        System.out.println("<GET>");
-    }
-    
-    
-    {PARDER} {
-        System.out.println("<PARDER>");
-    }
-    
-    {PARIZQ} {
-        System.out.println("<PARIZQ>");
-    }
-    
-    {PUT_LINE} {
-        System.out.println("<PUT_LINE>");
-    }
-
-    {PUT} {
-        System.out.println("<PUT>");
-    }
-
-    {PROCEDURE} {
-        System.out.println("<PROCEDURE>");
-    }
-
-    {SEMICOLON} {
-        System.out.println("<SEMICOLON>");
-    }
-
-    {signosEspeciales} {
-        System.out.println("<SIGNO ESPECIAL, " + yytext() + ">");
-    }
-
-    {signosPuntuacion} {
-        System.out.println("<SIGNO PUNTUACION, " + yytext() + ">");
-    }
-
-    {THEN} {
-        System.out.println("<THEN>");
-    } 
-
-    {STRINGTYPE} {
-        System.out.println("<STRING>");
-    }
-
-    {ID} {
-        System.out.println("<ID, \""+yytext()+"\">");
-    }
-
-    {STRING} {
-        System.out.println("<STRING, "+yytext()+">");
-    }
-
-    {CHAR} {
-        System.out.println("<CHAR, "+yytext()+">");
-    }
-
-    {NUM} {
-        System.out.println("<NUM, \""+yytext()+"\">");
-    }
-
+    {ID} { return new Symbol(sym.ID, yycolumn, yyline, yytext()); }
+    {STRING} { return new Symbol(sym.STRING, yycolumn, yyline, yytext()); }
+    {CHAR} { return new Symbol(sym.CHAR, yycolumn, yyline, yytext()); }
+    {NUM} { return new Symbol(sym.NUM, yycolumn, yyline, yytext()); }
+    {COMENTARIO} {}
     {espacios} {}
 
-    . {
-        System.out.println("-----------ERROR: [\""+yytext()+"\"] Line:["+ yyline + "], Column:[" + yycolumn+"]");
-    }
+    . { System.out.println("-----------ERROR: [\""+yytext()+"\"] Line:["+ yycolumn + "], Column:[" + yyline+"]"); }
 }
