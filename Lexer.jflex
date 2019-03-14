@@ -145,6 +145,7 @@ LOOP = ("loop")
     {FLOAT} { return new Symbol(sym.FLOAT, yycolumn, yyline, yytext()); }
     {BOOLEAN} { return new Symbol(sym.BOOLEAN, yycolumn, yyline, yytext()); }
     {CHARACTER} { return new Symbol(sym.CHARACTER, yycolumn, yyline, yytext()); }
+    {STRINGTYPE} { return new Symbol(sym.STRINGTYPE, yycolumn, yyline, yytext()); }
 
     {ASIGNACION} { return new Symbol(sym.ASIGNACION, yycolumn, yyline, yytext()); }
     {DECLARACION} { return new Symbol(sym.DECLARACION, yycolumn, yyline, yytext()); }
@@ -164,5 +165,5 @@ LOOP = ("loop")
     {COMENTARIO} {}
     {espacios} {}
 
-    . { System.out.println("-----------ERROR: [\""+yytext()+"\"] Line:["+ yycolumn + "], Column:[" + yyline+"]"); }
+    . { System.out.println("-----------ERROR: [\""+yytext()+"\"] Line:["+ yyline + "], Column:[" + yycolumn+"]"); }
 }
