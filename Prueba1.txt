@@ -3,7 +3,7 @@
 
 --  Evaluate abstract syntax tree for simple expression.
 
-with Scanner2; use Scanner2;
+with Scanner 2; use Scanner2;
 with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ast3; use Ast3;

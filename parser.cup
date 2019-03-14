@@ -6,4 +6,3 @@ terminal String NUM;
 D   ::=  NUM:n {:  :}
     ;
 
-
