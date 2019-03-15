@@ -26,7 +26,7 @@ cuerpo_principal    ::= PROCEDURE ID parametros IS comienza_cuerpo_principal
                     | error ID parametros IS comienza_cuerpo_principal
                     | PROCEDURE error parametros IS comienza_cuerpo_principal
                     | PROCEDURE ID parametros error comienza_cuerpo_principal
-                    | error ID parametros RETURN tipo_variable IS comienza_cuerpo_principal
+                    | error ID parametros RETURN tipo_variable IS comienza_cuerpo_principal //quitar esto
                     | FUNCTION error parametros RETURN tipo_variable IS comienza_cuerpo_principal
                     | FUNCTION ID parametros error tipo_variable IS comienza_cuerpo_principal
                     | FUNCTION ID parametros RETURN tipo_variable error comienza_cuerpo_principal
