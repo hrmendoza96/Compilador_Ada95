@@ -11,24 +11,62 @@ terminal STRING,CHAR;
 
 // No Terminales
 non terminal cuerpo_principal, comienza_cuerpo_principal;
-non terminal paramateros_principal;
+non terminal parametros, tipo_declaracion;
 non terminal tipo_variable;
 
 // Gramatica
 
-/* Cuerpo principal contiene el procedimiento o la funcion principal
+/* Cuerpo principal contiene el procedimiento o la funcion principal.
 Declaramos primero un procedure y una function en su forma principal, seguidamente
 se declaran las posiciones en las que se podrian encontrar errores.*/
-cuerpo_principal    ::= PROCEDURE ID paramateros_principal IS comienza_cuerpo_principal
-                    | FUNCTION ID paramateros_principal RETURN tipo_variable IS comienza_cuerpo_principal
-                    | error ID paramateros_principal IS comienza_cuerpo_principal
-                    | PROCEDURE error paramateros_principal IS comienza_cuerpo_principal
-                    | PROCEDURE ID paramateros_principal error comienza_cuerpo_principal
-                    | FUNCTION error paramateros_principal IS comienza_cuerpo_principal
-                    | FUNCTION ID paramateros_principal error comienza_cuerpo_principal
+cuerpo_principal    ::= PROCEDURE ID parametros IS comienza_cuerpo_principal
+                    | FUNCTION ID parametros RETURN tipo_variable IS comienza_cuerpo_principal
+                    | error ID parametros IS comienza_cuerpo_principal
+                    | PROCEDURE error parametros IS comienza_cuerpo_principal
+                    | PROCEDURE ID parametros error comienza_cuerpo_principal
+                    | FUNCTION error parametros IS comienza_cuerpo_principal
+                    | FUNCTION ID parametros error comienza_cuerpo_principal
                     ; 
 
+/*Este es el area donde comenzara el codigo del programa.
+Nuevamente se declara las formas correctas primero seguido de las formas con errores.*/
+comienza_cuerpo_principal   ::= tipo_declaracion BEGIN codigo END ID SEMICOLON
+                            | BEGIN codigo ID SEMICOLON
+                            | tipo_declaracion error codigo END ID SEMICOLON
+                            | tipo_declaracion BEGIN codigo error ID SEMICOLON
+                            | tipo_declaracion BEGIN codigo END error SEMICOLON
+                            | tipo_declaracion BEGIN codigo END ID error
+                            | error codigo END ID SEMICOLON
+                            | BEGIN codigo error ID SEMICOLON
+                            | BEGIN codigo END error SEMICOLON
+                            | BEGIN codigo END ID error
+                            ;
 
+/*Estos son los paramtros para procedimientos y funciones.
+Primero se declara la forma correcta seguido de las producciones de error.*/
+paramateros     ::=  PARIZQ datos_parametros PARDER
+                |
+                | error datos_parametros PARDER
+                | PARIZQ datos_parametros error
+                ;
+
+/*Aqui tenemos los tipos de declaraciones que se pueden hacer en el programa. Se pone
+procedimiento y declaracion procedimiento como dos diferentes porque la declaracion
+de un procedimiento es mas corta que un procedimiento en si, igual que la funcion.*/
+tipo_declaracion    ::= declaracion_variable tipo_declaracion
+                    | declaracion_variable
+                    | declaracion_function tipo_declaracion
+                    | declaracion_function
+                    | declaracion_procedure tipo_declaracion
+                    | declaracion_procedure
+                    | funcion tipo_declaracion
+                    | funcion
+                    | procedimiento tipo_declaracion
+                    | procedimiento
+                    ;
+
+
+                        
                     
 
 
