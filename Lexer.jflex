@@ -41,7 +41,7 @@ DOSPUNTOS = ".."
 ID = {letras}+({guionBajo}({letras}|{numeros})+)*
 
 // Para los numeros
-NUM = ({signoNegativo}|""){numeros}+(({punto}{numeros}+)|"")
+NUM= ({signoNegativo}|""){numeros}+(({punto}{numeros}+)|"")
 MOD = ("mod")
 EXPONENTES = "**"
 
@@ -157,6 +157,7 @@ LOOP = ("loop")
     {CAJA} { return new Symbol(sym.OPREL, yycolumn, yyline, yytext()); }
     {SEMICOLON} { return new Symbol(sym.SEMICOLON, yycolumn, yyline, yytext()); }
     {COMA} { return new Symbol(sym.COMA, yycolumn, yyline, yytext()); }
+    {DOSPUNTOS} { return new Symbol(sym.DOSPUNTOS, yycolumn, yyline, yytext()); }
     
     {ID} { return new Symbol(sym.ID, yycolumn, yyline, yytext()); }
     {STRING} { return new Symbol(sym.STRING, yycolumn, yyline, yytext()); }

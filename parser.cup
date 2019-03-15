@@ -4,16 +4,18 @@ import java_cup.runtime.*;
 terminal PROCEDURE,FUNCTION,RETURN,ARRAY,CONSTANT,IS,DECLARE,BEGIN,END,IF,THEN,ELSE,ELSIF,FOR,IN,OUT,WHILE,LOOP;
 terminal DO,AND,OR,XOR,NOT,MOD,EXPONENTES,FALSE,TRUE,EXIT,WHEN,PRIVATE,PROTECTED,NULL,GET,PUT,PUT_LINE;
 terminal INTEGER,FLOAT,BOOLEAN,CHARACTER,STRINGTYPE;
-terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,CAJA,SEMICOLON,COMA;
+terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,CAJA,SEMICOLON,COMA, DOSPUNTOS;
 terminal String ID;
 terminal Integer NUM;
 terminal STRING,CHAR;
 
 // No Terminales
 non terminal cuerpo_principal, comienza_cuerpo_principal;
-non terminal parametros, datos_parametros, tipo_parametro, tipo_declaracion, declarar_procedimiento, declarar_funcion, declarar_variable;
+non terminal parametros, datos_parametros, tipo_parametro, tipo_declaracion, declarar_procedimiento, declarar_funcion, llamar_funcion, funcion, declarar_variable;
 non terminal tipo_variable, listar_ids;
 non terminal codigo;
+non terminal condicion, operando, expresion_booleana;
+non terminal ciclo_loop, tipo_loop, ciclo_for, ciclo_while, salir_ciclo, bloque_if, bloque_elsif, bloque_else;
 non terminal asignacion;
 
 // Gramatica
@@ -58,8 +60,8 @@ codigo  ::= ciclo_for codigo
         | put_line
         | asignacion codigo
         | asignacion
-        | llamar_subprograma codigo
-        | llamar_subprograma
+        | llamar_funcion codigo
+        | llamar_funcion
         ;
 
 /*Estos son los parámetros para procedimientos y funciones.
@@ -102,8 +104,8 @@ tipo_declaracion    ::= declarar_variable tipo_declaracion
                     | declarar_funcion
                     | declarar_procedimiento tipo_declaracion
                     | declarar_procedimiento
-                    | funcion tipo_declaracion
-                    | funcion
+                    | llamar_funcion tipo_declaracion
+                    | llamar_funcion
                     | procedimiento tipo_declaracion
                     | procedimiento
                     |
@@ -125,7 +127,13 @@ declarar_funcion    ::= FUNCTION ID parametros RETURN tipo_variable SEMICOLON
                     | FUNCTION error parametros RETURN tipo_variable SEMICOLON
                     ;
 
-funcion ::=
+/*Llamar Funcion: Estructura de la funcion + el Punto y Coma
+Funcion: El ID (Nombre de la funcion) y la non terminal parametros 
+(La cual incluye: PARIZQ datos_parametros PARDER).*/
+llamar_funcion  ::= funcion SEMICOLON
+                ;
+
+funcion ::= ID parametros
         ;
 
 /*Aquí tenemos la opción de declarara una o más variables. Luego están las versiones
@@ -137,20 +145,106 @@ declarar_variable   ::= ID COMA declarar_variable
                     | ID DECLARACION tipo_variable error
                     ;
 
+/*Asignación de un valor a una variable*/
+asignacion  ::= ID COMA asignacion
+            | ID DECLARACION tipo_variable ASIGNACION NUM
+            | ID DECLARACION tipo_variable ASIGNACION TRUE
+            | ID DECLARACION tipo_variable ASIGNACION FALSE
+            | ID DECLARACION tipo_variable ASIGNACION STRING
+            | ID DECLARACION tipo_variable ASIGNACION CHAR
+            ;
+
 
 
 // Estos son los tipos de variable que se permiten en el programa.
-tipo_variable   ::= INT
+tipo_variable   ::= INTEGER
                 | FLOAT
                 | BOOLEAN 
-                | STRING
-                | CHAR
+                | STRINGTYPE
+                | CHARACTER
                 | error 
                 ;
 
 
+
+/*TODO: MANEJO DE ERRORES*/
+
+
+/*================================BLOQUE IF======================================*/
+/*BLOQUE IF: Estructura de un bloque if que internamente manda a llamar non terminales de
+bloque elseif y del bloque else.*/
+bloque_if   ::= IF condicion THEN codigo bloque_elsif bloque_else END IF SEMICOLON
+            ;
+
+//CONDICION = Condicion interna para los ifs y los ciclos loop y while.
+condicion   ::= expresion_booleana OR condicion
+            | expresion_booleana AND condicion
+            | expresion_booleana XOR condicion
+            | expresion_booleana
+            ;
+
+//EXPRESION BOOLEANA: Expresion booleana en el que se comparan dos operandos con un operador relacional.
+expresion_booleana  ::= operando OPREL operando
+                    ;
+
+//OPERANDO: Operandos Relacionales utilizados en la expresion booleana.
+operando    ::= NUM
+            | ID
+            | funcion
+            ;
+
+/*Bloque ELSEIF y Bloque ELSE que vienen del bloque if. Este puede incluir vacio ya que
+no en todos los ifs se requiere un bloque else if.*/
+bloque_elsif    ::= ELSIF condicion THEN codigo bloque_elsif
+                |
+                ;
+
+bloque_else ::= ELSE codigo
+            |
+            ;
+
+
+/*==========================================CICLOS=====================================*/
+/* Ciclo LOOP */
+ciclo_loop  ::= tipo_loop LOOP codigo salir_ciclo END LOOP SEMICOLON
+            ;
+
+/*Identifica si el tipo de loop  es while, for, o vacio (lo cual indica que es un loop normal).*/
+tipo_loop   ::= ciclo_while
+            | ciclo_for
+            |
+            ;
+
+/* Ciclo WHILE: Identifica que es un while, y luego regresa al ciclo_loop porque mantiene la misma estructura del padre. */
+ciclo_while ::= WHILE condicion
+            ;
+
+/* Ciclo FOR: Identifica que es un for, y luego regresa al ciclo_loop porque mantiene la misma estructura del padre. */
+ciclo_for   ::= FOR ID IN NUM DOSPUNTOS NUM
+            ;
+
+/*==========================================PUT y GET===========================================*/
+put ::= PUT PARIZQ NUM PARDER SEMICOLON
+	| PUT PARIZQ STRING PARDER SEMICOLON
+    | PUT PARIZQ CHAR PARDER SEMICOLON
+    | PUT PARIZQ TRUE PARDER SEMICOLON
+    | PUT PARIZQ FALSE PARDER SEMICOLON
+	| PUT error NUM PARDER SEMICOLON
+	| PUT PARIZQ error PARDER SEMICOLON
+	| PUT PARIZQ NUM error SEMICOLON
+	| PUT PARIZQ NUM PARDER error
+	;
+
+get ::= GET PARIZQ ID PARDER SEMICOLON
+	/* PRODUCCIONES ERROR */
+	| GET error ID PARDER SEMICOLON
+	| GET PARIZQ error PARDER SEMICOLON
+	| GET PARIZQ ID error SEMICOLON
+	| GET PARIZQ ID PARDER error
+	;
+
+
                         
                     
-
 
 
