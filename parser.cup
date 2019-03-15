@@ -11,8 +11,10 @@ terminal STRING,CHAR;
 
 // No Terminales
 non terminal cuerpo_principal, comienza_cuerpo_principal;
-non terminal parametros, tipo_declaracion;
-non terminal tipo_variable;
+non terminal parametros, datos_parametros, tipo_parametro, tipo_declaracion;
+non terminal tipo_variable, listar_ids;
+non terminal codigo;
+non terminal asignacion;
 
 // Gramatica
 
@@ -28,8 +30,8 @@ cuerpo_principal    ::= PROCEDURE ID parametros IS comienza_cuerpo_principal
                     | FUNCTION ID parametros error comienza_cuerpo_principal
                     ; 
 
-/*Este es el area donde comenzara el codigo del programa.
-Nuevamente se declara las formas correctas primero seguido de las formas con errores.*/
+/*Este es el área donde comenzará el codigo del programa.
+Nuevamente se declaran las formas correctas primero seguido de las formas con errores.*/
 comienza_cuerpo_principal   ::= tipo_declaracion BEGIN codigo END ID SEMICOLON
                             | BEGIN codigo ID SEMICOLON
                             | tipo_declaracion error codigo END ID SEMICOLON
@@ -41,8 +43,29 @@ comienza_cuerpo_principal   ::= tipo_declaracion BEGIN codigo END ID SEMICOLON
                             | BEGIN codigo END error SEMICOLON
                             | BEGIN codigo END ID error
                             ;
+/*Esta es la forma en la que ese presenta el código. Se podrá poner cualquiera de estas opciones
+para comenzar a declarar código.*/
+codigo  ::= ciclo_for codigo
+        | ciclo_for
+        | ciclo_while codigo
+        | ciclo_while
+        | ciclo_loop codigo
+        | ciclo_loop
+        | bloque_if codigo
+        | bloque_if
+        | get codigo
+        | get
+        | put codigo
+        | put
+        | put_line codigo
+        | put_line
+        | asignacion codigo
+        | asignacion
+        | llamar_subprograma codigo
+        | llamar_subprograma
+        ;
 
-/*Estos son los paramtros para procedimientos y funciones.
+/*Estos son los parámetros para procedimientos y funciones.
 Primero se declara la forma correcta seguido de las producciones de error.*/
 paramateros     ::=  PARIZQ datos_parametros PARDER
                 |
@@ -50,20 +73,52 @@ paramateros     ::=  PARIZQ datos_parametros PARDER
                 | PARIZQ datos_parametros error
                 ;
 
-/*Aqui tenemos los tipos de declaraciones que se pueden hacer en el programa. Se pone
+/*Estos son los datos de los paáametros. Listamos primero las formas correctas para
+colocar parámetros, y luego los errores.*/
+datos_parametros    ::= listar_ids DECLARACION tipo_parametro tipo_variable SEMICOLON datos_parametros
+                    | listar_ids DECLARACION tipo_parametro tipo_variable
+                    | listar_ids error tipo_parametro tipo_variable SEMICOLON datos_parametros
+                    | listar_ids error tipo_parametro tipo_variable
+                    ;
+// Aquí se definen los tipos de parámetros que pueden ser IN, OUT, IN OUT o ninguno.
+tipo_parametro  ::= IN
+                | OUT
+                | IN OUT
+                |
+                ;
+
+/*Aquí permitimos listar los identificadores. La razón por la cual se tiene listar_ids
+y declaracion_variables es porque en declarar_variable se puede, valga la redundancia,
+declarar variables.*/
+listar_ids  ::= ID COMA listar_ids
+            | ID
+            | error
+            | error COMA listar_ids
+            ;                    
+
+/*Aquí tenemos los tipos de declaraciones que se pueden hacer en el programa. Se pone
 procedimiento y declaracion procedimiento como dos diferentes porque la declaracion
 de un procedimiento es mas corta que un procedimiento en si, igual que la funcion.*/
-tipo_declaracion    ::= declaracion_variable tipo_declaracion
-                    | declaracion_variable
-                    | declaracion_function tipo_declaracion
-                    | declaracion_function
-                    | declaracion_procedure tipo_declaracion
-                    | declaracion_procedure
+tipo_declaracion    ::= declarar_variable tipo_declaracion
+                    | declarar_variable
+                    | declarar_funcion tipo_declaracion
+                    | declarar_funcion
+                    | declarar_procedimiento tipo_declaracion
+                    | declarar_procedimiento
                     | funcion tipo_declaracion
                     | funcion
                     | procedimiento tipo_declaracion
                     | procedimiento
                     ;
+
+// Estos son los tipos de variable que se permiten en el programa.
+tipo_variable   ::= INT
+                | FLOAT
+                | BOOLEAN 
+                | STRING
+                | CHAR
+                | error 
+                ;
 
 
                         
