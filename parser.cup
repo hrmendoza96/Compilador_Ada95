@@ -11,7 +11,7 @@ terminal STRING,CHAR;
 
 // No Terminales
 non terminal cuerpo_principal, comienza_cuerpo_principal;
-non terminal parametros, datos_parametros, tipo_parametro, tipo_declaracion;
+non terminal parametros, datos_parametros, tipo_parametro, tipo_declaracion, declarar_procedimiento, declarar_funcion, declarar_variable;
 non terminal tipo_variable, listar_ids;
 non terminal codigo;
 non terminal asignacion;
@@ -26,22 +26,19 @@ cuerpo_principal    ::= PROCEDURE ID parametros IS comienza_cuerpo_principal
                     | error ID parametros IS comienza_cuerpo_principal
                     | PROCEDURE error parametros IS comienza_cuerpo_principal
                     | PROCEDURE ID parametros error comienza_cuerpo_principal
-                    | FUNCTION error parametros IS comienza_cuerpo_principal
-                    | FUNCTION ID parametros error comienza_cuerpo_principal
+                    | error ID parametros RETURN tipo_variable IS comienza_cuerpo_principal
+                    | FUNCTION error parametros RETURN tipo_variable IS comienza_cuerpo_principal
+                    | FUNCTION ID parametros error tipo_variable IS comienza_cuerpo_principal
+                    | FUNCTION ID parametros RETURN tipo_variable error comienza_cuerpo_principal
                     ; 
 
 /*Este es el área donde comenzará el codigo del programa.
 Nuevamente se declaran las formas correctas primero seguido de las formas con errores.*/
 comienza_cuerpo_principal   ::= tipo_declaracion BEGIN codigo END ID SEMICOLON
-                            | BEGIN codigo ID SEMICOLON
                             | tipo_declaracion error codigo END ID SEMICOLON
                             | tipo_declaracion BEGIN codigo error ID SEMICOLON
                             | tipo_declaracion BEGIN codigo END error SEMICOLON
                             | tipo_declaracion BEGIN codigo END ID error
-                            | error codigo END ID SEMICOLON
-                            | BEGIN codigo error ID SEMICOLON
-                            | BEGIN codigo END error SEMICOLON
-                            | BEGIN codigo END ID error
                             ;
 /*Esta es la forma en la que ese presenta el código. Se podrá poner cualquiera de estas opciones
 para comenzar a declarar código.*/
@@ -109,7 +106,38 @@ tipo_declaracion    ::= declarar_variable tipo_declaracion
                     | funcion
                     | procedimiento tipo_declaracion
                     | procedimiento
+                    |
                     ;
+
+/*Aquí declaramos un procedimiento y luego están las versiones con error.*/
+declarar_procedimiento  ::= PROCEDURE ID parametros SEMICOLON
+                        | error ID parametros SEMICOLON
+                        | PROCEDURE error parametros SEMICOLON
+                        | PROCEDURE ID paramateros error
+                        ;
+
+procedimiento   ::= PROCEDURE ID parametros IS tipo_declaracion BEGIN codigo END ID SEMICOLON
+                | 
+                ;
+
+
+declarar_funcion    ::= FUNCTION ID parametros RETURN tipo_variable SEMICOLON
+                    | FUNCTION error parametros RETURN tipo_variable SEMICOLON
+                    ;
+
+funcion ::=
+        ;
+
+/*Aquí tenemos la opción de declarara una o más variables. Luego están las versiones
+con errores.*/
+declarar_variable   ::= ID COMA declarar_variable
+                    | ID DECLARACION tipo_variable SEMICOLON
+                    | ID error declarar_variable
+                    | ID error tipo_variable SEMICOLON
+                    | ID DECLARACION tipo_variable error
+                    ;
+
+
 
 // Estos son los tipos de variable que se permiten en el programa.
 tipo_variable   ::= INT
