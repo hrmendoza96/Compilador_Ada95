@@ -15,8 +15,8 @@ non terminal parametros, datos_parametros, tipo_parametro, tipo_declaracion, dec
 non terminal tipo_variable, listar_ids;
 non terminal codigo;
 non terminal condicion, operando, expresion_booleana;
-non terminal ciclo_loop, tipo_loop, ciclo_for, ciclo_while, salir_ciclo, bloque_if, bloque_elsif, bloque_else;
-non terminal asignacion;
+non terminal ciclo_loop, tipo_loop, ciclo_for, ciclo_while, salir_ciclo, bloque_if, bloque_elsif, bloque_else, procedimiento;
+non terminal asignacion,get,put,put_line;
 
 // Gramatica
 
@@ -66,7 +66,7 @@ codigo  ::= ciclo_for codigo
 
 /*Estos son los parámetros para procedimientos y funciones.
 Primero se declara la forma correcta seguido de las producciones de error.*/
-paramateros     ::=  PARIZQ datos_parametros PARDER
+parametros     ::=  PARIZQ datos_parametros PARDER
                 |
                 | error datos_parametros PARDER
                 | PARIZQ datos_parametros error
@@ -115,7 +115,7 @@ tipo_declaracion    ::= declarar_variable tipo_declaracion
 declarar_procedimiento  ::= PROCEDURE ID parametros SEMICOLON
                         | error ID parametros SEMICOLON
                         | PROCEDURE error parametros SEMICOLON
-                        | PROCEDURE ID paramateros error
+                        | PROCEDURE ID parametros error
                         ;
 
 procedimiento   ::= PROCEDURE ID parametros IS tipo_declaracion BEGIN codigo END ID SEMICOLON
