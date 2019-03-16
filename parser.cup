@@ -1,8 +1,8 @@
 import java_cup.runtime.*;
 
 // Terminales
-terminal PROCEDURE,FUNCTION,RETURN,ARRAY,CONSTANT,IS,DECLARE,BEGIN,END,IF,THEN,ELSE,ELSIF,FOR,IN,OUT,WHILE,LOOP;
-terminal DO,AND,OR,XOR,NOT,MOD,EXPONENTES,FALSE,TRUE,EXIT,WHEN,PRIVATE,PROTECTED,NULL,GET,PUT,PUT_LINE, RANGE, OF;
+terminal PROCEDURE, FUNCTION, RETURN, ARRAY, CONSTANT, IS, BEGIN, END, IF, THEN, ELSE, ELSIF, FOR, IN, OUT, WHILE, LOOP;
+terminal AND,OR,XOR,EXPONENTES,FALSE,TRUE,EXIT,WHEN,NULL,GET,PUT,PUT_LINE, RANGE, OF;
 terminal INTEGER,FLOAT,BOOLEAN,CHARACTER,STRINGTYPE;
 terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,CAJA,SEMICOLON,COMA, DOSPUNTOS;
 terminal String ID;
@@ -19,6 +19,11 @@ non terminal condicion, operando, expresion_booleana;
 non terminal ciclo_loop, ciclo_for, ciclo_while, salir_ciclo, bloque_if, bloque_elsif, bloque_else, procedimiento;
 non terminal expresion_aritmetica, T, E, F;
 non terminal asignacion,get,put,put_line;
+
+// Precedencia de Operadores - de menor a mayor
+precedence left OPREL;
+precedence left OPSUMA;
+precedence left OPMULTIPLICACION;
 
 // Gramatica
 
@@ -153,6 +158,11 @@ asignacion  ::= ID COMA asignacion
             | ID DECLARACION tipo_variable ASIGNACION FALSE
             | ID DECLARACION tipo_variable ASIGNACION STRING
             | ID DECLARACION tipo_variable ASIGNACION CHAR
+            | ID DECLARACION CONSTANT tipo_variable ASIGNACION expresion_aritmetica
+            | ID DECLARACION CONSTANT tipo_variable ASIGNACION TRUE
+            | ID DECLARACION CONSTANT tipo_variable ASIGNACION FALSE
+            | ID DECLARACION CONSTANT tipo_variable ASIGNACION STRING
+            | ID DECLARACION CONSTANT tipo_variable ASIGNACION CHAR
             ;
 
 /*OPERACIONES ARITMETICA POST ORDER*/
@@ -181,14 +191,14 @@ tipo_variable   ::= INTEGER
                 ;
 
 
-
-/*TODO: MANEJO DE ERRORES*/
-
-
 /*================================BLOQUE IF======================================*/
 /*BLOQUE IF: Estructura de un bloque if que internamente manda a llamar non terminales de
 bloque elseif y del bloque else.*/
 bloque_if   ::= IF condicion THEN codigo bloque_elsif bloque_else END IF SEMICOLON
+            | IF condicion error codigo bloque_elsif bloque_else END IF 
+            | IF condicion THEN codigo bloque_elsif bloque_else error IF SEMICOLON
+            | IF condicion THEN codigo bloque_elsif bloque_else END error SEMICOLON
+            | IF condicion THEN codigo bloque_elsif bloque_else END IF error
             ;
 
 //CONDICION = Condicion interna para los ifs y los ciclos loop y while.
@@ -196,6 +206,7 @@ condicion   ::= expresion_booleana OR condicion
             | expresion_booleana AND condicion
             | expresion_booleana XOR condicion
             | expresion_booleana
+            | error
             ;
 
 //EXPRESION BOOLEANA: Expresion booleana en el que se comparan dos operandos con un operador relacional.
@@ -206,12 +217,15 @@ expresion_booleana  ::= operando OPREL operando
 operando    ::= NUM
             | ID
             | funcion
+            | NULL
+            | error
             ;
 
 /*Bloque ELSEIF y Bloque ELSE que vienen del bloque if. Este puede incluir vacio ya que
 no en todos los ifs se requiere un bloque else if.*/
 bloque_elsif    ::= ELSIF condicion THEN codigo bloque_elsif
                 |
+                | ELSIF condicion error codigo bloque_elsif
                 ;
 
 bloque_else ::= ELSE codigo
@@ -222,15 +236,31 @@ bloque_else ::= ELSE codigo
 /*==========================================CICLOS=====================================*/
 /* Ciclos LOOP, While, y For */
 ciclo_loop  ::= LOOP codigo salir_ciclo END LOOP SEMICOLON
+            | LOOP codigo salir_ciclo error LOOP SEMICOLON
+		    | LOOP codigo salir_ciclo END LOOP error
             ;
 
 ciclo_while ::= WHILE condicion LOOP codigo salir_ciclo END LOOP SEMICOLON
+            | WHILE condicion error codigo salir_ciclo END LOOP SEMICOLON
+            | WHILE condicion LOOP codigo salir_ciclo error LOOP SEMICOLON
+            | WHILE condicion LOOP codigo salir_ciclo END error SEMICOLON
+            | WHILE condicion LOOP codigo salir_ciclo END LOOP error
             ;
 
 ciclo_for   ::= FOR ID IN NUM DOSPUNTOS NUM LOOP codigo salir_ciclo END LOOP SEMICOLON
+            | FOR error IN NUM DOSPUNTOS NUM LOOP codigo salir_ciclo END LOOP SEMICOLON
+            | FOR ID error NUM DOSPUNTOS NUM LOOP codigo salir_ciclo END LOOP SEMICOLON
+            | FOR ID IN error DOSPUNTOS NUM LOOP codigo salir_ciclo END LOOP SEMICOLON
+            | FOR ID IN NUM error NUM LOOP codigo salir_ciclo END LOOP SEMICOLON
+            | FOR ID IN NUM DOSPUNTOS error LOOP codigo salir_ciclo END LOOP SEMICOLON
+            | FOR ID IN NUM DOSPUNTOS NUM error codigo salir_ciclo END LOOP SEMICOLON
+            | FOR ID IN NUM DOSPUNTOS NUM LOOP codigo salir_ciclo error LOOP SEMICOLON
+            | FOR ID IN NUM DOSPUNTOS NUM LOOP codigo salir_ciclo END error SEMICOLON
+            | FOR ID IN NUM DOSPUNTOS NUM LOOP codigo salir_ciclo END LOOP error
             ;
 
 salir_ciclo ::= EXIT WHEN condicion
+            | EXIT error condicion
             ;
 
 /*==========================================PUT y GET===========================================*/

@@ -42,8 +42,8 @@ ID = {letras}+({guionBajo}({letras}|{numeros})+)*
 
 // Para los numeros
 NUM= ({signoNegativo}|""){numeros}+(({punto}{numeros}+)|"")
-MOD = ("mod")
-EXPONENTES = "**"
+//MOD = ("mod")
+//EXPONENTES = "**"
 
 // Para los comentarios
 COMENTARIO = {guionesComentario}({letras}|{numeros}|" "|{signosEspeciales}|{OPREL}|{PARDER}|{PARIZQ})*
@@ -62,7 +62,7 @@ INTEGER = ("integer")
 AND = ("and")
 OR = ("OR")
 XOR = ("XOR")
-NOT = ("NOT")
+
 
 // Decisiones
 BEGIN = ("begin")
@@ -75,8 +75,6 @@ ELSIF = ("elsif")
 // Palabras Reservadas
 ARRAY = ("array")
 CONSTANT = ("constant")
-DECLARE = ("declare")
-DO = ("do")
 EXIT = ("exit")
 FUNCTION = ("function")
 GET = ("Get")
@@ -86,9 +84,7 @@ IS = ("is")
 NULL = ("null")
 OUT = ("OUT")
 RANGE = ("range")
-PRIVATE = ("private")
 PROCEDURE = ("Procedure")
-PROTECTED = ("protected")
 PUT_LINE = ("Put_Line")
 RETURN = ("return")
 STRINGTYPE = ("String")
@@ -112,7 +108,6 @@ LOOP = ("loop")
     {ARRAY} { return new Symbol(sym.ARRAY, yycolumn, yyline, yytext()); }
     {CONSTANT} { return new Symbol(sym.CONSTANT, yycolumn, yyline, yytext()); }
     {IS} { return new Symbol(sym.IS, yycolumn, yyline, yytext()); }
-    {DECLARE} { return new Symbol(sym.DECLARE, yycolumn, yyline, yytext()); }
     {BEGIN} { return new Symbol(sym.BEGIN, yycolumn, yyline, yytext()); }
     {END} { return new Symbol(sym.END, yycolumn, yyline, yytext()); }
     {IF} { return new Symbol(sym.IF, yycolumn, yyline, yytext()); }
@@ -124,19 +119,13 @@ LOOP = ("loop")
     {OUT} { return new Symbol(sym.OUT, yycolumn, yyline, yytext()); }
     {WHILE} { return new Symbol(sym.WHILE, yycolumn, yyline, yytext()); }
     {LOOP} { return new Symbol(sym.LOOP, yycolumn, yyline, yytext()); }
-    {DO} { return new Symbol(sym.DO, yycolumn, yyline, yytext()); }
     {AND} { return new Symbol(sym.AND, yycolumn, yyline, yytext()); }
     {OR} { return new Symbol(sym.OR, yycolumn, yyline, yytext()); }
     {XOR} { return new Symbol(sym.XOR, yycolumn, yyline, yytext()); }
-    {NOT} { return new Symbol(sym.NOT, yycolumn, yyline, yytext()); }
-    {MOD} { return new Symbol(sym.MOD, yycolumn, yyline, yytext()); }
-    {EXPONENTES} { return new Symbol(sym.EXPONENTES, yycolumn, yyline, yytext()); }
     {FALSE} { return new Symbol(sym.FALSE, yycolumn, yyline, yytext()); }
     {TRUE} { return new Symbol(sym.TRUE, yycolumn, yyline, yytext()); }
     {EXIT} { return new Symbol(sym.EXIT, yycolumn, yyline, yytext()); }
     {WHEN} { return new Symbol(sym.WHEN, yycolumn, yyline, yytext()); }
-    {PRIVATE} { return new Symbol(sym.PRIVATE, yycolumn, yyline, yytext()); }
-    {PROTECTED} { return new Symbol(sym.PROTECTED, yycolumn, yyline, yytext()); }
     {NULL} { return new Symbol(sym.NULL, yycolumn, yyline, yytext()); }
     {RANGE} { return new Symbol(sym.RANGE, yycolumn, yyline, yytext()); }
     {OF} { return new Symbol(sym.OF, yycolumn, yyline, yytext()); }
