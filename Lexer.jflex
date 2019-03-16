@@ -85,6 +85,7 @@ IN = ("in")
 IS = ("is")
 NULL = ("null")
 OUT = ("OUT")
+RANGE = ("range")
 PRIVATE = ("private")
 PROCEDURE = ("Procedure")
 PROTECTED = ("protected")
@@ -94,6 +95,7 @@ STRINGTYPE = ("String")
 TRUE = ("true")
 FALSE = ("false")
 WHEN = ("when")
+OF = ("of")
 
 // For, While y Loop
 FOR = ("for")
@@ -128,7 +130,7 @@ LOOP = ("loop")
     {XOR} { return new Symbol(sym.XOR, yycolumn, yyline, yytext()); }
     {NOT} { return new Symbol(sym.NOT, yycolumn, yyline, yytext()); }
     {MOD} { return new Symbol(sym.MOD, yycolumn, yyline, yytext()); }
-    {EXPONENTES} { return new EXPONENTES(sym.MOD, yycolumn, yyline, yytext()); }
+    {EXPONENTES} { return new Symbol(sym.EXPONENTES, yycolumn, yyline, yytext()); }
     {FALSE} { return new Symbol(sym.FALSE, yycolumn, yyline, yytext()); }
     {TRUE} { return new Symbol(sym.TRUE, yycolumn, yyline, yytext()); }
     {EXIT} { return new Symbol(sym.EXIT, yycolumn, yyline, yytext()); }
@@ -136,6 +138,9 @@ LOOP = ("loop")
     {PRIVATE} { return new Symbol(sym.PRIVATE, yycolumn, yyline, yytext()); }
     {PROTECTED} { return new Symbol(sym.PROTECTED, yycolumn, yyline, yytext()); }
     {NULL} { return new Symbol(sym.NULL, yycolumn, yyline, yytext()); }
+    {RANGE} { return new Symbol(sym.RANGE, yycolumn, yyline, yytext()); }
+    {OF} { return new Symbol(sym.OF, yycolumn, yyline, yytext()); }
+
 
     {GET} { return new Symbol(sym.GET, yycolumn, yyline, yytext()); }
     {PUT} { return new Symbol(sym.PUT, yycolumn, yyline, yytext()); }

@@ -2,7 +2,7 @@ import java_cup.runtime.*;
 
 // Terminales
 terminal PROCEDURE,FUNCTION,RETURN,ARRAY,CONSTANT,IS,DECLARE,BEGIN,END,IF,THEN,ELSE,ELSIF,FOR,IN,OUT,WHILE,LOOP;
-terminal DO,AND,OR,XOR,NOT,MOD,EXPONENTES,FALSE,TRUE,EXIT,WHEN,PRIVATE,PROTECTED,NULL,GET,PUT,PUT_LINE;
+terminal DO,AND,OR,XOR,NOT,MOD,EXPONENTES,FALSE,TRUE,EXIT,WHEN,PRIVATE,PROTECTED,NULL,GET,PUT,PUT_LINE, RANGE, OF;
 terminal INTEGER,FLOAT,BOOLEAN,CHARACTER,STRINGTYPE;
 terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,CAJA,SEMICOLON,COMA, DOSPUNTOS;
 terminal String ID;
@@ -12,10 +12,12 @@ terminal STRING,CHAR;
 // No Terminales
 non terminal cuerpo_principal, comienza_cuerpo_principal;
 non terminal parametros, datos_parametros, tipo_parametro, tipo_declaracion, declarar_procedimiento, declarar_funcion, llamar_funcion, funcion, declarar_variable;
+non terminal declaracion_arreglo, dimension_arreglo;
 non terminal tipo_variable, listar_ids;
 non terminal codigo;
 non terminal condicion, operando, expresion_booleana;
-non terminal ciclo_loop, tipo_loop, ciclo_for, ciclo_while, salir_ciclo, bloque_if, bloque_elsif, bloque_else, procedimiento;
+non terminal ciclo_loop, ciclo_for, ciclo_while, salir_ciclo, bloque_if, bloque_elsif, bloque_else, procedimiento;
+non terminal expresion_aritmetica, T, E, F;
 non terminal asignacion,get,put,put_line;
 
 // Gramatica
@@ -67,7 +69,7 @@ codigo  ::= ciclo_for codigo
 /*Estos son los parámetros para procedimientos y funciones.
 Primero se declara la forma correcta seguido de las producciones de error.*/
 parametros     ::=  PARIZQ datos_parametros PARDER
-                |
+                | PARIZQ PARDER
                 | PARIZQ datos_parametros error
                 ;
 
@@ -107,6 +109,8 @@ tipo_declaracion    ::= declarar_variable tipo_declaracion
                     | llamar_funcion
                     | procedimiento tipo_declaracion
                     | procedimiento
+                    | declaracion_arreglo tipo_declaracion
+                    | declaracion_arreglo
                     ;
 
 /*Aquí declaramos un procedimiento y luego están las versiones con error.*/
@@ -132,6 +136,7 @@ llamar_funcion  ::= funcion SEMICOLON
 funcion ::= ID parametros
         ;
 
+
 /*Aquí tenemos la opción de declarara una o más variables. Luego están las versiones
 con errores.*/
 declarar_variable   ::= ID COMA declarar_variable
@@ -143,13 +148,27 @@ declarar_variable   ::= ID COMA declarar_variable
 
 /*Asignación de un valor a una variable*/
 asignacion  ::= ID COMA asignacion
-            | ID DECLARACION tipo_variable ASIGNACION NUM
+            | ID DECLARACION tipo_variable ASIGNACION expresion_aritmetica
             | ID DECLARACION tipo_variable ASIGNACION TRUE
             | ID DECLARACION tipo_variable ASIGNACION FALSE
             | ID DECLARACION tipo_variable ASIGNACION STRING
             | ID DECLARACION tipo_variable ASIGNACION CHAR
             ;
 
+/*OPERACIONES ARITMETICA POST ORDER*/
+expresion_aritmetica    ::= E 
+                        ;
+E   ::= OPSUMA T E 
+    | T 
+    ;
+
+T   ::= OPMULTIPLICACION F T
+    | F
+    ;
+
+F   ::= NUM 
+    | PARIZQ expresion_aritmetica PARDER 
+    ;
 
 
 // Estos son los tipos de variable que se permiten en el programa.
@@ -201,12 +220,18 @@ bloque_else ::= ELSE codigo
 
 
 /*==========================================CICLOS=====================================*/
-/* Ciclo LOOP */
+/* Ciclos LOOP, While, y For */
 ciclo_loop  ::= LOOP codigo salir_ciclo END LOOP SEMICOLON
-            | WHILE condicion codigo salir_ciclo END LOOP SEMICOLON
-            | FOR ID IN NUM DOSPUNTOS NUM codigo salir_ciclo END LOOP SEMICOLON
             ;
 
+ciclo_while ::= WHILE condicion LOOP codigo salir_ciclo END LOOP SEMICOLON
+            ;
+
+ciclo_for   ::= FOR ID IN NUM DOSPUNTOS NUM LOOP codigo salir_ciclo END LOOP SEMICOLON
+            ;
+
+salir_ciclo ::= EXIT WHEN condicion
+            ;
 
 /*==========================================PUT y GET===========================================*/
 put ::= PUT PARIZQ NUM PARDER SEMICOLON
@@ -220,14 +245,41 @@ put ::= PUT PARIZQ NUM PARDER SEMICOLON
 	| PUT PARIZQ NUM PARDER error
 	;
 
+put_line ::= PUT_LINE PARIZQ NUM PARDER SEMICOLON
+	| PUT_LINE PARIZQ STRING PARDER SEMICOLON
+    | PUT_LINE PARIZQ CHAR PARDER SEMICOLON
+    | PUT_LINE PARIZQ TRUE PARDER SEMICOLON
+    | PUT_LINE PARIZQ FALSE PARDER SEMICOLON
+	| PUT_LINE error NUM PARDER SEMICOLON
+	| PUT_LINE PARIZQ error PARDER SEMICOLON
+	| PUT_LINE PARIZQ NUM error SEMICOLON
+	| PUT_LINE PARIZQ NUM PARDER error
+	;
+
 get ::= GET PARIZQ ID PARDER SEMICOLON
-	/* PRODUCCIONES ERROR */
 	| GET error ID PARDER SEMICOLON
 	| GET PARIZQ error PARDER SEMICOLON
 	| GET PARIZQ ID error SEMICOLON
 	| GET PARIZQ ID PARDER error
 	;
 
+/*==================================================ARREGLOS=========================================*/
+declaracion_arreglo ::= ID DECLARACION ARRAY PARIZQ dimension_arreglo PARDER OF tipo_variable SEMICOLON
+			        | ID error ARRAY PARIZQ dimension_arreglo PARDER OF tipo_variable SEMICOLON
+			        | ID DECLARACION error PARIZQ dimension_arreglo PARDER OF tipo_variable SEMICOLON
+			        | ID DECLARACION ARRAY error dimension_arreglo PARDER OF tipo_variable SEMICOLON
+			        | ID DECLARACION ARRAY PARIZQ dimension_arreglo error OF tipo_variable SEMICOLON
+			        | ID DECLARACION ARRAY PARIZQ dimension_arreglo PARDER error tipo_variable SEMICOLON
+			        | ID DECLARACION ARRAY PARIZQ dimension_arreglo PARDER OF tipo_variable error
+			        ;
+
+dimension_arreglo   ::= tipo_variable COMA dimension_arreglo 
+                    | tipo_variable
+                    | NUM DOSPUNTOS NUM COMA dimension_arreglo 
+                    | NUM DOSPUNTOS NUM
+                    | tipo_variable RANGE CAJA
+                    | tipo_variable RANGE error
+                    ;
 
                         
                     
