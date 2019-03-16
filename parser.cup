@@ -119,7 +119,6 @@ declarar_procedimiento  ::= PROCEDURE ID parametros SEMICOLON
                         ;
 
 procedimiento   ::= PROCEDURE ID parametros IS tipo_declaracion BEGIN codigo END ID SEMICOLON
-                | 
                 ;
 
 
