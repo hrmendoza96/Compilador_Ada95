@@ -68,7 +68,6 @@ codigo  ::= ciclo_for codigo
 Primero se declara la forma correcta seguido de las producciones de error.*/
 parametros     ::=  PARIZQ datos_parametros PARDER
                 |
-                | error datos_parametros PARDER
                 | PARIZQ datos_parametros error
                 ;
 
@@ -108,18 +107,15 @@ tipo_declaracion    ::= declarar_variable tipo_declaracion
                     | llamar_funcion
                     | procedimiento tipo_declaracion
                     | procedimiento
-                    |
                     ;
 
 /*Aquí declaramos un procedimiento y luego están las versiones con error.*/
 declarar_procedimiento  ::= PROCEDURE ID parametros SEMICOLON
-                        | error ID parametros SEMICOLON
                         | PROCEDURE error parametros SEMICOLON
                         | PROCEDURE ID parametros error
                         ;
 
 procedimiento   ::= PROCEDURE ID parametros IS tipo_declaracion BEGIN codigo END ID SEMICOLON
-                | 
                 ;
 
 
@@ -206,22 +202,11 @@ bloque_else ::= ELSE codigo
 
 /*==========================================CICLOS=====================================*/
 /* Ciclo LOOP */
-ciclo_loop  ::= tipo_loop LOOP codigo salir_ciclo END LOOP SEMICOLON
+ciclo_loop  ::= LOOP codigo salir_ciclo END LOOP SEMICOLON
+            | WHILE condicion codigo salir_ciclo END LOOP SEMICOLON
+            | FOR ID IN NUM DOSPUNTOS NUM codigo salir_ciclo END LOOP SEMICOLON
             ;
 
-/*Identifica si el tipo de loop  es while, for, o vacio (lo cual indica que es un loop normal).*/
-tipo_loop   ::= ciclo_while
-            | ciclo_for
-            |
-            ;
-
-/* Ciclo WHILE: Identifica que es un while, y luego regresa al ciclo_loop porque mantiene la misma estructura del padre. */
-ciclo_while ::= WHILE condicion
-            ;
-
-/* Ciclo FOR: Identifica que es un for, y luego regresa al ciclo_loop porque mantiene la misma estructura del padre. */
-ciclo_for   ::= FOR ID IN NUM DOSPUNTOS NUM
-            ;
 
 /*==========================================PUT y GET===========================================*/
 put ::= PUT PARIZQ NUM PARDER SEMICOLON

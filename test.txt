@@ -1,0 +1,4 @@
+procedure Example is
+begin
+  a := 10;
+end Example;
