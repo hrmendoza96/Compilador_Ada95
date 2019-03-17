@@ -165,5 +165,7 @@ LOOP = ("loop")
     {COMENTARIO} {}
     {espacios} {}
 
-    . { System.out.println("Error lexico : " + yytext() + " en la linea: " + (yyline+1) + " y columna " + (yycolumn+1)); }
+    . { System.out.println("Error lexico : " + yytext() + " en la linea: " + (yyline+1) + " y columna " + (yycolumn+1));
+        ErroresLexicos.add("Error lexico : " + yytext() + " en la linea: " + (yyline+1) + " y columna " + (yycolumn+1));
+     }
 }

@@ -1,13 +1,17 @@
-with Ada.Text_IO; use Ada.Text_IO;
-procedure Enums is
-  type Suit is (Hearts, Diamonds, Spades, Clubs);
-  type Direction is (East, West, North, South, Lost);
-  X : Suit;
-  I : Integer := east + west;
+procedure f_1 is
+   -- A small function.
+   function Sumsqr(X, Y: Integer) return Integer is
+   begin
+      return X*X + Y*Y;
+   end;
+
+   -- How 'bout a nice, tender variable?
+   I: Integer;
 begin
-  X := East;
-  X := X + West;
-  if X /= West then
-     Put_Line (Integer'Image (Integer (X)));
-  end if;
-end Enums;
+   I := Sumsqr(3, 14);
+   Put(I);
+   New_Line;
+
+   Put(Sumsqr(I, 4));
+   New_Line;
+end f1;

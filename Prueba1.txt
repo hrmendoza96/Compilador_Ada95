@@ -1,13 +1,4 @@
---  file: ast3-eval.adb
---  ($Id$)
-
---  Evaluate abstract syntax tree for simple expression.
-
-with Scanner 2; use Scanner2;
-with Ada.Exceptions;
-with Ada.Text_IO; use Ada.Text_IO;
-with Ast3; use Ast3;
-function Ast3.Eval (Tree : AST) return Integer is
+function Ast (Tree : AST) return Integer is
    function Evl (Tree : Ast_Ptr) return Integer is
    begin
      if Tree.Is_Leaf then return Tree.Val; end if;
@@ -23,5 +14,5 @@ function Ast3.Eval (Tree : AST) return Integer is
    end Evl;
 begin
    return Evl (Tree.AST);
-end Ast3.Eval;
+end Ast;
 

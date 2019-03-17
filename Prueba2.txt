@@ -1,13 +1,40 @@
---  file: stacks.ads
+procedure Calc is
+   Op: Character;               
+   Disp: Integer := 0;          
+   In_Val: Integer;             
+begin
+   loop
+      -- Print the display.
+      Put(Disp);
+      New_Line;
 
-package Stacks is
-   type Stack is private;
-   procedure Push (Item : Character; On : in out Stack);
-   procedure Pop (Item : out Character; From : in out Stack);
-   function Is_Empty (S : Stack) return Boolean;
-private
-  type Stack is record
-     top : Integer := 0;
-     Contents : String (1 .. 80) := (others => '*');
-  end record;
-end Stacks;
+      -- Promt the user.
+      Put("> ");
+
+      -- Skip leading blanks and read the operation.
+      loop
+         Get(Op);
+         exit when Op /= ' ';
+      end loop;
+
+      -- Stop when we're s'posed to.
+      exit when Op = 'Q' or Op = 'q';
+
+      -- Read the integer value (skips leading blanks) and discard the
+      -- remainder of the line.
+      Get(In_Val);
+      Text_IO.Skip_Line;
+
+      -- Apply the correct operation.
+      case Op is
+         when '='      => Disp := In_Val;
+         when '+'      => Disp := Disp + In_Val;
+         when '-'      => Disp := Disp - In_Val;
+         when '*'      => Disp := Disp * In_Val;
+         when '/'      => Disp := Disp / In_Val;
+         when '^'      => Disp := Disp ** In_Val;
+         when '0'..'9' => Put_Line("Please specify an operation.");
+         when others   => Put_Line("What is " & Op & "?");
+      end case;
+   end loop;
+end Calc;
