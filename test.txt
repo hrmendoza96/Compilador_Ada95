@@ -1,4 +1,13 @@
-procedure Example is
+procedure f_1 () is
+   -- A small function.
+   function Sumsqr(X, Y: Integer) return Integer is
+   begin
+      a : Integer := 10;
+      put(a);
+   end Sumsqr;
+  
+   -- How 'bout a nice, tender variable?
+   I: Integer;
 begin
-  a := 10;
-end Example;
+   I := + 3 4;
+end f_1;

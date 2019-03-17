@@ -1,4 +1,24 @@
 import java_cup.runtime.*;
+import java.util.ArrayList;
+
+
+parser code
+{:
+    public int cont = 0;
+    
+    public void syntax_error (Symbol s) {
+        System.out.println("Error de sintaxis " + s.value + " Linea: " + (s.right+1) + " Columna: " + (s.left+1));
+    }
+
+    public void unrecovered_syntax_error (Symbol s) throws java.lang.Exception {
+        System.out.println("Error NR de sintaxis " + s.value + " Linea: " + (s.right+1) + " Columna: " + (s.left+1));
+    }
+
+:}
+
+
+
+
 
 // Terminales
 terminal PROCEDURE, FUNCTION, RETURN, ARRAY, CONSTANT, IS, BEGIN, END, IF, THEN, ELSE, ELSIF, FOR, IN, OUT, WHILE, LOOP;
@@ -27,23 +47,20 @@ precedence left OPMULTIPLICACION;
 
 // Gramatica
 
+start with cuerpo_principal;
+
 /* Cuerpo principal contiene el procedimiento o la funcion principal.
 Declaramos primero un procedure y una function en su forma principal, seguidamente
 se declaran las posiciones en las que se podrian encontrar errores.*/
-cuerpo_principal    ::= PROCEDURE ID parametros IS comienza_cuerpo_principal
+cuerpo_principal    ::= PROCEDURE ID parametros IS comienza_cuerpo_principal 
                     | FUNCTION ID parametros RETURN tipo_variable IS comienza_cuerpo_principal
-                    | error ID parametros IS comienza_cuerpo_principal
-                    | PROCEDURE error parametros IS comienza_cuerpo_principal
-                    | PROCEDURE ID parametros error comienza_cuerpo_principal
-                    | error ID parametros RETURN tipo_variable IS comienza_cuerpo_principal //quitar esto
-                    | FUNCTION error parametros RETURN tipo_variable IS comienza_cuerpo_principal
-                    | FUNCTION ID parametros error tipo_variable IS comienza_cuerpo_principal
-                    | FUNCTION ID parametros RETURN tipo_variable error comienza_cuerpo_principal
                     ; 
 
 /*Este es el área donde comenzará el codigo del programa.
 Nuevamente se declaran las formas correctas primero seguido de las formas con errores.*/
 comienza_cuerpo_principal   ::= tipo_declaracion BEGIN codigo END ID SEMICOLON
+                            | asignacion BEGIN codigo END ID SEMICOLON
+                            | BEGIN codigo END ID SEMICOLON
                             | tipo_declaracion error codigo END ID SEMICOLON
                             | tipo_declaracion BEGIN codigo error ID SEMICOLON
                             | tipo_declaracion BEGIN codigo END error SEMICOLON
@@ -128,8 +145,8 @@ procedimiento   ::= PROCEDURE ID parametros IS tipo_declaracion BEGIN codigo END
                 ;
 
 
-declarar_funcion    ::= FUNCTION ID parametros RETURN tipo_variable SEMICOLON
-                    | FUNCTION error parametros RETURN tipo_variable SEMICOLON
+declarar_funcion    ::= FUNCTION ID parametros RETURN tipo_variable IS tipo_declaracion BEGIN codigo END ID SEMICOLON
+                    | FUNCTION ID parametros RETURN tipo_variable IS BEGIN codigo END ID SEMICOLON
                     ;
 
 /*Llamar Funcion: Estructura de la funcion + el Punto y Coma
@@ -146,23 +163,26 @@ funcion ::= ID parametros
 con errores.*/
 declarar_variable   ::= ID COMA declarar_variable
                     | ID DECLARACION tipo_variable SEMICOLON
-                    | ID error declarar_variable
-                    | ID error tipo_variable SEMICOLON
-                    | ID DECLARACION tipo_variable error
+                    | ID error
                     ;
 
 /*Asignación de un valor a una variable*/
 asignacion  ::= ID COMA asignacion
-            | ID DECLARACION tipo_variable ASIGNACION expresion_aritmetica
-            | ID DECLARACION tipo_variable ASIGNACION TRUE
-            | ID DECLARACION tipo_variable ASIGNACION FALSE
-            | ID DECLARACION tipo_variable ASIGNACION STRING
-            | ID DECLARACION tipo_variable ASIGNACION CHAR
-            | ID DECLARACION CONSTANT tipo_variable ASIGNACION expresion_aritmetica
-            | ID DECLARACION CONSTANT tipo_variable ASIGNACION TRUE
-            | ID DECLARACION CONSTANT tipo_variable ASIGNACION FALSE
-            | ID DECLARACION CONSTANT tipo_variable ASIGNACION STRING
-            | ID DECLARACION CONSTANT tipo_variable ASIGNACION CHAR
+            | ID DECLARACION tipo_variable ASIGNACION expresion_aritmetica SEMICOLON
+            | ID DECLARACION tipo_variable ASIGNACION TRUE SEMICOLON
+            | ID DECLARACION tipo_variable ASIGNACION FALSE SEMICOLON
+            | ID DECLARACION tipo_variable ASIGNACION STRING SEMICOLON
+            | ID DECLARACION tipo_variable ASIGNACION CHAR SEMICOLON
+            | ID ASIGNACION expresion_aritmetica SEMICOLON
+            | ID ASIGNACION TRUE SEMICOLON
+            | ID ASIGNACION FALSE SEMICOLON
+            | ID ASIGNACION STRING SEMICOLON
+            | ID ASIGNACION CHAR SEMICOLON
+            | ID DECLARACION CONSTANT tipo_variable ASIGNACION expresion_aritmetica SEMICOLON
+            | ID DECLARACION CONSTANT tipo_variable ASIGNACION TRUE SEMICOLON
+            | ID DECLARACION CONSTANT tipo_variable ASIGNACION FALSE SEMICOLON
+            | ID DECLARACION CONSTANT tipo_variable ASIGNACION STRING SEMICOLON
+            | ID DECLARACION CONSTANT tipo_variable ASIGNACION CHAR SEMICOLON
             ;
 
 /*OPERACIONES ARITMETICA POST ORDER*/
@@ -269,6 +289,7 @@ put ::= PUT PARIZQ NUM PARDER SEMICOLON
     | PUT PARIZQ CHAR PARDER SEMICOLON
     | PUT PARIZQ TRUE PARDER SEMICOLON
     | PUT PARIZQ FALSE PARDER SEMICOLON
+    | PUT PARIZQ ID PARDER SEMICOLON
 	| PUT error NUM PARDER SEMICOLON
 	| PUT PARIZQ error PARDER SEMICOLON
 	| PUT PARIZQ NUM error SEMICOLON

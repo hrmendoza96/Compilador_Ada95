@@ -1,4 +1,5 @@
 import java_cup.runtime.*;
+import java.util.ArrayList;
 
 %%
 
@@ -10,9 +11,13 @@ import java_cup.runtime.*;
 %column
 %standalone
 %ignorecase 
-%eofval{
-	return new Symbol(sym.EOF,new String("Fin del archivo"));
-%eofval}
+
+
+
+%{
+    public static ArrayList<String> ErroresLexicos = new ArrayList<String>();    
+%}
+
 
 // Caracteres
 letras = [a-zA-Z] 
@@ -160,5 +165,5 @@ LOOP = ("loop")
     {COMENTARIO} {}
     {espacios} {}
 
-    . { System.out.println("-----------ERROR: [\""+yytext()+"\"] Line:["+ yyline + "], Column:[" + yycolumn+"]"); }
+    . { System.out.println("Error lexico : " + yytext() + " en la linea: " + (yyline+1) + " y columna " + (yycolumn+1)); }
 }
