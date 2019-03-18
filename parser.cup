@@ -1022,6 +1022,15 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     RESULT = nodo;
 
                     :}
+                    | asignacion tipo_declaracion
+                    {:
+                        Nodo nodo = new Nodo();
+                        nodo.setTag
+                    :}
+                    | asignacion
+                    {:
+                    
+                    :}
                     ;
 
 /*Aquí declaramos un procedimiento y luego están las versiones con error.*/
@@ -2397,7 +2406,7 @@ F   ::= ID
     {:
         Nodo nodo = new Nodo();
         nodo.setTag("F");
-        nodo.setValue("ID")
+        nodo.setValue("ID");
         nodo.setId(parser.cont);
         parser.cont++;
 
