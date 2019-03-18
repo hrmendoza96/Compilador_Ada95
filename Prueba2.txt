@@ -6,7 +6,6 @@ begin
    loop
       -- Print the display.
       Put(Disp);
-      New_Line;
 
       -- Promt the user.
       Put("> ");
@@ -18,23 +17,11 @@ begin
       end loop;
 
       -- Stop when we're s'posed to.
-      exit when Op = 'Q' or Op = 'q';
+
 
       -- Read the integer value (skips leading blanks) and discard the
       -- remainder of the line.
       Get(In_Val);
-      Text_IO.Skip_Line;
-
-      -- Apply the correct operation.
-      case Op is
-         when '='      => Disp := In_Val;
-         when '+'      => Disp := Disp + In_Val;
-         when '-'      => Disp := Disp - In_Val;
-         when '*'      => Disp := Disp * In_Val;
-         when '/'      => Disp := Disp / In_Val;
-         when '^'      => Disp := Disp ** In_Val;
-         when '0'..'9' => Put_Line("Please specify an operation.");
-         when others   => Put_Line("What is " & Op & "?");
-      end case;
+      exit when Op = 'Q' or Op = 'q';
    end loop;
 end Calc;

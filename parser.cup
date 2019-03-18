@@ -246,52 +246,7 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN codigo:child2 END 
                             /*Asignar el nodo al RESULT para continuar el recorrido*/
                             RESULT = nodo;
                             :}
-                            | asignacion:child1 BEGIN codigo:child2 END ID SEMICOLON {:
-                            /*Se crea el nodo prinicipal*/
-                            Nodo nodo = new Nodo();
-                            nodo.setTag("comienza_cuerpo_principal");
-                            nodo.setId(parser.cont);
-                            parser.cont++;
-                            
-                            /*Nuevo Nodo: TERMINAL*/
-                            Nodo nodoBegin = new Nodo();
-                            nodoBegin.setTag("BEGIN");
-                            nodoBegin.setValue(nodoBegin.toString());
-                            nodoBegin.setId(parser.cont);
-                            parser.cont++;
 
-                            /*Nuevo Nodo: TERMINAL*/
-                            Nodo nodoEnd = new Nodo();
-                            nodoEnd.setTag("END");
-                            nodoEnd.setValue(nodoEnd.toString());
-                            nodoEnd.setId(parser.cont);
-                            parser.cont++;
-
-                            /*Nuevo Nodo: TERMINAL*/
-                            Nodo nodoId = new Nodo();
-                            nodoId.setTag("ID");
-                            nodoId.setValue(nodoId.toString());
-                            nodoId.setId(parser.cont);
-                            parser.cont++;
-
-                            /*Nuevo Nodo: TERMINAL*/
-                            Nodo nodoSemicolon = new Nodo();
-                            nodoSemicolon.setTag("SEMICOLON");
-                            nodoSemicolon.setValue(nodoSemicolon.toString());
-                            nodoSemicolon.setId(parser.cont);
-                            parser.cont++;
-                            
-                            /*Se añaden los hijos*/
-                            nodo.AddHijo((Nodo) child1);
-                            nodo.AddHijo(nodoBegin);
-                            nodo.AddHijo((Nodo) child2);
-                            nodo.AddHijo(nodoEnd);
-                            nodo.AddHijo(nodoId);                   
-                            nodo.AddHijo(nodoSemicolon);
-
-                            /*Asignar el nodo al RESULT para continuar el recorrido*/
-                            RESULT = nodo;
-                            :}
                             | BEGIN codigo:child1 END ID SEMICOLON {:
                             /*Se crea el nodo prinicipal*/
                             Nodo nodo = new Nodo();
@@ -1022,14 +977,25 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     RESULT = nodo;
 
                     :}
-                    | asignacion tipo_declaracion
+                    | asignacion:child1 tipo_declaracion:child2
                     {:
                         Nodo nodo = new Nodo();
-                        nodo.setTag
+                        nodo.setTag("tipo_declaracion");
+                        nodo.setId(parser.cont);
+                        parser.cont++;
+
+                        nodo.AddHijo((Nodo) child1);
+                        nodo.AddHijo((Nodo) child2);
+                        
                     :}
-                    | asignacion
+                    | asignacion:child1
                     {:
-                    
+                        Nodo nodo = new Nodo();
+                        nodo.setTag("tipo_declaracion");
+                        nodo.setId(parser.cont);
+                        parser.cont++;
+
+                        nodo.AddHijo((Nodo) child1);
                     :}
                     ;
 
@@ -2747,6 +2713,15 @@ operando    ::= NUM {:
             
             
             :}
+            | CHAR
+            {:
+                Nodo nodo = new Nodo();
+                nodo.setTag("operando");
+                nodo.setValue("CHAR");
+                parser.cont++;
+
+                RESULT = nodo;
+            :}
             | NULL {:
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo();
@@ -2849,7 +2824,7 @@ bloque_else ::= ELSE codigo:child1 {:
 
 /*==========================================CICLOS=====================================*/
 /* Ciclos LOOP, While, y For */
-ciclo_loop  ::= LOOP codigo:child1 salir_ciclo:child2 END LOOP SEMICOLON {:
+ciclo_loop  ::= LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON {:
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo();
             nodo.setTag("ciclo_loop");
@@ -2900,7 +2875,7 @@ ciclo_loop  ::= LOOP codigo:child1 salir_ciclo:child2 END LOOP SEMICOLON {:
             :}
             ;
 
-ciclo_while ::= WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 END LOOP SEMICOLON {:
+ciclo_while ::= WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEMICOLON END LOOP SEMICOLON {:
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo();
             nodo.setTag("ciclo_while");
@@ -2960,7 +2935,7 @@ ciclo_while ::= WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 END
             :}
             ;
 
-ciclo_for   ::= FOR ID IN NUM DOSPUNTOS NUM LOOP codigo:child1 salir_ciclo:child2 END LOOP SEMICOLON{:
+ciclo_for   ::= FOR ID IN NUM DOSPUNTOS NUM LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON{:
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo();
             nodo.setTag("ciclo_for");
