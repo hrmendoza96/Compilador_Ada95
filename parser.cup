@@ -2397,7 +2397,7 @@ F   ::= ID
     {:
         Nodo nodo = new Nodo();
         nodo.setTag("F");
-        nodo.setValue("ID")
+        nodo.setValue("ID");
         nodo.setId(parser.cont);
         parser.cont++;
 

@@ -9,5 +9,5 @@ procedure f_1 () is
    -- How 'bout a nice, tender variable?
    I: Integer;
 begin
-   I := + 3 4;
+   I := 3 + 4;
 end f_1;
