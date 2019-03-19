@@ -1,4 +1,4 @@
-function Ast (Tree : AST) return Integer is
+function Ast(Tree : AST) return Integer is
    function Evl (Tree : Ast_Ptr) return Integer is
    begin
      if Tree.Is_Leaf then return Tree.Val; end if;

@@ -555,6 +555,34 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         RESULT = nodo;
 
         :}
+        | RETURN expresion_aritmetica:child1 SEMICOLON
+        {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo();
+            nodo.setTag("codigo");
+            nodo.setId(parser.cont);
+            parser.cont++;
+    
+            /*Se añaden los hijos*/
+            nodo.AddHijo((Nodo) child1);
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+        :}
+        | RETURN expresion_aritmetica:child1 
+        {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo();
+            nodo.setTag("codigo");
+            nodo.setId(parser.cont);
+            parser.cont++;
+    
+            /*Se añaden los hijos*/
+            nodo.AddHijo((Nodo) child1);
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+        :}
         ;
 
 /*Estos son los parámetros para procedimientos y funciones.
@@ -679,6 +707,15 @@ datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
 
+                    :}
+                    | expresion_aritmetica:child1 
+                    {:
+                        Nodo nodo = new Nodo();
+                        nodo.setTag("datos_parametros");
+                        nodo.setId(parser.cont);
+                        parser.cont++;
+                        
+                        nodo.AddHijo((Nodo) child1);
                     :}
                     ;
 // Aquí se definen los tipos de parámetros que pueden ser IN, OUT, IN OUT o ninguno.
@@ -2276,7 +2313,7 @@ expresion_aritmetica    ::= E:child1
                             RESULT = nodo;
                         :}
                         ;
-E   ::= T:child1 E_prima:child2 \
+E   ::= T:child1 E_prima:child2 
     {:
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo();
@@ -2418,6 +2455,17 @@ F   ::= ID
         nodo.AddHijo(nodoParder);
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+    :}
+    | llamar_funcion:child1
+    {:
+        Nodo nodo = new Nodo();
+        nodo.setTag("F");
+        nodo.setId(parser.cont);
+        parser.cont++;
+
+        nodo.AddHijo((Nodo) child1);
+
         RESULT = nodo;
     :}
     ;

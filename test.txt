@@ -1,13 +1,10 @@
-procedure f_1 () is
-   -- A small function.
-   function Sumsqr(X, Y: Integer) return Integer is
-   begin
-      a : Integer := 10;
-      put(a);
-   end Sumsqr;
-  
-   -- How 'bout a nice, tender variable?
-   I: Integer;
+function Factorial(A : in Integer) return Integer is
 begin
-   I := 3 + 4;
-end f_1;
+ if A < 0 then                -- Stop recursion if A <= 0.
+   return 1;
+ elsif A = 0 then
+    return 1;
+ else
+   return A * Factorial(A - 1);   -- recurse.
+ end if;
+end Sum;
