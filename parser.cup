@@ -19,10 +19,6 @@ parser code
 
 :}
 
-
-
-
-
 // Terminales
 terminal PROCEDURE, FUNCTION, RETURN, ARRAY, CONSTANT, IS, BEGIN, END, IF, THEN, ELSE, ELSIF, FOR, IN, OUT, WHILE, LOOP;
 terminal AND,OR,XOR,FALSE,TRUE,EXIT,WHEN,NULL,GET,PUT,PUT_LINE, RANGE, OF;
@@ -1023,6 +1019,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
 
                         nodo.AddHijo((Nodo) child1);
                         nodo.AddHijo((Nodo) child2);
+
+                        RESULT = nodo;
                         
                     :}
                     | asignacion:child1
@@ -1033,6 +1031,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                         parser.cont++;
 
                         nodo.AddHijo((Nodo) child1);
+
+                        RESULT = nodo;
                     :}
                     ;
 
