@@ -34,7 +34,7 @@ public class Main {
       for (Nodo child : raiz.children){
         if(!(child.tag.equals("VACIO"))){
           cuerpo += "\"" + raiz.id + ") " + raiz.tag + "=" + raiz.value + "\"->\""+ child.id +") " + child.tag  + "=" + child.value + "\"" ;
-          System.out.println("Cuerpo:"+cuerpo);
+          //System.out.println("Cuerpo:"+cuerpo);
           cuerpo += recorrido(child);
         }else{
           System.out.println(raiz.tag);
