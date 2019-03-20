@@ -31,21 +31,16 @@ public class Main {
 
   private static String recorrido(Nodo raiz) {
     String cuerpo = "";
-      for (Nodo children : raiz.children) {
-          if(raiz.value==null){
-              cuerpo += "\"" + raiz.id + "_" + raiz.tag ;
-          }else {
-              cuerpo += "\"" + raiz.id + "_(" + raiz.tag+")" + raiz.value ; }
-          
-      if(!("VACIO".equals(children.tag))){   
-          if (children.value==null){
-              cuerpo +=  "\"->\"" + children.id + "_" + children.tag + "\"";
-          }else{
-              cuerpo +=  "\"->\"" + children.id + "_(" + children.tag+")" + children.value +"\"" ;
-          }
-        }else {cuerpo += "\"";}
-      cuerpo += recorrido(children);
+      for (Nodo child : raiz.children){
+        if(!(child.tag.equals("VACIO"))){
+          cuerpo += "\"" + raiz.id + ") " + raiz.tag + "=" + raiz.value + "\"->\""+ child.id +") " + child.tag  + "=" + child.value + "\"" ;
+          //System.out.println("Cuerpo:"+cuerpo);
+          cuerpo += recorrido(child);
+        }else{
+          System.out.println(raiz.tag);
+        }
       }
+
       return cuerpo;
   }
 

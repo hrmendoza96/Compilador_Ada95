@@ -25,8 +25,8 @@ terminal AND,OR,XOR,FALSE,TRUE,EXIT,WHEN,NULL,GET,PUT,PUT_LINE, RANGE, OF;
 terminal INTEGER,FLOAT,BOOLEAN,CHARACTER,STRINGTYPE;
 terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,CAJA,SEMICOLON,COMA, DOSPUNTOS;
 terminal String ID;
-terminal Integer NUM;
-terminal STRING,CHAR;
+terminal String NUM;
+terminal String STRING,CHAR;
 
 // No Terminales
 non terminal inicio, cuerpo_principal, comienza_cuerpo_principal;
@@ -69,7 +69,7 @@ inicio  ::= cuerpo_principal:child1 {:
         :}
         ;
 
-cuerpo_principal    ::= PROCEDURE ID parametros:child1 IS comienza_cuerpo_principal:child2 {:
+cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuerpo_principal:child2 {:
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo();
                     nodo.setTag("cuerpo_principal");
@@ -79,21 +79,21 @@ cuerpo_principal    ::= PROCEDURE ID parametros:child1 IS comienza_cuerpo_princi
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoProcedure = new Nodo();
                     nodoProcedure.setTag("PROCEDURE");
-                    nodoProcedure.setValue(nodoProcedure.toString());
+                    nodoProcedure.setValue(n1.toString());
                     nodoProcedure.setId(parser.cont);
                     parser.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoId = new Nodo();
                     nodoId.setTag("ID");
-                    nodoId.setValue(nodoId.toString());
+                    nodoId.setValue(n2.toString());
                     nodoId.setId(parser.cont);
                     parser.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoIs = new Nodo();
                     nodoIs.setTag("IS");
-                    nodoIs.setValue(nodoIs.toString());
+                    nodoIs.setValue(n3.toString());
                     nodoIs.setId(parser.cont);
                     parser.cont++;
                     
@@ -107,7 +107,7 @@ cuerpo_principal    ::= PROCEDURE ID parametros:child1 IS comienza_cuerpo_princi
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
                     :}
-                    | PROCEDURE ID IS comienza_cuerpo_principal:child1 {:
+                    | PROCEDURE:n1 ID:n2 IS:n3 comienza_cuerpo_principal:child1 {:
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo();
                     nodo.setTag("cuerpo_principal");
@@ -117,21 +117,21 @@ cuerpo_principal    ::= PROCEDURE ID parametros:child1 IS comienza_cuerpo_princi
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoProcedure = new Nodo();
                     nodoProcedure.setTag("PROCEDURE");
-                    nodoProcedure.setValue(nodoProcedure.toString());
+                    nodoProcedure.setValue(n1.toString());
                     nodoProcedure.setId(parser.cont);
                     parser.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoId = new Nodo();
                     nodoId.setTag("ID");
-                    nodoId.setValue(nodoId.toString());
+                    nodoId.setValue(n2.toString());
                     nodoId.setId(parser.cont);
                     parser.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoIs = new Nodo();
                     nodoIs.setTag("IS");
-                    nodoIs.setValue(nodoIs.toString());
+                    nodoIs.setValue(n3.toString());
                     nodoIs.setId(parser.cont);
                     parser.cont++;
                     
@@ -145,7 +145,7 @@ cuerpo_principal    ::= PROCEDURE ID parametros:child1 IS comienza_cuerpo_princi
                     RESULT = nodo;
                     
                     :}
-                    | FUNCTION ID parametros:child1 RETURN tipo_variable:child2 IS comienza_cuerpo_principal:child3 {:
+                    | FUNCTION:n1 ID:n2 parametros:child1 RETURN:n3 tipo_variable:child2 IS:n4 comienza_cuerpo_principal:child3 {:
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo();
                     nodo.setTag("cuerpo_principal");
@@ -155,28 +155,28 @@ cuerpo_principal    ::= PROCEDURE ID parametros:child1 IS comienza_cuerpo_princi
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoFunction = new Nodo();
                     nodoFunction.setTag("FUNCTION");
-                    nodoFunction.setValue(nodoFunction.toString());
+                    nodoFunction.setValue(n1.toString());
                     nodoFunction.setId(parser.cont);
                     parser.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoId = new Nodo();
                     nodoId.setTag("ID");
-                    nodoId.setValue(nodoId.toString());
+                    nodoId.setValue(n2.toString());
                     nodoId.setId(parser.cont);
                     parser.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoReturn = new Nodo();
                     nodoReturn.setTag("RETURN");
-                    nodoReturn.setValue(nodoReturn.toString());
+                    nodoReturn.setValue(n3.toString());
                     nodoReturn.setId(parser.cont);
                     parser.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoIs = new Nodo();
                     nodoIs.setTag("IS");
-                    nodoIs.setValue(nodoIs.toString());
+                    nodoIs.setValue(n4.toString());
                     nodoIs.setId(parser.cont);
                     parser.cont++;
                     
@@ -196,7 +196,7 @@ cuerpo_principal    ::= PROCEDURE ID parametros:child1 IS comienza_cuerpo_princi
 
 /*Este es el área donde comenzará el codigo del programa.
 Nuevamente se declaran las formas correctas primero seguido de las formas con errores.*/
-comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN codigo:child2 END ID SEMICOLON {:
+comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 END:n2 ID:n3 SEMICOLON:n4 {:
                             /*Se crea el nodo prinicipal*/
                             Nodo nodo = new Nodo();
                             nodo.setTag("comienza_cuerpo_principal");
@@ -206,28 +206,28 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN codigo:child2 END 
                             /*Nuevo Nodo: TERMINAL*/
                             Nodo nodoBegin = new Nodo();
                             nodoBegin.setTag("BEGIN");
-                            nodoBegin.setValue(nodoBegin.toString());
+                            nodoBegin.setValue(n1.toString());
                             nodoBegin.setId(parser.cont);
                             parser.cont++;
 
                             /*Nuevo Nodo: TERMINAL*/
                             Nodo nodoEnd = new Nodo();
                             nodoEnd.setTag("END");
-                            nodoEnd.setValue(nodoEnd.toString());
+                            nodoEnd.setValue(n2.toString());
                             nodoEnd.setId(parser.cont);
                             parser.cont++;
 
                             /*Nuevo Nodo: TERMINAL*/
                             Nodo nodoId = new Nodo();
                             nodoId.setTag("ID");
-                            nodoId.setValue(nodoId.toString());
+                            nodoId.setValue(n3.toString());
                             nodoId.setId(parser.cont);
                             parser.cont++;
 
                             /*Nuevo Nodo: TERMINAL*/
                             Nodo nodoSemicolon = new Nodo();
                             nodoSemicolon.setTag("SEMICOLON");
-                            nodoSemicolon.setValue(nodoSemicolon.toString());
+                            nodoSemicolon.setValue(n4.toString());
                             nodoSemicolon.setId(parser.cont);
                             parser.cont++;
                             
@@ -243,7 +243,7 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN codigo:child2 END 
                             RESULT = nodo;
                             :}
 
-                            | BEGIN codigo:child1 END ID SEMICOLON {:
+                            | BEGIN:n1 codigo:child1 END:n2 ID:n3 SEMICOLON:n4 {:
                             /*Se crea el nodo prinicipal*/
                             Nodo nodo = new Nodo();
                             nodo.setTag("comienza_cuerpo_principal");
@@ -253,28 +253,28 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN codigo:child2 END 
                             /*Nuevo Nodo: TERMINAL*/
                             Nodo nodoBegin = new Nodo();
                             nodoBegin.setTag("BEGIN");
-                            nodoBegin.setValue(nodoBegin.toString());
+                            nodoBegin.setValue(n1.toString());
                             nodoBegin.setId(parser.cont);
                             parser.cont++;
 
                             /*Nuevo Nodo: TERMINAL*/
                             Nodo nodoEnd = new Nodo();
                             nodoEnd.setTag("END");
-                            nodoEnd.setValue(nodoEnd.toString());
+                            nodoEnd.setValue(n2.toString());
                             nodoEnd.setId(parser.cont);
                             parser.cont++;
 
                             /*Nuevo Nodo: TERMINAL*/
                             Nodo nodoId = new Nodo();
                             nodoId.setTag("ID");
-                            nodoId.setValue(nodoId.toString());
+                            nodoId.setValue(n3.toString());
                             nodoId.setId(parser.cont);
                             parser.cont++;
 
                             /*Nuevo Nodo: TERMINAL*/
                             Nodo nodoSemicolon = new Nodo();
                             nodoSemicolon.setTag("SEMICOLON");
-                            nodoSemicolon.setValue(nodoSemicolon.toString());
+                            nodoSemicolon.setValue(n4.toString());
                             nodoSemicolon.setId(parser.cont);
                             parser.cont++;
                             
@@ -712,6 +712,8 @@ datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo
                         parser.cont++;
                         
                         nodo.AddHijo((Nodo) child1);
+
+                        RESULT = nodo;
                     :}
                     ;
 // Aquí se definen los tipos de parámetros que pueden ser IN, OUT, IN OUT o ninguno.
@@ -1490,7 +1492,7 @@ asignacion  ::= ID COMA asignacion:child1 {:
             RESULT = nodo;
 
             :}
-            | ID DECLARACION tipo_variable:child1 ASIGNACION expresion_aritmetica:child2 SEMICOLON {:
+            | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 expresion_aritmetica:child2 SEMICOLON:n4 {:
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo();
             nodo.setTag("asignacion");
@@ -1500,28 +1502,28 @@ asignacion  ::= ID COMA asignacion:child1 {:
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoId = new Nodo();
             nodoId.setTag("ID");
-            nodoId.setValue(nodoId.toString());
+            nodoId.setValue(n1.toString());
             nodoId.setId(parser.cont);
             parser.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoDeclaracion = new Nodo();
             nodoDeclaracion.setTag("DECLARACION");
-            nodoDeclaracion.setValue(nodoDeclaracion.toString());
+            nodoDeclaracion.setValue(n2.toString());
             nodoDeclaracion.setId(parser.cont);
             parser.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
-            nodoAsignacion.setValue(nodoAsignacion.toString());
+            nodoAsignacion.setValue(n3.toString());
             nodoAsignacion.setId(parser.cont);
             parser.cont++;
 
              /*Nuevo Nodo: TERMINAL*/
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
-            nodoSemicolon.setValue(nodoSemicolon.toString());
+            nodoSemicolon.setValue(n4.toString());
             nodoSemicolon.setId(parser.cont);
             parser.cont++;
 
@@ -2415,12 +2417,14 @@ F   ::= ID
 
         RESULT = nodo;
     :}
-    | NUM 
+    | NUM:n1 
     {:
+        
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo();
         nodo.setTag("F");
-        nodo.setValue("NUM");
+        //nodo.setValue("NUM");
+        nodo.setValue(n1.toString());
         nodo.setId(parser.cont);
         parser.cont++;
         

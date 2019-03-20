@@ -158,10 +158,10 @@ LOOP = ("loop")
     {COMA} { return new Symbol(sym.COMA, yycolumn, yyline, yytext()); }
     {DOSPUNTOS} { return new Symbol(sym.DOSPUNTOS, yycolumn, yyline, yytext()); }
     
-    {ID} { return new Symbol(sym.ID, yycolumn, yyline, yytext()); }
-    {STRING} { return new Symbol(sym.STRING, yycolumn, yyline, yytext()); }
-    {CHAR} { return new Symbol(sym.CHAR, yycolumn, yyline, yytext()); }
-    {NUM} { return new Symbol(sym.NUM, yycolumn, yyline, yytext()); }
+    {ID} { return new Symbol(sym.ID, yycolumn, yyline, new String(yytext())); }
+    {STRING} { return new Symbol(sym.STRING, yycolumn, yyline, new String(yytext())); }
+    {CHAR} { return new Symbol(sym.CHAR, yycolumn, yyline, new String(yytext())); }
+    {NUM} { return new Symbol(sym.NUM, yycolumn, yyline, new String(yytext())); }
     {COMENTARIO} {}
     {espacios} {}
 
