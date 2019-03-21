@@ -1,0 +1,5 @@
+digraph G {node[shape=box, style=filled, color=Gray95]; edge[color=blue];rankdir=UD 
+
+"16) Inicio=null"->"12) cuerpo_principal=null""12) cuerpo_principal=null"->"13) PROCEDURE=procedure""12) cuerpo_principal=null"->"14) ID=Exercise""12) cuerpo_principal=null"->"15) IS=is""12) cuerpo_principal=null"->"7) comienza_cuerpo_principal=null""7) comienza_cuerpo_principal=null"->"8) BEGIN=begin""7) comienza_cuerpo_principal=null"->"6) codigo=null""6) codigo=null"->"0) put_line=null""0) put_line=null"->"1) PUTLINE=Nodo@1540e19d""0) put_line=null"->"2) PARIZQ=Nodo@677327b6""0) put_line=null"->"3) STRING=Nodo@14ae5a5""0) put_line=null"->"4) PARDER=Nodo@7f31245a""0) put_line=null"->"5) SEMICOLON=Nodo@6d6f6e28""7) comienza_cuerpo_principal=null"->"9) END=end""7) comienza_cuerpo_principal=null"->"10) ID=Exercise""7) comienza_cuerpo_principal=null"->"11) SEMICOLON=;"
+
+}

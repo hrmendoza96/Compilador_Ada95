@@ -1,6 +1,5 @@
 procedure Exercise is
-   number : integer;
-
+   
 begin
-    Put_Line("Number: ");
-end Exercise;
+    Put_Line("Hello: ");
+end ;
