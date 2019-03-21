@@ -37,7 +37,7 @@ public class Main {
           //System.out.println("Cuerpo:"+cuerpo);
           cuerpo += recorrido(child);
         }else{
-          System.out.println(raiz.tag);
+          //System.out.println(raiz.tag);
         }
       }
 
