@@ -288,7 +288,7 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 E
                             /*Asignar el nodo al RESULT para continuar el recorrido*/
                             RESULT = nodo;
                             :}
-                            | error SEMICOLON
+                            | 
                             ;
 /*Esta es la forma en la que ese presenta el código. Se podrá poner cualquiera de estas opciones
 para comenzar a declarar código.*/
