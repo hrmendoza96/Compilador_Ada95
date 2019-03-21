@@ -1155,6 +1155,79 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                 RESULT = nodo;
 
                 :}
+                |  PROCEDURE ID:n2 parametros:child1 IS BEGIN codigo:child2 END ID:n6 SEMICOLON
+                {:
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo();
+                nodo.setTag("procedimiento");
+                nodo.setId(parser.cont);
+                parser.cont++;
+
+                /*Nuevo Nodo: TERMINAL*/
+                Nodo nodoProcedure = new Nodo();
+                nodoProcedure.setTag("PROCEDURE");
+                nodoProcedure.setValue(nodoProcedure.toString());
+                nodoProcedure.setId(parser.cont);
+                parser.cont++;
+
+                /*Nuevo Nodo: TERMINAL*/
+                Nodo nodoId = new Nodo();
+                nodoId.setTag("ID");
+                nodoId.setValue(n2.toString());
+                nodoId.setId(parser.cont);
+                parser.cont++;
+
+                /*Nuevo Nodo: TERMINAL*/
+                Nodo nodoId2 = new Nodo();
+                nodoId2.setTag("ID");
+                nodoId2.setValue(n6.toString());
+                nodoId2.setId(parser.cont);
+                parser.cont++;
+
+                /*Nuevo Nodo: TERMINAL*/
+                Nodo nodoIs = new Nodo();
+                nodoIs.setTag("IS");
+                nodoIs.setValue(nodoIs.toString());
+                nodoIs.setId(parser.cont);
+                parser.cont++;
+
+                /*Nuevo Nodo: TERMINAL*/
+                Nodo nodoBegin = new Nodo();
+                nodoBegin.setTag("BEGIN");
+                nodoBegin.setValue(nodoBegin.toString());
+                nodoBegin.setId(parser.cont);
+                parser.cont++;
+
+                /*Nuevo Nodo: TERMINAL*/
+                Nodo nodoEnd = new Nodo();
+                nodoEnd.setTag("END");
+                nodoEnd.setValue(nodoEnd.toString());
+                nodoEnd.setId(parser.cont);
+                parser.cont++;
+                
+
+                /*Nuevo Nodo: TERMINAL*/
+                Nodo nodoSemicolon = new Nodo();
+                nodoSemicolon.setTag("SEMICOLON");
+                nodoSemicolon.setValue(nodoSemicolon.toString());
+                nodoSemicolon.setId(parser.cont);
+                parser.cont++;
+
+
+                /*Se añaden los hijos*/
+                nodo.AddHijo(nodoProcedure);
+                nodo.AddHijo(nodoId);
+                nodo.AddHijo((Nodo) child1);
+                //nodo.AddHijo(nodoIs);
+                //nodo.AddHijo(nodoBegin);
+                nodo.AddHijo((Nodo) child2);
+                //nodo.AddHijo(nodoEnd);
+                nodo.AddHijo(nodoId2);
+                //nodo.AddHijo(nodoSemicolon);
+
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;                
+                :}
                 ;
 
 
