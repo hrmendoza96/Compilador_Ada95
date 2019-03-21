@@ -1,5 +1,7 @@
 procedure Exercise is
-   
+   a: Integer;
 begin
+    a := ;
     Put_Line("Hello: ");
+    get(a)
 end ;
