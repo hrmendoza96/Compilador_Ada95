@@ -49,8 +49,7 @@ precedence left OPMULTIPLICACION;
 start with inicio;
 
 /* Cuerpo principal contiene el procedimiento o la funcion principal.
-Declaramos primero un procedure y una function en su forma principal, seguidamente
-se declaran las posiciones en las que se podrian encontrar errores.*/
+Declaramos primero un procedure y una function en su forma principal.*/
 inicio  ::= cuerpo_principal:child1 {:
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo();
@@ -90,7 +89,7 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     nodoId.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoIs = new Nodo();
                     nodoIs.setTag("IS");
                     nodoIs.setValue(n3.toString());
@@ -121,14 +120,14 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     nodoProcedure.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoId = new Nodo();
                     nodoId.setTag("ID");
                     nodoId.setValue(n2.toString());
                     nodoId.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoIs = new Nodo();
                     nodoIs.setTag("IS");
                     nodoIs.setValue(n3.toString());
@@ -137,7 +136,7 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoProcedure);
-                    nodo.AddHijo(nodoId);
+                    //nodo.AddHijo(nodoId);
                     //nodo.AddHijo(nodoIs);
                     nodo.AddHijo((Nodo) child1);
 
@@ -159,14 +158,14 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     nodoFunction.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoId = new Nodo();
                     nodoId.setTag("ID");
                     nodoId.setValue(n2.toString());
                     nodoId.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoReturn = new Nodo();
                     nodoReturn.setTag("RETURN");
                     nodoReturn.setValue(n3.toString());
@@ -182,7 +181,8 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoFunction);
-                    nodo.AddHijo(nodoId);
+                    //nodo.AddHijo(nodoId);
+                    //nodo.AddHijo(nodoIs)
                     nodo.AddHijo((Nodo) child1);
                     //nodo.AddHijo(nodoReturn);
                     nodo.AddHijo((Nodo) child2);
@@ -194,8 +194,7 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     :}
                     ; 
 
-/*Este es el área donde comenzará el codigo del programa.
-Nuevamente se declaran las formas correctas primero seguido de las formas con errores.*/
+/*Este es el área donde comenzará el codigo del programa.*/
 comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 END:n2 ID:n3 SEMICOLON:n4 {:
                             /*Se crea el nodo prinicipal*/
                             Nodo nodo = new Nodo();
@@ -203,28 +202,28 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 E
                             nodo.setId(parser.cont);
                             parser.cont++;
                             
-                            /*Nuevo Nodo: TERMINAL*/
+                            /*Nuevo Nodo: TERMINAL
                             Nodo nodoBegin = new Nodo();
                             nodoBegin.setTag("BEGIN");
                             nodoBegin.setValue(n1.toString());
                             nodoBegin.setId(parser.cont);
                             parser.cont++;
 
-                            /*Nuevo Nodo: TERMINAL*/
+                            /*Nuevo Nodo: TERMINAL
                             Nodo nodoEnd = new Nodo();
                             nodoEnd.setTag("END");
                             nodoEnd.setValue(n2.toString());
                             nodoEnd.setId(parser.cont);
                             parser.cont++;
 
-                            /*Nuevo Nodo: TERMINAL*/
+                            /*Nuevo Nodo: TERMINAL
                             Nodo nodoId = new Nodo();
                             nodoId.setTag("ID");
                             nodoId.setValue(n3.toString());
                             nodoId.setId(parser.cont);
                             parser.cont++;
 
-                            /*Nuevo Nodo: TERMINAL*/
+                            /*Nuevo Nodo: TERMINAL
                             Nodo nodoSemicolon = new Nodo();
                             nodoSemicolon.setTag("SEMICOLON");
                             nodoSemicolon.setValue(n4.toString());
@@ -236,7 +235,7 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 E
                             //nodo.AddHijo(nodoBegin);
                             nodo.AddHijo((Nodo) child2);
                             //nodo.AddHijo(nodoEnd);
-                            nodo.AddHijo(nodoId);                   
+                            //nodo.AddHijo(nodoId);                   
                             //nodo.AddHijo(nodoSemicolon);
 
                             /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -250,28 +249,28 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 E
                             nodo.setId(parser.cont);
                             parser.cont++;
                             
-                            /*Nuevo Nodo: TERMINAL*/
+                            /*Nuevo Nodo: TERMINAL
                             Nodo nodoBegin = new Nodo();
                             nodoBegin.setTag("BEGIN");
                             nodoBegin.setValue(n1.toString());
                             nodoBegin.setId(parser.cont);
                             parser.cont++;
 
-                            /*Nuevo Nodo: TERMINAL*/
+                            /*Nuevo Nodo: TERMINAL
                             Nodo nodoEnd = new Nodo();
                             nodoEnd.setTag("END");
                             nodoEnd.setValue(n2.toString());
                             nodoEnd.setId(parser.cont);
                             parser.cont++;
 
-                            /*Nuevo Nodo: TERMINAL*/
+                            /*Nuevo Nodo: TERMINAL
                             Nodo nodoId = new Nodo();
                             nodoId.setTag("ID");
                             nodoId.setValue(n3.toString());
                             nodoId.setId(parser.cont);
                             parser.cont++;
 
-                            /*Nuevo Nodo: TERMINAL*/
+                            /*Nuevo Nodo: TERMINAL
                             Nodo nodoSemicolon = new Nodo();
                             nodoSemicolon.setTag("SEMICOLON");
                             nodoSemicolon.setValue(n4.toString());
@@ -282,7 +281,7 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 E
                             //nodo.AddHijo(nodoBegin);
                             nodo.AddHijo((Nodo) child1);
                             //nodo.AddHijo(nodoEnd);
-                            nodo.AddHijo(nodoId);                   
+                            //nodo.AddHijo(nodoId);                   
                             //nodo.AddHijo(nodoSemicolon);
 
                             /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -582,8 +581,7 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         ;
 
-/*Estos son los parámetros para procedimientos y funciones.
-Primero se declara la forma correcta seguido de las producciones de error.*/
+/*Estos son los parámetros para procedimientos.*/
 parametros  ::=  PARIZQ:n1 datos_parametros:child1 PARDER:n2 {:
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo();
@@ -591,14 +589,14 @@ parametros  ::=  PARIZQ:n1 datos_parametros:child1 PARDER:n2 {:
             nodo.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoParizq = new Nodo();
             nodoParizq.setTag("PARIZQ");
             nodoParizq.setValue(n1.toString());
             nodoParizq.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoParder = new Nodo();
             nodoParder.setTag("PARDER");
             nodoParder.setValue(n2.toString());
@@ -606,9 +604,9 @@ parametros  ::=  PARIZQ:n1 datos_parametros:child1 PARDER:n2 {:
             parser.cont++;
     
             /*Se añaden los hijos*/
-            nodo.AddHijo(nodoParizq);
+            //nodo.AddHijo(nodoParizq);
             nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoParder);
+            //nodo.AddHijo(nodoParder);
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -620,15 +618,15 @@ parametros  ::=  PARIZQ:n1 datos_parametros:child1 PARDER:n2 {:
             nodo.setTag("parametros");
             nodo.setId(parser.cont);
             parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
+            /*
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoParizq = new Nodo();
             nodoParizq.setTag("PARIZQ");
             nodoParizq.setValue(n1.toString());
             nodoParizq.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoParder = new Nodo();
             nodoParder.setTag("PARDER");
             nodoParder.setValue(n2.toString());
@@ -636,16 +634,15 @@ parametros  ::=  PARIZQ:n1 datos_parametros:child1 PARDER:n2 {:
             parser.cont++;
     
             /*Se añaden los hijos*/
-            nodo.AddHijo(nodoParizq);
-            nodo.AddHijo(nodoParder);
+            //nodo.AddHijo(nodoParizq);
+            //nodo.AddHijo(nodoParder);
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
             ;
 
-/*Estos son los datos de los paáametros. Listamos primero las formas correctas para
-colocar parámetros, y luego los errores.*/
+/*Estos son los datos de los paáametros.*/
 datos_parametros    ::= listar_ids:child1 DECLARACION:n1 tipo_parametro:child2 tipo_variable:child3 SEMICOLON datos_parametros:child4 {:
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo();
@@ -653,14 +650,14 @@ datos_parametros    ::= listar_ids:child1 DECLARACION:n1 tipo_parametro:child2 t
                     nodo.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoDeclaracion = new Nodo();
                     nodoDeclaracion.setTag("DECLARACION");
                     nodoDeclaracion.setValue(n1.toString());
                     nodoDeclaracion.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoSemicolon = new Nodo();
                     nodoSemicolon.setTag("SEMICOLON");
                     nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -669,7 +666,7 @@ datos_parametros    ::= listar_ids:child1 DECLARACION:n1 tipo_parametro:child2 t
             
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
-                    nodo.AddHijo(nodoDeclaracion);
+                    //nodo.AddHijo(nodoDeclaracion);
                     nodo.AddHijo((Nodo) child2);
                     nodo.AddHijo((Nodo) child3);
                     //nodo.AddHijo(nodoSemicolon);
@@ -686,7 +683,7 @@ datos_parametros    ::= listar_ids:child1 DECLARACION:n1 tipo_parametro:child2 t
                     nodo.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoDeclaracion = new Nodo();
                     nodoDeclaracion.setTag("DECLARACION");
                     nodoDeclaracion.setValue(n1.toString());
@@ -697,7 +694,7 @@ datos_parametros    ::= listar_ids:child1 DECLARACION:n1 tipo_parametro:child2 t
             
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
-                    nodo.AddHijo(nodoDeclaracion);
+                    //nodo.AddHijo(nodoDeclaracion);
                     nodo.AddHijo((Nodo) child2);
                     nodo.AddHijo((Nodo) child3);
 
@@ -1047,7 +1044,7 @@ declarar_procedimiento  ::= PROCEDURE:n1 ID:n2 parametros:child1 SEMICOLON {:
                         nodo.setId(parser.cont);
                         parser.cont++;
 
-                        /*Nuevo Nodo: TERMINAL*/
+                        /*Nuevo Nodo: TERMINAL
                         Nodo nodoProcedure = new Nodo();
                         nodoProcedure.setTag("PROCEDURE");
                         nodoProcedure.setValue(n1.toString());
@@ -1070,10 +1067,10 @@ declarar_procedimiento  ::= PROCEDURE:n1 ID:n2 parametros:child1 SEMICOLON {:
 
 
                         /*Se añaden los hijos*/
-                        nodo.AddHijo(nodoProcedure);
+                        //nodo.AddHijo(nodoProcedure);
                         nodo.AddHijo(nodoId);
                         nodo.AddHijo((Nodo) child1);
-                       // nodo.AddHijo(nodoSemicolon);
+                       //nodo.AddHijo(nodoSemicolon);
 
                         /*Asignar el nodo al RESULT para continuar el recorrido*/
                         RESULT = nodo;
@@ -1088,7 +1085,7 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                 nodo.setId(parser.cont);
                 parser.cont++;
 
-                /*Nuevo Nodo: TERMINAL*/
+                /*Nuevo Nodo: TERMINAL
                 Nodo nodoProcedure = new Nodo();
                 nodoProcedure.setTag("PROCEDURE");
                 nodoProcedure.setValue(nodoProcedure.toString());
@@ -1109,21 +1106,21 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                 nodoId2.setId(parser.cont);
                 parser.cont++;
 
-                /*Nuevo Nodo: TERMINAL*/
+                /*Nuevo Nodo: TERMINAL
                 Nodo nodoIs = new Nodo();
                 nodoIs.setTag("IS");
                 nodoIs.setValue(nodoIs.toString());
                 nodoIs.setId(parser.cont);
                 parser.cont++;
 
-                /*Nuevo Nodo: TERMINAL*/
+                /*Nuevo Nodo: TERMINAL
                 Nodo nodoBegin = new Nodo();
                 nodoBegin.setTag("BEGIN");
                 nodoBegin.setValue(nodoBegin.toString());
                 nodoBegin.setId(parser.cont);
                 parser.cont++;
 
-                /*Nuevo Nodo: TERMINAL*/
+                /*Nuevo Nodo: TERMINAL
                 Nodo nodoEnd = new Nodo();
                 nodoEnd.setTag("END");
                 nodoEnd.setValue(nodoEnd.toString());
@@ -1131,7 +1128,7 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                 parser.cont++;
                 
 
-                /*Nuevo Nodo: TERMINAL*/
+                /*Nuevo Nodo: TERMINAL
                 Nodo nodoSemicolon = new Nodo();
                 nodoSemicolon.setTag("SEMICOLON");
                 nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -1140,7 +1137,7 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
 
 
                 /*Se añaden los hijos*/
-                nodo.AddHijo(nodoProcedure);
+                //nodo.AddHijo(nodoProcedure);
                 nodo.AddHijo(nodoId);
                 nodo.AddHijo((Nodo) child1);
                 //nodo.AddHijo(nodoIs);
@@ -1163,7 +1160,7 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                 nodo.setId(parser.cont);
                 parser.cont++;
 
-                /*Nuevo Nodo: TERMINAL*/
+                /*Nuevo Nodo: TERMINAL
                 Nodo nodoProcedure = new Nodo();
                 nodoProcedure.setTag("PROCEDURE");
                 nodoProcedure.setValue(nodoProcedure.toString());
@@ -1177,28 +1174,28 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                 nodoId.setId(parser.cont);
                 parser.cont++;
 
-                /*Nuevo Nodo: TERMINAL*/
+                /*Nuevo Nodo: TERMINAL
                 Nodo nodoId2 = new Nodo();
                 nodoId2.setTag("ID");
                 nodoId2.setValue(n6.toString());
                 nodoId2.setId(parser.cont);
                 parser.cont++;
 
-                /*Nuevo Nodo: TERMINAL*/
+                /*Nuevo Nodo: TERMINAL
                 Nodo nodoIs = new Nodo();
                 nodoIs.setTag("IS");
                 nodoIs.setValue(nodoIs.toString());
                 nodoIs.setId(parser.cont);
                 parser.cont++;
 
-                /*Nuevo Nodo: TERMINAL*/
+                /*Nuevo Nodo: TERMINAL
                 Nodo nodoBegin = new Nodo();
                 nodoBegin.setTag("BEGIN");
                 nodoBegin.setValue(nodoBegin.toString());
                 nodoBegin.setId(parser.cont);
                 parser.cont++;
 
-                /*Nuevo Nodo: TERMINAL*/
+                /*Nuevo Nodo: TERMINAL
                 Nodo nodoEnd = new Nodo();
                 nodoEnd.setTag("END");
                 nodoEnd.setValue(nodoEnd.toString());
@@ -1206,7 +1203,7 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                 parser.cont++;
                 
 
-                /*Nuevo Nodo: TERMINAL*/
+                /*Nuevo Nodo: TERMINAL
                 Nodo nodoSemicolon = new Nodo();
                 nodoSemicolon.setTag("SEMICOLON");
                 nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -1215,14 +1212,14 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
 
 
                 /*Se añaden los hijos*/
-                nodo.AddHijo(nodoProcedure);
+                //nodo.AddHijo(nodoProcedure);
                 nodo.AddHijo(nodoId);
                 nodo.AddHijo((Nodo) child1);
                 //nodo.AddHijo(nodoIs);
                 //nodo.AddHijo(nodoBegin);
                 nodo.AddHijo((Nodo) child2);
                 //nodo.AddHijo(nodoEnd);
-                nodo.AddHijo(nodoId2);
+                //nodo.AddHijo(nodoId2);
                 //nodo.AddHijo(nodoSemicolon);
 
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -1238,7 +1235,7 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     nodo.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoFunction = new Nodo();
                     nodoFunction.setTag("FUNCTION");
                     nodoFunction.setValue(nodoFunction.toString());
@@ -1253,35 +1250,35 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     nodoId.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoId2 = new Nodo();
                     nodoId2.setTag("ID");
                     nodoId2.setValue(n2.toString());
                     nodoId2.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoReturn = new Nodo();
                     nodoReturn.setTag("RETURN");
                     nodoReturn.setValue(nodoReturn.toString());
                     nodoReturn.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoIs = new Nodo();
                     nodoIs.setTag("IS");
                     nodoIs.setValue(nodoIs.toString());
                     nodoIs.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoBegin = new Nodo();
                     nodoBegin.setTag("BEGIN");
                     nodoBegin.setValue(nodoBegin.toString());
                     nodoBegin.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoEnd = new Nodo();
                     nodoEnd.setTag("END");
                     nodoEnd.setValue(nodoEnd.toString());
@@ -1289,7 +1286,7 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     parser.cont++;
                     
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoSemicolon = new Nodo();
                     nodoSemicolon.setTag("SEMICOLON");
                     nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -1298,7 +1295,7 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
 
 
                     /*Se añaden los hijos*/
-                    nodo.AddHijo(nodoFunction);
+                    //nodo.AddHijo(nodoFunction);
                     nodo.AddHijo(nodoId);
                     nodo.AddHijo((Nodo) child1);
                     //nodo.AddHijo(nodoReturn);
@@ -1308,7 +1305,7 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     //nodo.AddHijo(nodoBegin);
                     nodo.AddHijo((Nodo) child4);
                     //nodo.AddHijo(nodoEnd);
-                    nodo.AddHijo(nodoId2);
+                    //nodo.AddHijo(nodoId2);
                     //nodo.AddHijo(nodoSemicolon);
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -1322,7 +1319,7 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     nodo.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoFunction = new Nodo();
                     nodoFunction.setTag("FUNCTION");
                     nodoFunction.setValue(nodoFunction.toString());
@@ -1337,35 +1334,35 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     nodoId.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoId2 = new Nodo();
                     nodoId2.setTag("ID");
                     nodoId2.setValue(n2.toString());
                     nodoId2.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoReturn = new Nodo();
                     nodoReturn.setTag("RETURN");
                     nodoReturn.setValue(nodoReturn.toString());
                     nodoReturn.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoIs = new Nodo();
                     nodoIs.setTag("IS");
                     nodoIs.setValue(nodoIs.toString());
                     nodoIs.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoBegin = new Nodo();
                     nodoBegin.setTag("BEGIN");
                     nodoBegin.setValue(nodoBegin.toString());
                     nodoBegin.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoEnd = new Nodo();
                     nodoEnd.setTag("END");
                     nodoEnd.setValue(nodoEnd.toString());
@@ -1373,7 +1370,7 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     parser.cont++;
                     
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoSemicolon = new Nodo();
                     nodoSemicolon.setTag("SEMICOLON");
                     nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -1382,7 +1379,7 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
 
 
                     /*Se añaden los hijos*/
-                    nodo.AddHijo(nodoFunction);
+                    //nodo.AddHijo(nodoFunction);
                     nodo.AddHijo(nodoId);
                     nodo.AddHijo((Nodo) child1);
                     //nodo.AddHijo(nodoReturn);
@@ -1391,7 +1388,7 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     //nodo.AddHijo(nodoBegin);
                     nodo.AddHijo((Nodo) child3);
                     //nodo.AddHijo(nodoEnd);
-                    nodo.AddHijo(nodoId2);
+                    //nodo.AddHijo(nodoId2);
                     //nodo.AddHijo(nodoSemicolon);
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -1410,7 +1407,7 @@ llamar_funcion  ::= funcion:child1 SEMICOLON {:
                 nodo.setId(parser.cont);
                 parser.cont++;
 
-                /*Nuevo Nodo: TERMINAL*/
+                /*Nuevo Nodo: TERMINAL
                 Nodo nodoSemicolon = new Nodo();
                 nodoSemicolon.setTag("SEMICOLON");
                 nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -1470,7 +1467,7 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     nodoId.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoComa = new Nodo();
                     nodoComa.setTag("COMA");
                     nodoComa.setValue(n2.toString());
@@ -1480,7 +1477,7 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoId);
-                    nodo.AddHijo(nodoComa);
+                    //nodo.AddHijo(nodoComa);
                     nodo.AddHijo((Nodo) child1);
                     
 
@@ -1502,14 +1499,14 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     nodoId.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoDeclaracion = new Nodo();
                     nodoDeclaracion.setTag("DECLARACION");
                     nodoDeclaracion.setValue(n2.toString());
                     nodoDeclaracion.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoSemicolon = new Nodo();
                     nodoSemicolon.setTag("SEMICOLON");
                     nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -1521,7 +1518,7 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoId);
-                    nodo.AddHijo(nodoDeclaracion);
+                    //nodo.AddHijo(nodoDeclaracion);
                     nodo.AddHijo((Nodo) child1);
                     //nodo.AddHijo(nodoSemicolon);
 
@@ -1548,7 +1545,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoComa = new Nodo();
             nodoComa.setTag("COMA");
             nodoComa.setValue(n2.toString());
@@ -1558,7 +1555,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoComa);
+            //nodo.AddHijo(nodoComa);
             nodo.AddHijo((Nodo) child1);
             
 
@@ -1580,21 +1577,21 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoDeclaracion = new Nodo();
             nodoDeclaracion.setTag("DECLARACION");
             nodoDeclaracion.setValue(n2.toString());
             nodoDeclaracion.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n3.toString());
             nodoAsignacion.setId(parser.cont);
             parser.cont++;
 
-             /*Nuevo Nodo: TERMINAL*/
+             /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(n4.toString());
@@ -1603,9 +1600,9 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoDeclaracion);
+            //nodo.AddHijo(nodoDeclaracion);
             nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo((Nodo) child2);
             //nodo.AddHijo(nodoSemicolon);
             
@@ -1628,14 +1625,14 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoDeclaracion = new Nodo();
             nodoDeclaracion.setTag("DECLARACION");
             nodoDeclaracion.setValue(n2.toString());
             nodoDeclaracion.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n3.toString());
@@ -1649,7 +1646,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoTrue.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -1658,9 +1655,9 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoDeclaracion);
+            //nodo.AddHijo(nodoDeclaracion);
             nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo(nodoTrue);
             //nodo.AddHijo(nodoSemicolon);
             
@@ -1683,14 +1680,14 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoDeclaracion = new Nodo();
             nodoDeclaracion.setTag("DECLARACION");
             nodoDeclaracion.setValue(n2.toString());
             nodoDeclaracion.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n3.toString());
@@ -1704,7 +1701,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoFalse.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -1713,9 +1710,9 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoDeclaracion);
+            //nodo.AddHijo(nodoDeclaracion);
             nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo(nodoFalse);
             //nodo.AddHijo(nodoSemicolon);
             
@@ -1739,14 +1736,14 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoDeclaracion = new Nodo();
             nodoDeclaracion.setTag("DECLARACION");
             nodoDeclaracion.setValue(n2.toString());
             nodoDeclaracion.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n3.toString());
@@ -1760,7 +1757,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoString.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -1769,9 +1766,9 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoDeclaracion);
+            //nodo.AddHijo(nodoDeclaracion);
             nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo(nodoString);
             //nodo.AddHijo(nodoSemicolon);
             
@@ -1795,14 +1792,14 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoDeclaracion = new Nodo();
             nodoDeclaracion.setTag("DECLARACION");
             nodoDeclaracion.setValue(n2.toString());
             nodoDeclaracion.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n3.toString());
@@ -1816,7 +1813,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoChar.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -1825,9 +1822,9 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoDeclaracion);
+            //nodo.AddHijo(nodoDeclaracion);
             nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo(nodoChar);
             //nodo.AddHijo(nodoSemicolon);
             
@@ -1851,14 +1848,14 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n2.toString());
             nodoAsignacion.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -1867,7 +1864,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo((Nodo) child1);
            // nodo.AddHijo(nodoSemicolon);
             
@@ -1890,7 +1887,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n2.toString());
@@ -1904,7 +1901,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoTrue.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -1913,7 +1910,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo(nodoTrue);
             //nodo.AddHijo(nodoSemicolon);
             
@@ -1936,7 +1933,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n2.toString());
@@ -1950,7 +1947,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoFalse.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -1959,7 +1956,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo(nodoFalse);
             //nodo.AddHijo(nodoSemicolon);
             
@@ -1982,7 +1979,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n2.toString());
@@ -1996,7 +1993,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoString.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -2005,7 +2002,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo(nodoString);
             //nodo.AddHijo(nodoSemicolon);
             
@@ -2028,7 +2025,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n2.toString());
@@ -2042,7 +2039,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoChar.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -2051,7 +2048,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo(nodoChar);
             //nodo.AddHijo(nodoSemicolon);
             
@@ -2074,7 +2071,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoDeclaracion = new Nodo();
             nodoDeclaracion.setTag("DECLARACION");
             nodoDeclaracion.setValue(n2.toString());
@@ -2088,14 +2085,14 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoConstant.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n4.toString());
             nodoAsignacion.setId(parser.cont);
             parser.cont++;
 
-             /*Nuevo Nodo: TERMINAL*/
+             /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -2104,10 +2101,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoDeclaracion);
+            //nodo.AddHijo(nodoDeclaracion);
             nodo.AddHijo(nodoConstant);
             nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo((Nodo) child2);
            // nodo.AddHijo(nodoSemicolon);
             
@@ -2130,7 +2127,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoDeclaracion = new Nodo();
             nodoDeclaracion.setTag("DECLARACION");
             nodoDeclaracion.setValue(n2.toString());
@@ -2144,7 +2141,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoConstant.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n4.toString());
@@ -2158,7 +2155,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoTrue.setId(parser.cont);
             parser.cont++;
 
-             /*Nuevo Nodo: TERMINAL*/
+             /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -2167,10 +2164,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoDeclaracion);
+            //nodo.AddHijo(nodoDeclaracion);
             nodo.AddHijo(nodoConstant);
             nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo(nodoTrue);
             //nodo.AddHijo(nodoSemicolon);
             
@@ -2193,7 +2190,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoDeclaracion = new Nodo();
             nodoDeclaracion.setTag("DECLARACION");
             nodoDeclaracion.setValue(n2.toString());
@@ -2207,7 +2204,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoConstant.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n4.toString());
@@ -2221,7 +2218,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoFalse.setId(parser.cont);
             parser.cont++;
 
-             /*Nuevo Nodo: TERMINAL*/
+             /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -2230,10 +2227,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoDeclaracion);
+            //nodo.AddHijo(nodoDeclaracion);
             nodo.AddHijo(nodoConstant);
             nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo(nodoFalse);
             //nodo.AddHijo(nodoSemicolon);
             
@@ -2256,7 +2253,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoDeclaracion = new Nodo();
             nodoDeclaracion.setTag("DECLARACION");
             nodoDeclaracion.setValue(n2.toString());
@@ -2270,7 +2267,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoConstant.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n4.toString());
@@ -2284,7 +2281,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoString.setId(parser.cont);
             parser.cont++;
 
-             /*Nuevo Nodo: TERMINAL*/
+             /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -2293,10 +2290,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoDeclaracion);
+            //nodo.AddHijo(nodoDeclaracion);
             nodo.AddHijo(nodoConstant);
             nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo(nodoString);
             //nodo.AddHijo(nodoSemicolon);
             
@@ -2320,7 +2317,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoDeclaracion = new Nodo();
             nodoDeclaracion.setTag("DECLARACION");
             nodoDeclaracion.setValue(n2.toString());
@@ -2334,7 +2331,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoConstant.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoAsignacion = new Nodo();
             nodoAsignacion.setTag("ASIGNACION");
             nodoAsignacion.setValue(n4.toString());
@@ -2348,7 +2345,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodoChar.setId(parser.cont);
             parser.cont++;
 
-             /*Nuevo Nodo: TERMINAL*/
+             /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -2357,10 +2354,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoDeclaracion);
+            //nodo.AddHijo(nodoDeclaracion);
             nodo.AddHijo(nodoConstant);
             nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoAsignacion);
+            //nodo.AddHijo(nodoAsignacion);
             nodo.AddHijo(nodoChar);
             //nodo.AddHijo(nodoSemicolon);
             
@@ -2626,21 +2623,21 @@ bloque_if   ::= IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloqu
             nodo.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoIf = new Nodo();
             nodoIf.setTag("IF");
             nodoIf.setValue(nodoIf.toString());
             nodoIf.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoIf2 = new Nodo();
             nodoIf2.setTag("IF");
             nodoIf2.setValue(nodoIf2.toString());
             nodoIf2.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoThen = new Nodo();
             nodoThen.setTag("THEN");
             nodoThen.setValue(nodoThen.toString());
@@ -2648,14 +2645,14 @@ bloque_if   ::= IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloqu
             parser.cont++;
 
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoEnd = new Nodo();
             nodoEnd.setTag("END");
             nodoEnd.setValue(nodoEnd.toString());
             nodoEnd.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -2672,7 +2669,7 @@ bloque_if   ::= IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloqu
             nodo.AddHijo((Nodo) child3);
             nodo.AddHijo((Nodo) child4);
             //nodo.AddHijo(nodoEnd);
-            nodo.AddHijo(nodoIf2);
+            //nodo.AddHijo(nodoIf2);
             //nodo.AddHijo(nodoSemicolon);
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -2874,14 +2871,14 @@ bloque_elsif    ::= ELSIF condicion:child1 THEN codigo:child2 bloque_elsif:child
                 nodo.setId(parser.cont);
                 parser.cont++;
 
-                /*Nuevo Nodo: TERMINAL*/
+                /*Nuevo Nodo: TERMINAL
                 Nodo nodoElsif = new Nodo();
                 nodoElsif.setTag("ELSIF");
                 nodoElsif.setValue(nodoElsif.toString());
                 nodoElsif.setId(parser.cont);
                 parser.cont++;
 
-                /*Nuevo Nodo: TERMINAL*/
+                /*Nuevo Nodo: TERMINAL
                 Nodo nodoThen = new Nodo();
                 nodoThen.setTag("THEN");
                 nodoThen.setValue(nodoThen.toString());
@@ -2919,7 +2916,7 @@ bloque_else ::= ELSE codigo:child1 {:
             nodo.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoElse = new Nodo();
             nodoElse.setTag("ELSE");
             nodoElse.setValue(nodoElse.toString());
@@ -2959,28 +2956,28 @@ ciclo_loop  ::= LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOL
             nodo.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoLoop = new Nodo();
             nodoLoop.setTag("LOOP");
             nodoLoop.setValue(nodoLoop.toString());
             nodoLoop.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoLoop2 = new Nodo();
             nodoLoop2.setTag("LOOP");
             nodoLoop2.setValue(nodoLoop2.toString());
             nodoLoop2.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoEnd = new Nodo();
             nodoEnd.setTag("END");
             nodoEnd.setValue(nodoEnd.toString());
             nodoEnd.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -3010,35 +3007,35 @@ ciclo_while ::= WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEM
             nodo.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoWhile = new Nodo();
             nodoWhile.setTag("WHILE");
             nodoWhile.setValue(nodoWhile.toString());
             nodoWhile.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoLoop = new Nodo();
             nodoLoop.setTag("LOOP");
             nodoLoop.setValue(nodoLoop.toString());
             nodoLoop.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoLoop2 = new Nodo();
             nodoLoop2.setTag("LOOP");
             nodoLoop2.setValue(nodoLoop2.toString());
             nodoLoop2.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoEnd = new Nodo();
             nodoEnd.setTag("END");
             nodoEnd.setValue(nodoEnd.toString());
             nodoEnd.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -3070,7 +3067,7 @@ ciclo_for   ::= FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 sa
             nodo.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoFor = new Nodo();
             nodoFor.setTag("FOR");
             nodoFor.setValue(nodoFor.toString());
@@ -3084,7 +3081,7 @@ ciclo_for   ::= FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 sa
             nodoId.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoIn = new Nodo();
             nodoIn.setTag("IN");
             nodoIn.setValue(n2.toString());
@@ -3105,35 +3102,35 @@ ciclo_for   ::= FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 sa
             nodoNum2.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoDosPuntos = new Nodo();
             nodoDosPuntos.setTag("DOSPUNTOS");
             nodoDosPuntos.setValue(n4.toString());
             nodoDosPuntos.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoLoop = new Nodo();
             nodoLoop.setTag("LOOP");
             nodoLoop.setValue(nodoLoop.toString());
             nodoLoop.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoLoop2 = new Nodo();
             nodoLoop2.setTag("LOOP");
             nodoLoop2.setValue(nodoLoop2.toString());
             nodoLoop2.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoEnd = new Nodo();
             nodoEnd.setTag("END");
             nodoEnd.setValue(nodoEnd.toString());
             nodoEnd.setId(parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL*/
+            /*Nuevo Nodo: TERMINAL
             Nodo nodoSemicolon = new Nodo();
             nodoSemicolon.setTag("SEMICOLON");
             nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -3145,9 +3142,9 @@ ciclo_for   ::= FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 sa
             /*Se añaden los hijos*/
             //nodo.AddHijo(nodoFor);
             nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoIn);
+            //nodo.AddHijo(nodoIn);
             nodo.AddHijo(nodoNum);
-            nodo.AddHijo(nodoDosPuntos);
+            //nodo.AddHijo(nodoDosPuntos);
             nodo.AddHijo(nodoNum2);
             //nodo.AddHijo(nodoLoop);
             nodo.AddHijo((Nodo) child1);
@@ -3203,14 +3200,14 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
     nodo.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoPut = new Nodo();
     nodoPut.setTag("PUT");
     nodoPut.setValue(nodoPut.toString());
     nodoPut.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoParizq = new Nodo();
     nodoParizq.setTag("PARIZQ");
     nodoParizq.setValue(n1.toString());
@@ -3224,27 +3221,25 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
     nodoNum.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoParder = new Nodo();
     nodoParder.setTag("PARDER");
     nodoParder.setValue(n3.toString());
     nodoParder.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoSemicolon = new Nodo();
     nodoSemicolon.setTag("SEMICOLON");
     nodoSemicolon.setValue(nodoSemicolon.toString());
     nodoSemicolon.setId(parser.cont);
     parser.cont++;
 
-    
-
     /*Se añaden los hijos*/
     //nodo.AddHijo(nodoPut);
-    nodo.AddHijo(nodoParizq);
+    //nodo.AddHijo(nodoParizq);
     nodo.AddHijo(nodoNum);
-    nodo.AddHijo(nodoParder);
+    //nodo.AddHijo(nodoParder);
     //nodo.AddHijo(nodoSemicolon);
     
     
@@ -3259,14 +3254,14 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
     nodo.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoPut = new Nodo();
     nodoPut.setTag("PUT");
     nodoPut.setValue(nodoPut.toString());
     nodoPut.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoParizq = new Nodo();
     nodoParizq.setTag("PARIZQ");
     nodoParizq.setValue(n1.toString());
@@ -3280,27 +3275,25 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
     nodoString.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoParder = new Nodo();
     nodoParder.setTag("PARDER");
     nodoParder.setValue(n3.toString());
     nodoParder.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoSemicolon = new Nodo();
     nodoSemicolon.setTag("SEMICOLON");
     nodoSemicolon.setValue(nodoSemicolon.toString());
     nodoSemicolon.setId(parser.cont);
     parser.cont++;
 
-    
-
     /*Se añaden los hijos*/
     //nodo.AddHijo(nodoPut);
-    nodo.AddHijo(nodoParizq);
+    //nodo.AddHijo(nodoParizq);
     nodo.AddHijo(nodoString);
-    nodo.AddHijo(nodoParder);
+    //nodo.AddHijo(nodoParder);
     //nodo.AddHijo(nodoSemicolon);
     
     
@@ -3315,14 +3308,14 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
     nodo.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoPut = new Nodo();
     nodoPut.setTag("PUT");
     nodoPut.setValue(nodoPut.toString());
     nodoPut.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoParizq = new Nodo();
     nodoParizq.setTag("PARIZQ");
     nodoParizq.setValue(n1.toString());
@@ -3336,27 +3329,25 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
     nodoChar.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoParder = new Nodo();
     nodoParder.setTag("PARDER");
     nodoParder.setValue(n3.toString());
     nodoParder.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoSemicolon = new Nodo();
     nodoSemicolon.setTag("SEMICOLON");
     nodoSemicolon.setValue(nodoSemicolon.toString());
     nodoSemicolon.setId(parser.cont);
     parser.cont++;
 
-    
-
     /*Se añaden los hijos*/
     //nodo.AddHijo(nodoPut);
-    nodo.AddHijo(nodoParizq);
+    //nodo.AddHijo(nodoParizq);
     nodo.AddHijo(nodoChar);
-    nodo.AddHijo(nodoParder);
+    //nodo.AddHijo(nodoParder);
     //nodo.AddHijo(nodoSemicolon);
     
     
@@ -3372,14 +3363,14 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
     nodo.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoPut = new Nodo();
     nodoPut.setTag("PUT");
     nodoPut.setValue(nodoPut.toString());
     nodoPut.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoParizq = new Nodo();
     nodoParizq.setTag("PARIZQ");
     nodoParizq.setValue(n1.toString());
@@ -3393,14 +3384,14 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
     nodoTrue.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoParder = new Nodo();
     nodoParder.setTag("PARDER");
     nodoParder.setValue(n3.toString());
     nodoParder.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoSemicolon = new Nodo();
     nodoSemicolon.setTag("SEMICOLON");
     nodoSemicolon.setValue(nodoSemicolon.toString());
@@ -3411,9 +3402,9 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
 
     /*Se añaden los hijos*/
     //nodo.AddHijo(nodoPut);
-    nodo.AddHijo(nodoParizq);
+    //nodo.AddHijo(nodoParizq);
     nodo.AddHijo(nodoTrue);
-    nodo.AddHijo(nodoParder);
+    //nodo.AddHijo(nodoParder);
     //nodo.AddHijo(nodoSemicolon);
     
     
@@ -3429,14 +3420,14 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
     nodo.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoPut = new Nodo();
     nodoPut.setTag("PUT");
     nodoPut.setValue(nodoPut.toString());
     nodoPut.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoParizq = new Nodo();
     nodoParizq.setTag("PARIZQ");
     nodoParizq.setValue(n1.toString());
@@ -3450,27 +3441,25 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
     nodoFalse.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoParder = new Nodo();
     nodoParder.setTag("PARDER");
     nodoParder.setValue(n3.toString());
     nodoParder.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoSemicolon = new Nodo();
     nodoSemicolon.setTag("SEMICOLON");
     nodoSemicolon.setValue(nodoSemicolon.toString());
     nodoSemicolon.setId(parser.cont);
     parser.cont++;
 
-    
-
     /*Se añaden los hijos*/
     //nodo.AddHijo(nodoPut);
-    nodo.AddHijo(nodoParizq);
+    //nodo.AddHijo(nodoParizq);
     nodo.AddHijo(nodoFalse);
-    nodo.AddHijo(nodoParder);
+    //nodo.AddHijo(nodoParder);
     //nodo.AddHijo(nodoSemicolon);
     
     
@@ -3485,14 +3474,14 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
     nodo.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoPut = new Nodo();
     nodoPut.setTag("PUT");
     nodoPut.setValue(nodoPut.toString());
     nodoPut.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoParizq = new Nodo();
     nodoParizq.setTag("PARIZQ");
     nodoParizq.setValue(n1.toString());
@@ -3506,27 +3495,25 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
     nodoId.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoParder = new Nodo();
     nodoParder.setTag("PARDER");
     nodoParder.setValue(n3.toString());
     nodoParder.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoSemicolon = new Nodo();
     nodoSemicolon.setTag("SEMICOLON");
     nodoSemicolon.setValue(nodoSemicolon.toString());
     nodoSemicolon.setId(parser.cont);
     parser.cont++;
 
-    
-
     /*Se añaden los hijos*/
     //nodo.AddHijo(nodoPut);
-    nodo.AddHijo(nodoParizq);
+    //nodo.AddHijo(nodoParizq);
     nodo.AddHijo(nodoId);
-    nodo.AddHijo(nodoParder);
+    //nodo.AddHijo(nodoParder);
     //nodo.AddHijo(nodoSemicolon);
     
     
@@ -3543,14 +3530,14 @@ put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         nodo.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoPutLine = new Nodo();
         nodoPutLine.setTag("PUTLINE");
         nodoPutLine.setValue(nodoPutLine.toString());
         nodoPutLine.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoParizq = new Nodo();
         nodoParizq.setTag("PARIZQ");
         nodoParizq.setValue(n1.toString());
@@ -3564,29 +3551,26 @@ put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         nodoNum.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoParder = new Nodo();
         nodoParder.setTag("PARDER");
         nodoParder.setValue(n3.toString());
         nodoParder.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoSemicolon = new Nodo();
         nodoSemicolon.setTag("SEMICOLON");
         nodoSemicolon.setValue(nodoSemicolon.toString());
         nodoSemicolon.setId(parser.cont);
         parser.cont++;
 
-        
-
         /*Se añaden los hijos*/
         //nodo.AddHijo(nodoPutLine);
-        nodo.AddHijo(nodoParizq);
+        //nodo.AddHijo(nodoParizq);
         nodo.AddHijo(nodoNum);
-        nodo.AddHijo(nodoParder);
+        //nodo.AddHijo(nodoParder);
         //nodo.AddHijo(nodoSemicolon);
-        
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -3598,14 +3582,14 @@ put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         nodo.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoPutLine = new Nodo();
         nodoPutLine.setTag("PUTLINE");
         nodoPutLine.setValue(nodoPutLine.toString());
         nodoPutLine.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoParizq = new Nodo();
         nodoParizq.setTag("PARIZQ");
         nodoParizq.setValue(n1.toString());
@@ -3619,29 +3603,26 @@ put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         nodoString.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoParder = new Nodo();
         nodoParder.setTag("PARDER");
         nodoParder.setValue(n3.toString());
         nodoParder.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoSemicolon = new Nodo();
         nodoSemicolon.setTag("SEMICOLON");
         nodoSemicolon.setValue(nodoSemicolon.toString());
         nodoSemicolon.setId(parser.cont);
         parser.cont++;
 
-        
-
         /*Se añaden los hijos*/
         //nodo.AddHijo(nodoPutLine);
-        nodo.AddHijo(nodoParizq);
+        //nodo.AddHijo(nodoParizq);
         nodo.AddHijo(nodoString);
-        nodo.AddHijo(nodoParder);
+        //nodo.AddHijo(nodoParder);
         //nodo.AddHijo(nodoSemicolon);
-        
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -3653,14 +3634,14 @@ put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         nodo.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoPutLine = new Nodo();
         nodoPutLine.setTag("PUTLINE");
         nodoPutLine.setValue(nodoPutLine.toString());
         nodoPutLine.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoParizq = new Nodo();
         nodoParizq.setTag("PARIZQ");
         nodoParizq.setValue(n1.toString());
@@ -3674,29 +3655,26 @@ put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         nodoChar.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoParder = new Nodo();
         nodoParder.setTag("PARDER");
         nodoParder.setValue(n3.toString());
         nodoParder.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoSemicolon = new Nodo();
         nodoSemicolon.setTag("SEMICOLON");
         nodoSemicolon.setValue(nodoSemicolon.toString());
         nodoSemicolon.setId(parser.cont);
         parser.cont++;
 
-        
-
         /*Se añaden los hijos*/
         //nodo.AddHijo(nodoPutLine);
-        nodo.AddHijo(nodoParizq);
+        //nodo.AddHijo(nodoParizq);
         nodo.AddHijo(nodoChar);
-        nodo.AddHijo(nodoParder);
+        //nodo.AddHijo(nodoParder);
         //nodo.AddHijo(nodoSemicolon);
-        
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -3709,14 +3687,14 @@ put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         nodo.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoPutLine = new Nodo();
         nodoPutLine.setTag("PUTLINE");
         nodoPutLine.setValue(nodoPutLine.toString());
         nodoPutLine.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoParizq = new Nodo();
         nodoParizq.setTag("PARIZQ");
         nodoParizq.setValue(n1.toString());
@@ -3730,29 +3708,26 @@ put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         nodoTrue.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoParder = new Nodo();
         nodoParder.setTag("PARDER");
         nodoParder.setValue(n3.toString());
         nodoParder.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoSemicolon = new Nodo();
         nodoSemicolon.setTag("SEMICOLON");
         nodoSemicolon.setValue(nodoSemicolon.toString());
         nodoSemicolon.setId(parser.cont);
         parser.cont++;
 
-        
-
         /*Se añaden los hijos*/
         //nodo.AddHijo(nodoPutLine);
-        nodo.AddHijo(nodoParizq);
+        //nodo.AddHijo(nodoParizq);
         nodo.AddHijo(nodoTrue);
-        nodo.AddHijo(nodoParder);
+        //nodo.AddHijo(nodoParder);
         //nodo.AddHijo(nodoSemicolon);
-        
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -3765,14 +3740,14 @@ put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         nodo.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoPutLine = new Nodo();
         nodoPutLine.setTag("PUTLINE");
         nodoPutLine.setValue(nodoPutLine.toString());
         nodoPutLine.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoParizq = new Nodo();
         nodoParizq.setTag("PARIZQ");
         nodoParizq.setValue(n1.toString());
@@ -3786,29 +3761,26 @@ put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         nodoFalse.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoParder = new Nodo();
         nodoParder.setTag("PARDER");
         nodoParder.setValue(n3.toString());
         nodoParder.setId(parser.cont);
         parser.cont++;
 
-        /*Nuevo Nodo: TERMINAL*/
+        /*Nuevo Nodo: TERMINAL
         Nodo nodoSemicolon = new Nodo();
         nodoSemicolon.setTag("SEMICOLON");
         nodoSemicolon.setValue(nodoSemicolon.toString());
         nodoSemicolon.setId(parser.cont);
         parser.cont++;
 
-        
-
         /*Se añaden los hijos*/
         //nodo.AddHijo(nodoPutLine);
-        nodo.AddHijo(nodoParizq);
+        //nodo.AddHijo(nodoParizq);
         nodo.AddHijo(nodoFalse);
-        nodo.AddHijo(nodoParder);
+        //nodo.AddHijo(nodoParder);
         //nodo.AddHijo(nodoSemicolon);
-        
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -3823,14 +3795,14 @@ get ::= GET PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
     nodo.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoGet = new Nodo();
     nodoGet.setTag("GET");
     nodoGet.setValue(nodoGet.toString());
     nodoGet.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoParizq = new Nodo();
     nodoParizq.setTag("PARIZQ");
     nodoParizq.setValue(n1.toString());
@@ -3844,27 +3816,25 @@ get ::= GET PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
     nodoId.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoParder = new Nodo();
     nodoParder.setTag("PARDER");
     nodoParder.setValue(n3.toString());
     nodoParder.setId(parser.cont);
     parser.cont++;
 
-    /*Nuevo Nodo: TERMINAL*/
+    /*Nuevo Nodo: TERMINAL
     Nodo nodoSemicolon = new Nodo();
     nodoSemicolon.setTag("SEMICOLON");
     nodoSemicolon.setValue(nodoSemicolon.toString());
     nodoSemicolon.setId(parser.cont);
     parser.cont++;
 
-    
-
     /*Se añaden los hijos*/
     //nodo.AddHijo(nodoGet);
-    nodo.AddHijo(nodoParizq);
+    //nodo.AddHijo(nodoParizq);
     nodo.AddHijo(nodoId);
-    nodo.AddHijo(nodoParder);
+    //nodo.AddHijo(nodoParder);
     //nodo.AddHijo(nodoSemicolon);
     
     
@@ -3889,58 +3859,55 @@ declaracion_arreglo ::= ID:n1 DECLARACION:n2 ARRAY PARIZQ:n3 dimension_arreglo:c
                     nodoId.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoDeclaracion = new Nodo();
                     nodoDeclaracion.setTag("DECLARACION");
                     nodoDeclaracion.setValue(n2.toString());
                     nodoDeclaracion.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoArray = new Nodo();
                     nodoArray.setTag("ARRAY");
                     nodoArray.setValue(nodoArray.toString());
                     nodoArray.setId(parser.cont);
                     parser.cont++;
-
                     
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoParizq = new Nodo();
                     nodoParizq.setTag("PARIZQ");
                     nodoParizq.setValue(n3.toString());
                     nodoParizq.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoParder = new Nodo();
                     nodoParder.setTag("PARDER");
                     nodoParder.setValue(n4.toString());
                     nodoParder.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoOF = new Nodo();
                     nodoOF.setTag("OF");
                     nodoOF.setValue(nodoOF.toString());
                     nodoOF.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoSemicolon = new Nodo();
                     nodoSemicolon.setTag("SEMICOLON");
                     nodoSemicolon.setValue(nodoSemicolon.toString());
                     nodoSemicolon.setId(parser.cont);
                     parser.cont++;
 
-                    
-
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoId);
-                    nodo.AddHijo(nodoDeclaracion);
+                    //nodo.AddHijo(nodoDeclaracion);
                     //nodo.AddHijo(nodoArray);
-                    nodo.AddHijo(nodoParizq);
+                    //nodo.AddHijo(nodoParizq);
                     nodo.AddHijo((Nodo) child1);
-                    nodo.AddHijo(nodoParder);
+                   //nodo.AddHijo(nodoParder);
                    // nodo.AddHijo(nodoOF);
                     nodo.AddHijo((Nodo) child2);
                     //nodo.AddHijo(nodoSemicolon);
@@ -3958,7 +3925,7 @@ dimension_arreglo   ::= tipo_variable:child1 COMA:n1 dimension_arreglo:child2 {:
                     nodo.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoComa = new Nodo();
                     nodoComa.setTag("COMA");
                     nodoComa.setValue(n1.toString());
@@ -3967,7 +3934,7 @@ dimension_arreglo   ::= tipo_variable:child1 COMA:n1 dimension_arreglo:child2 {:
 
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
-                    nodo.AddHijo(nodoComa);
+                    //nodo.AddHijo(nodoComa);
                     nodo.AddHijo((Nodo) child2);
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -3980,7 +3947,6 @@ dimension_arreglo   ::= tipo_variable:child1 COMA:n1 dimension_arreglo:child2 {:
                     nodo.setTag("dimension_arreglo");
                     nodo.setId(parser.cont);
                     parser.cont++;
-
 
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
@@ -4010,14 +3976,14 @@ dimension_arreglo   ::= tipo_variable:child1 COMA:n1 dimension_arreglo:child2 {:
                     nodoNum2.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoDosPuntos = new Nodo();
                     nodoDosPuntos.setTag("DOSPUNTOS");
                     nodoDosPuntos.setValue(n2.toString());
                     nodoDosPuntos.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoComa = new Nodo();
                     nodoComa.setTag("COMA");
                     nodoComa.setValue(n4.toString());
@@ -4026,13 +3992,11 @@ dimension_arreglo   ::= tipo_variable:child1 COMA:n1 dimension_arreglo:child2 {:
 
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoNum);
-                    nodo.AddHijo(nodoDosPuntos);
+                    //nodo.AddHijo(nodoDosPuntos);
                     nodo.AddHijo(nodoNum2);
-                    nodo.AddHijo(nodoComa);
+                    //nodo.AddHijo(nodoComa);
                     nodo.AddHijo((Nodo) child1);
                     
-
-
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
 
@@ -4058,18 +4022,16 @@ dimension_arreglo   ::= tipo_variable:child1 COMA:n1 dimension_arreglo:child2 {:
                     nodoNum2.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoDosPuntos = new Nodo();
                     nodoDosPuntos.setTag("DOSPUNTOS");
                     nodoDosPuntos.setValue(n2.toString());
                     nodoDosPuntos.setId(parser.cont);
                     parser.cont++;
 
-                    
-
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoNum);
-                    nodo.AddHijo(nodoDosPuntos);
+                    //nodo.AddHijo(nodoDosPuntos);
                     nodo.AddHijo(nodoNum2);
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -4082,15 +4044,14 @@ dimension_arreglo   ::= tipo_variable:child1 COMA:n1 dimension_arreglo:child2 {:
                     nodo.setId(parser.cont);
                     parser.cont++;
 
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoRange = new Nodo();
                     nodoRange.setTag("RANGE");
                     nodoRange.setValue(nodoRange.toString());
                     nodoRange.setId(parser.cont);
                     parser.cont++;
 
-
-                    /*Nuevo Nodo: TERMINAL*/
+                    /*Nuevo Nodo: TERMINAL
                     Nodo nodoCaja = new Nodo();
                     nodoCaja.setTag("CAJA");
                     nodoCaja.setValue(nodoCaja.toString());
@@ -4107,8 +4068,3 @@ dimension_arreglo   ::= tipo_variable:child1 COMA:n1 dimension_arreglo:child2 {:
 
                     :}
                     ;
-
-                        
-                    
-
-
