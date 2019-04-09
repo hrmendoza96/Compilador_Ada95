@@ -10,6 +10,26 @@ public class Nodo {
     public Nodo(){
         /* Empty Constructor */
     }
+
+    public Nodo(String tag, String value, int id){
+        /* Empty Constructor */
+        this.tag = tag;
+        this.value = value;
+        this.id = id;
+    }
+
+    
+    public Nodo(String tag, int id){
+        /* Empty Constructor */
+        this.tag = tag;
+        this.id = id;
+    }
+
+    public Nodo(String tag, String value){
+        /* Empty Constructor */
+        this.tag = tag;
+        this.value = value;
+    }
     
     public void AddHijo(Nodo child) {
         children.add(child);
