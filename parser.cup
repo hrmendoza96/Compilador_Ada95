@@ -1931,137 +1931,6 @@ salir_ciclo ::= EXIT WHEN condicion:child1 {:
             ;
 
 /*==========================================PUT y GET===========================================*/
-put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
-    /*Se crea el nodo prinicipal*/
-    Nodo nodo = new Nodo("put", parser.cont);
-    parser.cont++;
-
-    /*Nuevo Nodo: TERMINAL*/
-    Nodo nodoNum = new Nodo("NUM", n2.toString(), parser.cont);
-    parser.cont++;
-
-
-    /*Se añaden los hijos*/
-    nodo.AddHijo(nodoNum);
-    
-    
-    /*Asignar el nodo al RESULT para continuar el recorrido*/
-    RESULT = nodo;
-
-    :}
-    | PUT error NUM:n2 PARDER:n3 SEMICOLON
-    | PUT PARIZQ:n1 error PARDER:n3 SEMICOLON
-    | PUT PARIZQ:n1 NUM:n2 error SEMICOLON
-    | PUT PARIZQ:n1 NUM:n2 PARDER:n3 error
-	| PUT PARIZQ:n1 STRING:n2 PARDER:n3 SEMICOLON {:
-    /*Se crea el nodo prinicipal*/
-    Nodo nodo = new Nodo("put", parser.cont);
-    parser.cont++;
-
-   
-    /*Nuevo Nodo: TERMINAL*/
-    Nodo nodoString = new Nodo("STRING", n2.toString().replaceAll("\"", ""), parser.cont);
-    parser.cont++;
-
-    /*Se añaden los hijos*/
-    nodo.AddHijo(nodoString);
-    
-    
-    /*Asignar el nodo al RESULT para continuar el recorrido*/
-    RESULT = nodo;
-    
-    :}
-    | PUT error STRING:n2 PARDER:n3 SEMICOLON
-    | PUT PARIZQ:n1 STRING:n2 error SEMICOLON
-    | PUT PARIZQ:n1 STRING:n2 PARDER:n3 error
-    | PUT PARIZQ:n1 CHAR:n2 PARDER:n3 SEMICOLON {:
-    /*Se crea el nodo prinicipal*/
-    Nodo nodo = new Nodo("put", parser.cont);
-    parser.cont++;
-
-
-    /*Nuevo Nodo: TERMINAL*/
-    Nodo nodoChar = new Nodo("CHAR", n2.toString(), parser.cont);
-    parser.cont++;
-
-   
-    /*Se añaden los hijos*/
-    nodo.AddHijo(nodoChar);
-    
-    
-    /*Asignar el nodo al RESULT para continuar el recorrido*/
-    RESULT = nodo;
-    
-    
-    :}
-    | PUT error CHAR:n2 PARDER:n3 SEMICOLON
-    | PUT PARIZQ:n1 CHAR:n2 error SEMICOLON
-    | PUT PARIZQ:n1 CHAR:n2 PARDER:n3 error
-    | PUT PARIZQ:n1 TRUE:n2 PARDER:n3 SEMICOLON {:
-    /*Se crea el nodo prinicipal*/
-    Nodo nodo = new Nodo("put", parser.cont);
-    parser.cont++;
-
-    /*Nuevo Nodo: TERMINAL*/
-    Nodo nodoTrue = new Nodo("TRUE", n2.toString(), parser.cont);
-    parser.cont++;
-
-
-    /*Se añaden los hijos*/
-    nodo.AddHijo(nodoTrue);
-    
-    
-    /*Asignar el nodo al RESULT para continuar el recorrido*/
-    RESULT = nodo;
-    
-    
-    :}
-    | PUT error TRUE:n2 PARDER:n3 SEMICOLON
-    | PUT PARIZQ:n1 TRUE:n2 error SEMICOLON
-    | PUT PARIZQ:n1 TRUE:n2 PARDER:n3 error
-    | PUT PARIZQ:n1 FALSE:n2 PARDER:n3 SEMICOLON {:
-     /*Se crea el nodo prinicipal*/
-    Nodo nodo = new Nodo("put", parser.cont);
-    parser.cont++;
-
-
-    /*Nuevo Nodo: TERMINAL*/
-    Nodo nodoFalse = new Nodo("FALSE", n2.toString(), parser.cont);
-    parser.cont++;
-
-
-    /*Se añaden los hijos*/
-    nodo.AddHijo(nodoFalse);
-    
-    
-    /*Asignar el nodo al RESULT para continuar el recorrido*/
-    RESULT = nodo;
-    
-    :}
-    | PUT PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
-    /*Se crea el nodo prinicipal*/
-    Nodo nodo = new Nodo("put", parser.cont);
-    parser.cont++;
-
-    
-
-    /*Nuevo Nodo: TERMINAL*/
-    Nodo nodoId = new Nodo("ID", n2.toString(), parser.cont);
-    parser.cont++;
-    
-    /*Se añaden los hijos*/
-    nodo.AddHijo(nodoId);
-    
-    
-    /*Asignar el nodo al RESULT para continuar el recorrido*/
-    RESULT = nodo;
-    
-    :}
-    | PUT error FALSE:n2 PARDER:n3 SEMICOLON
-    | PUT PARIZQ:n1 FALSE:n2 error SEMICOLON
-    | PUT PARIZQ:n1 FALSE:n2 PARDER:n3 error
-	;
-
 put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo("put_line", parser.cont);
@@ -2141,11 +2010,12 @@ put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         :}
         | PUT_LINE error TRUE:n2 PARDER:n3 SEMICOLON
         | PUT_LINE PARIZQ:n1 TRUE:n2 error SEMICOLON
+        | PUT_LINE PARIZQ:n1 TRUE:n2 PARDER:n3 error
         | PUT_LINE PARIZQ:n1 FALSE:n2 PARDER:n3 SEMICOLON {:
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo("put_line", parser.cont);
         parser.cont++;
-        
+
         /*Nuevo Nodo: TERMINAL*/
         Nodo nodoFalse = new Nodo("FALSE", n2.toString(), parser.cont);
         parser.cont++;
@@ -2158,6 +2028,9 @@ put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         RESULT = nodo;
         
         :}
+        | PUT_LINE error FALSE:n2 PARDER:n3 SEMICOLON
+        | PUT_LINE PARIZQ:n1 FALSE:n2 error SEMICOLON
+        | PUT_LINE PARIZQ:n1 FALSE:n2 PARDER:n3 error
 	    ;
 
 get ::= GET PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
@@ -2179,109 +2052,9 @@ get ::= GET PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
     RESULT = nodo;
 
     :}
+    | GET error ID:n2 PARDER:n3 SEMICOLON
+    | GET PARIZQ:n1 error PARDER:n3 SEMICOLON
+    | GET PARIZQ:n1 ID:n2 error SEMICOLON
+    | GET PARIZQ:n1 ID:n2 PARDER:n3 error
 	;
 
-/*==================================================ARREGLOS=========================================*/
-declaracion_arreglo ::= ID:n1 DECLARACION:n2 ARRAY PARIZQ:n3 dimension_arreglo:child1 PARDER:n4 OF tipo_variable:child2 SEMICOLON {:
-                    /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("declaracion_arreglo", parser.cont);
-                    parser.cont++;
-
-                    /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-                    parser.cont++;
-
-                    /*Se añaden los hijos*/
-                    nodo.AddHijo(nodoId);
-                    nodo.AddHijo((Nodo) child1);
-                    nodo.AddHijo((Nodo) child2);
-                    
-                    
-                    /*Asignar el nodo al RESULT para continuar el recorrido*/
-                    RESULT = nodo;
-                    :}
-			        ;
-
-dimension_arreglo   ::= tipo_variable:child1 COMA:n1 dimension_arreglo:child2 {:
-                    /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("dimension_arreglo", parser.cont);
-                    parser.cont++;
-
-
-                    /*Se añaden los hijos*/
-                    nodo.AddHijo((Nodo) child1);
-                    nodo.AddHijo((Nodo) child2);
-
-                    /*Asignar el nodo al RESULT para continuar el recorrido*/
-                    RESULT = nodo;
-
-                    :} 
-                    | tipo_variable:child1 {:
-                    /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("dimension_arreglo", parser.cont);
-                    parser.cont++;
-
-                    /*Se añaden los hijos*/
-                    nodo.AddHijo((Nodo) child1);
-
-                    /*Asignar el nodo al RESULT para continuar el recorrido*/
-                    RESULT = nodo;
-
-                    :}
-                    | NUM:n1 DOSPUNTOS:n2 NUM:n3 COMA:n4 dimension_arreglo:child1  {:
-                    /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("dimension_arreglo", parser.cont);
-                    parser.cont++;
-
-                    /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoNum = new Nodo("NUM", n1.toString(), parser.cont);
-                    parser.cont++;
-
-                    /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoNum2 = new Nodo("NUM", n3.toString(), parser.cont);
-                    parser.cont++;
-
-                    /*Se añaden los hijos*/
-                    nodo.AddHijo(nodoNum);
-                    //nodo.AddHijo(nodoDosPuntos);
-                    nodo.AddHijo(nodoNum2);
-                    //nodo.AddHijo(nodoComa);
-                    nodo.AddHijo((Nodo) child1);
-                    
-                    /*Asignar el nodo al RESULT para continuar el recorrido*/
-                    RESULT = nodo;
-
-                    :}
-                    | NUM:n1 DOSPUNTOS:n2 NUM:n3 {:
-                    /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("dimension_arreglo", parser.cont);
-                    parser.cont++;
-
-                    /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoNum = new Nodo("NUM", n1.toString(), parser.cont);
-                    parser.cont++;
-
-                    /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoNum2 = new Nodo("NUM", n3.toString(), parser.cont);
-                    parser.cont++;
-
-                    /*Se añaden los hijos*/
-                    nodo.AddHijo(nodoNum);
-                    nodo.AddHijo(nodoNum2);
-
-                    /*Asignar el nodo al RESULT para continuar el recorrido*/
-                    RESULT = nodo;
-                    :}
-                    | tipo_variable:child1 RANGE CAJA {:
-                    /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("dimension_arreglo", parser.cont);
-                    parser.cont++;
-
-                    /*Se añaden los hijos*/
-                    nodo.AddHijo((Nodo) child1);
-
-                    /*Asignar el nodo al RESULT para continuar el recorrido*/
-                    RESULT = nodo;
-
-                    :}
-                    ;

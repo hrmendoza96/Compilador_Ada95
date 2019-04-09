@@ -5,10 +5,10 @@ procedure Calc is
 begin
    loop
       
-      Put(Disp);
+      Put_Line(Disp);
 
       
-      Put("> ");
+      Put_Line("> ");
 
       
       loop

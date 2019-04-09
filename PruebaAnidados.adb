@@ -5,13 +5,13 @@ procedure Proced is
    procedure Write_A_Header() is
    begin
       Counter := 1;
-      Put("This is the heading for this little program.");
+      Put_Line("This is the heading for this little program.");
       
    end Write_A_Header;
 
    procedure Write_And_Increment() is
    begin
-      Put("This is line number");
+      Put_Line("This is line number");
       
       Put_Line(" of this program.");
       Counter := Counter + 1;
