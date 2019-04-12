@@ -12,8 +12,6 @@ import java.util.ArrayList;
 %standalone
 %ignorecase 
 
-
-
 %{
     public static ArrayList<String> ErroresLexicos = new ArrayList<String>();    
 %}
@@ -39,7 +37,6 @@ PARIZQ = "("
 PARDER = ")"
 SEMICOLON = ";"
 COMA = ","
-CAJA = "<>"
 DOSPUNTOS = ".."
 
 // Identificador
@@ -68,7 +65,6 @@ AND = ("and")
 OR = ("OR")
 XOR = ("XOR")
 
-
 // Decisiones
 BEGIN = ("begin")
 ELSE = ("else")
@@ -78,7 +74,6 @@ THEN = ("then")
 ELSIF = ("elsif")
 
 // Palabras Reservadas
-ARRAY = ("array")
 CONSTANT = ("constant")
 EXIT = ("exit")
 FUNCTION = ("function")
@@ -88,15 +83,12 @@ IN = ("in")
 IS = ("is")
 NULL = ("null")
 OUT = ("OUT")
-RANGE = ("range")
 PROCEDURE = ("Procedure")
-PUT_LINE = ("Put_Line")
 RETURN = ("return")
 STRINGTYPE = ("String")
 TRUE = ("true")
 FALSE = ("false")
 WHEN = ("when")
-OF = ("of")
 
 // For, While y Loop
 FOR = ("for")
@@ -110,7 +102,6 @@ LOOP = ("loop")
     {PROCEDURE} { return new Symbol(sym.PROCEDURE, yycolumn, yyline, yytext()); }  
     {FUNCTION} { return new Symbol(sym.FUNCTION, yycolumn, yyline, yytext()); } 
     {RETURN} { return new Symbol(sym.RETURN, yycolumn, yyline, yytext()); }
-    {ARRAY} { return new Symbol(sym.ARRAY, yycolumn, yyline, yytext()); }
     {CONSTANT} { return new Symbol(sym.CONSTANT, yycolumn, yyline, yytext()); }
     {IS} { return new Symbol(sym.IS, yycolumn, yyline, yytext()); }
     {BEGIN} { return new Symbol(sym.BEGIN, yycolumn, yyline, yytext()); }
@@ -132,13 +123,9 @@ LOOP = ("loop")
     {EXIT} { return new Symbol(sym.EXIT, yycolumn, yyline, yytext()); }
     {WHEN} { return new Symbol(sym.WHEN, yycolumn, yyline, yytext()); }
     {NULL} { return new Symbol(sym.NULL, yycolumn, yyline, yytext()); }
-    {RANGE} { return new Symbol(sym.RANGE, yycolumn, yyline, yytext()); }
-    {OF} { return new Symbol(sym.OF, yycolumn, yyline, yytext()); }
-
 
     {GET} { return new Symbol(sym.GET, yycolumn, yyline, yytext()); }
     {PUT} { return new Symbol(sym.PUT, yycolumn, yyline, yytext()); }
-    {PUT_LINE} { return new Symbol(sym.PUT_LINE, yycolumn, yyline, yytext()); }
 
     {INTEGER} { return new Symbol(sym.INTEGER, yycolumn, yyline, yytext()); }
     {FLOAT} { return new Symbol(sym.FLOAT, yycolumn, yyline, yytext()); }
@@ -153,7 +140,6 @@ LOOP = ("loop")
     {OPSUMA} { return new Symbol(sym.OPSUMA, yycolumn, yyline, yytext()); }
     {PARDER} { return new Symbol(sym.PARDER, yycolumn, yyline, yytext()); }
     {PARIZQ} { return new Symbol(sym.PARIZQ, yycolumn, yyline, yytext()); }
-    {CAJA} { return new Symbol(sym.OPREL, yycolumn, yyline, yytext()); }
     {SEMICOLON} { return new Symbol(sym.SEMICOLON, yycolumn, yyline, yytext()); }
     {COMA} { return new Symbol(sym.COMA, yycolumn, yyline, yytext()); }
     {DOSPUNTOS} { return new Symbol(sym.DOSPUNTOS, yycolumn, yyline, yytext()); }

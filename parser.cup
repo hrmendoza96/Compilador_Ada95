@@ -20,10 +20,10 @@ parser code
 :}
 
 // Terminales
-terminal PROCEDURE, FUNCTION, RETURN, ARRAY, CONSTANT, IS, BEGIN, END, IF, THEN, ELSE, ELSIF, FOR, IN, OUT, WHILE, LOOP;
-terminal AND,OR,XOR,FALSE,TRUE,EXIT,WHEN,NULL,GET,PUT,PUT_LINE, RANGE, OF;
+terminal PROCEDURE, FUNCTION, RETURN, CONSTANT, IS, BEGIN, END, IF, THEN, ELSE, ELSIF, FOR, IN, OUT, WHILE, LOOP;
+terminal AND,OR,XOR,FALSE,TRUE,EXIT,WHEN,NULL,GET,PUT;
 terminal INTEGER,FLOAT,BOOLEAN,CHARACTER,STRINGTYPE;
-terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,CAJA,SEMICOLON,COMA, DOSPUNTOS;
+terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,SEMICOLON,COMA, DOSPUNTOS;
 terminal String ID;
 terminal String NUM;
 terminal String STRING,CHAR;
@@ -31,13 +31,12 @@ terminal String STRING,CHAR;
 // No Terminales
 non terminal inicio, cuerpo_principal, comienza_cuerpo_principal;
 non terminal parametros, datos_parametros, tipo_parametro, tipo_declaracion, declarar_procedimiento, declarar_funcion, llamar_funcion, funcion, declarar_variable;
-non terminal declaracion_arreglo, dimension_arreglo;
 non terminal tipo_variable, listar_ids;
 non terminal codigo;
 non terminal condicion, operando, expresion_booleana;
 non terminal ciclo_loop, ciclo_for, ciclo_while, salir_ciclo, bloque_if, bloque_elsif, bloque_else, procedimiento;
 non terminal expresion_aritmetica, E, E_prima, T, T_prima, F;
-non terminal asignacion,get,put,put_line;
+non terminal asignacion,get,put;
 
 // Precedencia de Operadores - de menor a mayor
 precedence left OPREL;
@@ -327,31 +326,6 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         RESULT = nodo;
 
         :}
-        | put_line:child1 codigo:child2 {:
-        /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo", parser.cont);
-        parser.cont++;
- 
-        /*Se añaden los hijos*/
-        nodo.AddHijo((Nodo) child1);
-        nodo.AddHijo((Nodo) child2);
-
-        /*Asignar el nodo al RESULT para continuar el recorrido*/
-        RESULT = nodo;
-
-        :}
-        | put_line:child1 {:
-        /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo", parser.cont);
-        parser.cont++;
- 
-        /*Se añaden los hijos*/
-        nodo.AddHijo((Nodo) child1);
-
-        /*Asignar el nodo al RESULT para continuar el recorrido*/
-        RESULT = nodo;
-
-        :}
         | asignacion:child1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo("codigo", parser.cont);
@@ -429,20 +403,18 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         ;
 
 /*Estos son los parámetros para procedimientos.*/
-parametros  ::=  PARIZQ:n1 datos_parametros:child1 PARDER:n2 {:
+parametros  ::=  PARIZQ datos_parametros:child1 PARDER {:
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo("parametros", parser.cont );
             parser.cont++;
-
     
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
-            | PARIZQ:n1 PARDER:n2 {:
+            | PARIZQ PARDER:n2 {:
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo("parametros", parser.cont );
             parser.cont++;
@@ -453,13 +425,11 @@ parametros  ::=  PARIZQ:n1 datos_parametros:child1 PARDER:n2 {:
             ;
 
 /*Estos son los datos de los paáametros.*/
-datos_parametros    ::= listar_ids:child1 DECLARACION:n1 tipo_parametro:child2 tipo_variable:child3 SEMICOLON datos_parametros:child4 {:
+datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo_variable:child3 SEMICOLON datos_parametros:child4 {:
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo("datos_parametros", parser.cont);
                     parser.cont++;
 
-                    
-            
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
                     nodo.AddHijo((Nodo) child2);
@@ -468,16 +438,14 @@ datos_parametros    ::= listar_ids:child1 DECLARACION:n1 tipo_parametro:child2 t
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-
                     :}
                     | listar_ids:child1 error tipo_parametro:child2 tipo_variable:child3 SEMICOLON datos_parametros:child4
-                    | listar_ids:child1 DECLARACION:n1 tipo_parametro:child2 tipo_variable:child3 error datos_parametros:child4
-                    | listar_ids:child1 DECLARACION:n1 tipo_parametro:child2 tipo_variable:child3 {:
+                    | listar_ids:child1 DECLARACION tipo_parametro:child2 tipo_variable:child3 error datos_parametros:child4
+                    | listar_ids:child1 DECLARACION tipo_parametro:child2 tipo_variable:child3 {:
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo("datos_parametros", parser.cont);
                     parser.cont++;
-
-                    
+                
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
                     nodo.AddHijo((Nodo) child2);
@@ -485,14 +453,12 @@ datos_parametros    ::= listar_ids:child1 DECLARACION:n1 tipo_parametro:child2 t
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-
                     :}
                     | listar_ids:child1 error tipo_parametro:child2 tipo_variable:child3
                     | expresion_aritmetica:child1 
                     {:
                         Nodo nodo = new Nodo("datos_parametros", parser.cont);
                         parser.cont++;
-                        
                         nodo.AddHijo((Nodo) child1);
 
                         RESULT = nodo;
@@ -512,7 +478,6 @@ tipo_parametro  ::= IN:n1 {:
                 parser.cont++;
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
-
                 :}
                 | error
                 | IN:n1 OUT:n2 {:
@@ -534,7 +499,6 @@ tipo_parametro  ::= IN:n1 {:
 
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
-
                 :}
                 | {:
                 /*Se crea el nodo prinicipal*/
@@ -591,7 +555,6 @@ listar_ids  ::= ID:n1 COMA:n2 listar_ids:child1 {:
 
             :}
             | error
-            
             ;                    
 
 /*Aquí tenemos los tipos de declaraciones que se pueden hacer en el programa. Se pone
@@ -619,7 +582,6 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-
                     :}
                     | declarar_funcion:child1 tipo_declaracion:child2 {:
                     /*Se crea el nodo prinicipal*/
@@ -632,7 +594,6 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-
                     :}
                     | declarar_funcion:child1 {:
                     /*Se crea el nodo prinicipal*/
@@ -641,23 +602,19 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
             
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
-
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-
                     :}
                     | declarar_procedimiento:child1 tipo_declaracion:child2 {:
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
                     parser.cont++;
-            
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
                     nodo.AddHijo((Nodo) child2);
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-
                     :}
                     | declarar_procedimiento:child1 {:
                     /*Se crea el nodo prinicipal*/
@@ -669,7 +626,6 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-
                     :}
                     | llamar_funcion:child1 tipo_declaracion:child2 {:
                     /*Se crea el nodo prinicipal*/
@@ -679,10 +635,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
                     nodo.AddHijo((Nodo) child2);
-
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-
                     :}
                     | llamar_funcion:child1 {:
                     /*Se crea el nodo prinicipal*/
@@ -694,7 +648,6 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-
                     :}
                     | procedimiento:child1 tipo_declaracion:child2 {:
                     /*Se crea el nodo prinicipal*/
@@ -707,7 +660,6 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-
                     :}
                     | procedimiento:child1 {:
                     /*Se crea el nodo prinicipal*/
@@ -719,32 +671,6 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-
-                    :}
-                    | declaracion_arreglo:child1 tipo_declaracion:child2 {:
-                    /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
-                    parser.cont++;
-            
-                    /*Se añaden los hijos*/
-                    nodo.AddHijo((Nodo) child1);
-                    nodo.AddHijo((Nodo) child2);
-
-                    /*Asignar el nodo al RESULT para continuar el recorrido*/
-                    RESULT = nodo;
-
-                    :}
-                    | declaracion_arreglo:child1 {:
-                    /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
-                    parser.cont++;
-            
-                    /*Se añaden los hijos*/
-                    nodo.AddHijo((Nodo) child1);
-
-                    /*Asignar el nodo al RESULT para continuar el recorrido*/
-                    RESULT = nodo;
-
                     :}
                     | asignacion:child1 tipo_declaracion:child2
                     {:
@@ -755,7 +681,6 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                         nodo.AddHijo((Nodo) child2);
 
                         RESULT = nodo;
-                        
                     :}
                     | asignacion:child1
                     {:
@@ -812,7 +737,6 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
 
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
-
                 :}
                 | PROCEDURE error parametros:child1 IS tipo_declaracion:child2 BEGIN codigo:child3 END ID:n6 SEMICOLON
                 | PROCEDURE ID:n2 parametros:child1 IS BEGIN codigo:child2 END ID:n6 SEMICOLON
@@ -836,7 +760,6 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                 | PROCEDURE error parametros:child1 IS BEGIN codigo:child2 END ID:n6 SEMICOLON
                 ;
 
-
 declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 IS tipo_declaracion:child3 BEGIN codigo:child4 END ID:n2 SEMICOLON {:
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo("declarar_funcion", parser.cont);
@@ -846,7 +769,6 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
                     parser.cont++;
 
-
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoId);
                     nodo.AddHijo((Nodo) child1);
@@ -854,10 +776,8 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     nodo.AddHijo((Nodo) child3);
                     nodo.AddHijo((Nodo) child4);
 
-
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-
                     :}
                     | FUNCTION error parametros:child1 RETURN tipo_variable:child2 IS tipo_declaracion:child3 BEGIN codigo:child4 END ID:n2 SEMICOLON
                     | FUNCTION ID:n1 parametros:child1 error tipo_variable:child2 IS tipo_declaracion:child3 BEGIN codigo:child4 END ID:n2 SEMICOLON
@@ -870,7 +790,6 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo("declarar_funcion", parser.cont);
                     parser.cont++;
-                   
 
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
@@ -884,7 +803,6 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-                    
                     :}
                     | FUNCTION error parametros:child1 RETURN tipo_variable:child2 IS BEGIN codigo:child3 END ID:n2 SEMICOLON
                     | FUNCTION ID:n1 parametros:child1 error tipo_variable:child2 IS BEGIN codigo:child3 END ID:n2 SEMICOLON
@@ -927,7 +845,6 @@ funcion ::= ID:n1 parametros:child1 {:
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
-
         :}
         ;
 
@@ -947,10 +864,8 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     nodo.AddHijo(nodoId);
                     nodo.AddHijo((Nodo) child1);
                     
-
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-
                     :}
                     | ID:n1 error declarar_variable:child1
                     | ID:n1 DECLARACION:n2 tipo_variable:child1 SEMICOLON {:
@@ -968,7 +883,6 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-                    
                     :}
                     | ID:n1 error tipo_variable:child1 SEMICOLON
                     | ID:n1 DECLARACION:n2 tipo_variable:child1 error
@@ -988,10 +902,8 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo(nodoId);
             nodo.AddHijo((Nodo) child1);
             
-
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | ID:n1 error asignacion:child1
             | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 expresion_aritmetica:child2 SEMICOLON:n4 {:
@@ -1003,7 +915,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
 
-
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
             nodo.AddHijo((Nodo) child1);
@@ -1011,7 +922,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | ID:n1 error tipo_variable:child1 ASIGNACION:n3 expresion_aritmetica:child2 SEMICOLON:n4
             | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 expresion_aritmetica:child2 error
@@ -1024,7 +934,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoTrue = new Nodo("TRUE", n4.toString(), parser.cont);
             parser.cont++;
@@ -1034,10 +943,8 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo(nodoTrue);
             
-
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | ID:n1 error tipo_variable:child1 ASIGNACION:n3 TRUE:n4 SEMICOLON
             | ID:n1 DECLARACION:n2 tipo_variable:child1 error TRUE:n4 SEMICOLON
@@ -1050,7 +957,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
-
             
             Nodo nodoFalse = new Nodo("FALSE", n4.toString(), parser.cont);
             parser.cont++;
@@ -1062,8 +968,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
-
             :}
             | ID:n1 error tipo_variable:child1 ASIGNACION:n3 FALSE:n4 SEMICOLON
             | ID:n1 DECLARACION:n2 tipo_variable:child1 error FALSE:n4 SEMICOLON
@@ -1081,19 +985,13 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo nodoString = new Nodo("STRING", n4.toString().replaceAll("\"", ""), parser.cont);
             parser.cont++;
 
-            /*Nuevo Nodo: TERMINAL
-            
-
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo(nodoString);
-            
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-            
-
             :}
             | ID:n1 error tipo_variable:child1 ASIGNACION:n3 STRING:n4 SEMICOLON
             | ID:n1 DECLARACION:n2 tipo_variable:child1 error STRING:n4 SEMICOLON
@@ -1107,7 +1005,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoChar = new Nodo("CHAR", n4.toString(), parser.cont);
             parser.cont++;
@@ -1119,7 +1016,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | ID:n1 error tipo_variable:child1 ASIGNACION:n3 CHAR:n4 SEMICOLON
             | ID:n1 DECLARACION:n2 tipo_variable:child1 error CHAR:n4 SEMICOLON
@@ -1139,7 +1035,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | ID:n1 error expresion_aritmetica:child1 SEMICOLON
             | ID:n1 ASIGNACION:n2 expresion_aritmetica:child1 error
@@ -1152,11 +1047,9 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoTrue = new Nodo("TRUE", n3.toString(), parser.cont);
             parser.cont++;
-
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -1164,7 +1057,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | ID:n1 error TRUE:n3 SEMICOLON
             | ID:n1 ASIGNACION:n2 error SEMICOLON
@@ -1178,7 +1070,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoFalse = new Nodo("FALSE", n3.toString(), parser.cont);
             parser.cont++;
@@ -1187,10 +1078,8 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo(nodoId);
             nodo.AddHijo(nodoFalse);
             
-
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | ID:n1 error FALSE:n3 SEMICOLON
             | ID:n1 ASIGNACION:n2 FALSE:n3 error
@@ -1203,11 +1092,9 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoString = new Nodo("STRING",n3.toString().replaceAll("\"", ""), parser.cont);
             parser.cont++;
-
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -1215,7 +1102,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | ID:n1 error STRING:n3 SEMICOLON
             | ID:n1 ASIGNACION:n2 STRING:n3 error
@@ -1228,7 +1114,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoChar = new Nodo("CHAR", n3.toString(), parser.cont);
             parser.cont++;
@@ -1239,7 +1124,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | ID:n1 error CHAR:n3 SEMICOLON
             | ID:n1 ASIGNACION:n2 CHAR:n3 error
@@ -1264,7 +1148,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | ID:n1 error CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 expresion_aritmetica:child2 SEMICOLON
             | ID:n1 DECLARACION:n2 error tipo_variable:child1 ASIGNACION:n4 expresion_aritmetica:child2 SEMICOLON
@@ -1279,16 +1162,13 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoConstant = new Nodo("CONSTANT", n3.toString(), parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoTrue = new Nodo("TRUE", n5.toString(), parser.cont);
             parser.cont++;
-
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -1296,10 +1176,8 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo(nodoTrue);
             
-
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | ID:n1 error CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 TRUE:n5 SEMICOLON
             | ID:n1 DECLARACION:n2 error tipo_variable:child1 ASIGNACION:n4 TRUE:n5 SEMICOLON
@@ -1315,16 +1193,13 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoConstant = new Nodo("CONSTANT", n3.toString(), parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoFalse = new Nodo("FALSE", n5.toString(), parser.cont);
             parser.cont++;
-
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -1334,7 +1209,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | ID:n1 error CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 FALSE:n5 SEMICOLON
             | ID:n1 DECLARACION:n2 error tipo_variable:child1 ASIGNACION:n4 FALSE:n5 SEMICOLON
@@ -1349,16 +1223,13 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoConstant = new Nodo("CONSTANT", n3.toString(), parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoString = new Nodo("STRING", n5.toString().replaceAll("\"", ""), parser.cont);
             parser.cont++;
-
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -1368,7 +1239,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-            
             :}
             | ID:n1 error CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 STRING:n5 SEMICOLON
             | ID:n1 DECLARACION:n2 error tipo_variable:child1 ASIGNACION:n4 STRING:n5 SEMICOLON
@@ -1383,16 +1253,13 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoConstant = new Nodo("CONSTANT", n3.toString(), parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoChar = new Nodo("CHAR", n5.toString(), parser.cont);
             parser.cont++;
-
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -1402,8 +1269,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-            
-
             :}
             | ID:n1 error CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 CHAR:n5 SEMICOLON
             | ID:n1 DECLARACION:n2 error tipo_variable:child1 ASIGNACION:n4 CHAR:n5 SEMICOLON
@@ -1418,7 +1283,6 @@ expresion_aritmetica    ::= E:child1
                             Nodo nodo = new Nodo("expresion_aritmetica", parser.cont);
                             parser.cont++;
 
-                            
                             /*Se añaden los hijos*/
                             nodo.AddHijo((Nodo) child1);
                             
@@ -1459,7 +1323,6 @@ E_prima ::= OPSUMA:n1 T:child1 E_prima:child2
         {:
             Nodo nodo = new Nodo("VACIO", parser.cont);
             parser.cont++;
-
             RESULT = nodo;
         :}
         ;
@@ -1600,17 +1463,14 @@ tipo_variable   ::= INTEGER  {:
                 :}
                 ;
 
-
 /*================================BLOQUE IF======================================*/
 /*BLOQUE IF: Estructura de un bloque if que internamente manda a llamar non terminales de
 bloque elseif y del bloque else.*/
 bloque_if   ::= IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloque_else:child4 END IF SEMICOLON {:
-
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo("bloque_if", parser.cont);
             parser.cont++;
 
-            
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo((Nodo) child2);
@@ -1619,7 +1479,6 @@ bloque_if   ::= IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloqu
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | IF condicion:child1 error codigo:child2 bloque_elsif:child3 bloque_else:child4 END IF SEMICOLON
             | IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloque_else:child4 error IF SEMICOLON
@@ -1629,7 +1488,6 @@ bloque_if   ::= IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloqu
 
 //CONDICION = Condicion interna para los ifs y los ciclos loop y while.
 condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
-
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo("condicion", parser.cont);
             parser.cont++;
@@ -1643,10 +1501,8 @@ condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
             nodo.AddHijo(nodoOr);
             nodo.AddHijo((Nodo) child2);
             
-            
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | expresion_booleana:child1 AND:n1 condicion:child2 {:
             /*Se crea el nodo prinicipal*/
@@ -1665,7 +1521,6 @@ condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | expresion_booleana:child1 XOR:n1 condicion:child2 {:
             /*Se crea el nodo prinicipal*/
@@ -1684,7 +1539,6 @@ condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | expresion_booleana:child1 {:
             /*Se crea el nodo prinicipal*/
@@ -1696,13 +1550,11 @@ condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             ;
 
 //EXPRESION BOOLEANA: Expresion booleana en el que se comparan dos operandos con un operador relacional.
 expresion_booleana  ::= operando:child1 OPREL:n1 operando:child2 {:
-
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo("expresion_booleana", parser.cont);
                     parser.cont++;
@@ -1719,21 +1571,18 @@ expresion_booleana  ::= operando:child1 OPREL:n1 operando:child2 {:
                     
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
-
                     :}
                     | operando:child1 error operando:child2
                     ;
 
 //OPERANDO: Operandos Relacionales utilizados en la expresion booleana.
 operando    ::= NUM:n1 {:
-
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo("NUM", n1.toString(), parser.cont);
             parser.cont++;
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | ID:n1 {:
             /*Se crea el nodo prinicipal*/
@@ -1742,11 +1591,9 @@ operando    ::= NUM:n1 {:
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | error
             | funcion:child1 {:
-
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo("operando", parser.cont);
             parser.cont++;
@@ -1756,8 +1603,6 @@ operando    ::= NUM:n1 {:
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-            
-            
             :}
             | CHAR:n1
             {:
@@ -1773,7 +1618,6 @@ operando    ::= NUM:n1 {:
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-            
             :}
             ;
 
@@ -1783,7 +1627,6 @@ bloque_elsif    ::= ELSIF condicion:child1 THEN codigo:child2 bloque_elsif:child
                 /*Se crea el nodo prinicipal*/
                 Nodo nodo = new Nodo("bloque_elsif", parser.cont);
                 parser.cont++;
-
                 
                 /*Se añaden los hijos*/
                 nodo.AddHijo((Nodo) child1);
@@ -1792,9 +1635,7 @@ bloque_elsif    ::= ELSIF condicion:child1 THEN codigo:child2 bloque_elsif:child
 
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
-
                 :}
-                
                 | {:
                 /*Se crea el nodo prinicipal*/
                 Nodo nodo = new Nodo("VACIO", parser.cont);
@@ -1809,8 +1650,6 @@ bloque_else ::= ELSE codigo:child1 {:
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo("bloque_else", parser.cont);
             parser.cont++;
-
-
             
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
@@ -1836,14 +1675,12 @@ ciclo_loop  ::= LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOL
             Nodo nodo = new Nodo("ciclo_loop", parser.cont);
             parser.cont++;
 
-            
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo((Nodo) child2);
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | LOOP codigo:child1 salir_ciclo:child2 error END LOOP SEMICOLON
             | LOOP codigo:child1 salir_ciclo:child2 SEMICOLON error LOOP SEMICOLON
@@ -1877,11 +1714,9 @@ ciclo_for   ::= FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 sa
             Nodo nodo = new Nodo("ciclo_for", parser.cont);
             parser.cont++;
 
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
-
 
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoNum = new Nodo("NUM", n3.toString(), parser.cont);
@@ -1897,10 +1732,9 @@ ciclo_for   ::= FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 sa
             nodo.AddHijo(nodoNum2);
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo((Nodo) child2);
-            
+    
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | FOR error IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON
             | FOR ID:n1 error NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON
@@ -1915,7 +1749,6 @@ ciclo_for   ::= FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 sa
             ;
 
 salir_ciclo ::= EXIT WHEN condicion:child1 {:
-
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo("salir_ciclo", parser.cont);
             parser.cont++;
@@ -1931,51 +1764,48 @@ salir_ciclo ::= EXIT WHEN condicion:child1 {:
             ;
 
 /*==========================================PUT y GET===========================================*/
-put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
+put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("put_line", parser.cont);
+        Nodo nodo = new Nodo("PUT", parser.cont);
         parser.cont++;
 
-        
         /*Nuevo Nodo: TERMINAL*/
         Nodo nodoNum = new Nodo("NUM", n2.toString(), parser.cont);
         parser.cont++;
-
 
         /*Se añaden los hijos*/
         nodo.AddHijo(nodoNum);
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
         :}
-        | PUT_LINE error NUM:n2 PARDER:n3 SEMICOLON
-        | PUT_LINE PARIZQ:n1 error PARDER:n3 SEMICOLON
-        | PUT_LINE PARIZQ:n1 NUM:n2 error SEMICOLON
-        | PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 error
-	    | PUT_LINE PARIZQ:n1 STRING:n2 PARDER:n3 SEMICOLON {:
+        | PUT error NUM:n2 PARDER:n3 SEMICOLON
+        | PUT PARIZQ:n1 error PARDER:n3 SEMICOLON
+        | PUT PARIZQ:n1 NUM:n2 error SEMICOLON
+        | PUT PARIZQ:n1 NUM:n2 PARDER:n3 error
+
+	    | PUT PARIZQ:n1 STRING:n2 PARDER:n3 SEMICOLON {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("put_line", parser.cont);
+        Nodo nodo = new Nodo("PUT", parser.cont);
         parser.cont++;
-
-
+        
         /*Nuevo Nodo: TERMINAL*/
         Nodo nodoString = new Nodo("STRING", n2.toString().replaceAll("\"", ""), parser.cont);
         parser.cont++;
 
         /*Se añaden los hijos*/
         nodo.AddHijo(nodoString);
-
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
         :}
-        | PUT_LINE error STRING:n2 PARDER:n3 SEMICOLON
-        | PUT_LINE PARIZQ:n1 STRING:n2 error SEMICOLON
-        | PUT_LINE PARIZQ:n1 STRING:n2 PARDER:n3 error
-        | PUT_LINE PARIZQ:n1 CHAR:n2 PARDER:n3 SEMICOLON {:
-        /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("put_line", parser.cont);
-        parser.cont++;
+        | PUT error STRING:n2 PARDER:n3 SEMICOLON
+        | PUT PARIZQ:n1 STRING:n2 error SEMICOLON
+        | PUT PARIZQ:n1 STRING:n2 PARDER:n3 error
 
+        | PUT PARIZQ:n1 CHAR:n2 PARDER:n3 SEMICOLON {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("PUT", parser.cont);
+        parser.cont++;
 
         /*Nuevo Nodo: TERMINAL*/
         Nodo nodoChar = new Nodo("CHAR", n2.toString(), parser.cont);
@@ -1986,16 +1816,15 @@ put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
-        
         :}
-        | PUT_LINE error CHAR:n2 PARDER:n3 SEMICOLON
-        | PUT_LINE PARIZQ:n1 CHAR:n2 error SEMICOLON
-        | PUT_LINE PARIZQ:n1 CHAR:n2 PARDER:n3 error
-        | PUT_LINE PARIZQ:n1 TRUE:n2 PARDER:n3 SEMICOLON {:
-        /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("put_line", parser.cont);
-        parser.cont++;
+        | PUT error CHAR:n2 PARDER:n3 SEMICOLON
+        | PUT PARIZQ:n1 CHAR:n2 error SEMICOLON
+        | PUT PARIZQ:n1 CHAR:n2 PARDER:n3 error
 
+        | PUT PARIZQ:n1 TRUE:n2 PARDER:n3 SEMICOLON {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("PUT", parser.cont);
+        parser.cont++;
 
         /*Nuevo Nodo: TERMINAL*/
         Nodo nodoTrue = new Nodo("TRUE", n2.toString(), parser.cont);
@@ -2006,31 +1835,29 @@ put_line ::= PUT_LINE PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
-        
         :}
-        | PUT_LINE error TRUE:n2 PARDER:n3 SEMICOLON
-        | PUT_LINE PARIZQ:n1 TRUE:n2 error SEMICOLON
-        | PUT_LINE PARIZQ:n1 TRUE:n2 PARDER:n3 error
-        | PUT_LINE PARIZQ:n1 FALSE:n2 PARDER:n3 SEMICOLON {:
+        | PUT error TRUE:n2 PARDER:n3 SEMICOLON
+        | PUT PARIZQ:n1 TRUE:n2 error SEMICOLON
+        | PUT PARIZQ:n1 TRUE:n2 PARDER:n3 error
+
+        | PUT PARIZQ:n1 FALSE:n2 PARDER:n3 SEMICOLON {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("put_line", parser.cont);
+        Nodo nodo = new Nodo("PUT", parser.cont);
         parser.cont++;
 
         /*Nuevo Nodo: TERMINAL*/
         Nodo nodoFalse = new Nodo("FALSE", n2.toString(), parser.cont);
         parser.cont++;
 
-
         /*Se añaden los hijos*/
         nodo.AddHijo(nodoFalse);
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
-        
         :}
-        | PUT_LINE error FALSE:n2 PARDER:n3 SEMICOLON
-        | PUT_LINE PARIZQ:n1 FALSE:n2 error SEMICOLON
-        | PUT_LINE PARIZQ:n1 FALSE:n2 PARDER:n3 error
+        | PUT error FALSE:n2 PARDER:n3 SEMICOLON
+        | PUT PARIZQ:n1 FALSE:n2 error SEMICOLON
+        | PUT PARIZQ:n1 FALSE:n2 PARDER:n3 error
 	    ;
 
 get ::= GET PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
@@ -2038,15 +1865,12 @@ get ::= GET PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
     Nodo nodo = new Nodo("get", parser.cont);
     parser.cont++;
 
-
     /*Nuevo Nodo: TERMINAL*/
     Nodo nodoId = new Nodo("ID", n2.toString(), parser.cont);
     parser.cont++;
 
-
     /*Se añaden los hijos*/
     nodo.AddHijo(nodoId);
-    
     
     /*Asignar el nodo al RESULT para continuar el recorrido*/
     RESULT = nodo;
@@ -2057,4 +1881,3 @@ get ::= GET PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
     | GET PARIZQ:n1 ID:n2 error SEMICOLON
     | GET PARIZQ:n1 ID:n2 PARDER:n3 error
 	;
-
