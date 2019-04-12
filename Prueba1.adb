@@ -1,5 +1,5 @@
 procedure Hello is              
 begin
-   Put_Line("Hello, World!");  
+   Put("Hello, World!");  
 end Hello;
 

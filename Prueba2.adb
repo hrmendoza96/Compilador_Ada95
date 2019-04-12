@@ -5,10 +5,10 @@ procedure Calc is
 begin
    loop
       -- Print the display.
-      Put_Line(Disp);
+      Put(Disp);
 
       -- Promt the user.
-      Put_Line("> ");
+      Put("> ");
 
       -- Skip leading blanks and read the operation.
       loop
