@@ -1858,6 +1858,25 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         | PUT error FALSE:n2 PARDER:n3 SEMICOLON
         | PUT PARIZQ:n1 FALSE:n2 error SEMICOLON
         | PUT PARIZQ:n1 FALSE:n2 PARDER:n3 error
+
+        | PUT PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("PUT", parser.cont);
+        parser.cont++;
+
+        /*Nuevo Nodo: TERMINAL*/
+        Nodo nodoID = new Nodo("ID", n2.toString(), parser.cont);
+        parser.cont++;
+
+        /*Se añaden los hijos*/
+        nodo.AddHijo(nodoID);
+        
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+        :}
+        | PUT error ID:n2 PARDER:n3 SEMICOLON
+        | PUT PARIZQ:n1 ID:n2 error SEMICOLON
+        | PUT PARIZQ:n1 ID:n2 PARDER:n3 error
 	    ;
 
 get ::= GET PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
