@@ -38,6 +38,12 @@ non terminal ciclo_loop, ciclo_for, ciclo_while, salir_ciclo, bloque_if, bloque_
 non terminal expresion_aritmetica, E, E_prima, T, T_prima, F;
 non terminal asignacion,get,put;
 
+// Tipos de datos para Tabla de Símbolos
+terminal Intger ENTERO;
+terminal Float NUMFLOAT;
+terminal String TEXTO;
+terminal Boolean BOOLEANO;
+
 // Precedencia de Operadores - de menor a mayor
 precedence left OPREL;
 precedence left OPSUMA;

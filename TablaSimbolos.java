@@ -7,8 +7,7 @@ class Simbolo {
     String tipo;
     Object valor;
     
-    public Simbolo(String nombre, String tipo ,Object valor)
-    {
+    public Simbolo(String nombre, String tipo ,Object valor) {
         this.nombre = nombre;       
         this.tipo = tipo;
         this.valor = valor;
@@ -22,20 +21,17 @@ public class TablaSimbolos {
     
     public static Logger log = Logger.getLogger(TablaSimbolos.class.getName());            
     
-    public TablaSimbolos()
-    {        
+    public TablaSimbolos() {        
         tablaSimbolos = new HashMap<String, Simbolo>();                                   
         lista = new Stack<String>();                
     }
     
-    static public String verificarTipo(String nombre){
+    static public String verificarTipo(String nombre) {
         Simbolo s = tablaSimbolos.get(nombre);
         return s.tipo;
     }
     
-    static public String eliminar(String nombre)
-    {             
-        
+    static public String eliminar(String nombre) {             
         System.out.println("Eliminando variable: " + nombre);
         try
         {
@@ -49,8 +45,7 @@ public class TablaSimbolos {
         }                
     }
             
-    static public Simbolo crear(String nombre, String tipo)
-    {        
+    static public Simbolo crear(String nombre, String tipo) {        
         Simbolo simbolo = buscar(nombre);                            
         if(simbolo == null) // La variable no existe
         {
@@ -70,8 +65,7 @@ public class TablaSimbolos {
         }
     }
         
-    static public Simbolo insertar(String nombre, Object valor)            
-    {
+    static public Simbolo insertar(String nombre, Object valor) {
         System.out.println("\nIngreso a insertar valor a variable.");
         Simbolo simbolo = buscar(nombre);
         if(simbolo != null) //La variable existe
@@ -90,13 +84,11 @@ public class TablaSimbolos {
             return null;
     }
     
-    static public Simbolo buscar(String nombre)
-    {
+    static public Simbolo buscar(String nombre) {
         return (Simbolo)tablaSimbolos.get(nombre);
     }
     
-    static public void imprimir()
-    {
+    static public void imprimir() {
         System.out.println("\nIngresando a imprimir de TablaSimbolos");
         System.out.println("    Valores de la tabla de simbolos:");
         for (Simbolo s : tablaSimbolos.values())

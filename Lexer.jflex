@@ -44,8 +44,6 @@ ID = {letras}+({guionBajo}({letras}|{numeros})+)*
 
 // Para los numeros
 NUM= ({signoNegativo}|""){numeros}+(({punto}{numeros}+)|"")
-//MOD = ("mod")
-//EXPONENTES = "**"
 
 // Para los comentarios
 COMENTARIO = {guionesComentario}({letras}|{numeros}|" "|{signosEspeciales}|{OPREL}|{PARDER}|{PARIZQ})*
@@ -59,6 +57,7 @@ BOOLEAN = ("boolean")
 CHARACTER = ("character")
 FLOAT = ("float")
 INTEGER = ("integer")
+STRINGTYPE = ("String")
 
 // Operaciones
 AND = ("and")
@@ -85,7 +84,6 @@ NULL = ("null")
 OUT = ("OUT")
 PROCEDURE = ("Procedure")
 RETURN = ("return")
-STRINGTYPE = ("String")
 TRUE = ("true")
 FALSE = ("false")
 WHEN = ("when")
