@@ -6,6 +6,7 @@ parser code
 {:
     public static Nodo padre;
     public static ArrayList<String> ErroresSintacticos = new ArrayList<String>();
+    public static ArrayList<String> ErroresSemanticos = new ArrayList<String>();
     public int cont = 0;
     public void syntax_error (Symbol s) {
         System.out.println("Error de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
@@ -887,6 +888,24 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     nodo.AddHijo(nodoId);
                     nodo.AddHijo((Nodo) child1);
 
+                    // Tabla de Símbolos
+                    Nodo type = (Nodo) child1;
+                    try{
+                        //Validar si la variable existe
+                        Simbolo temporal = null;
+                        temporal = TablaSimbolos.buscar(n1);
+                        if(temporal == null){ //Significa que la variable No existe
+                            TablaSimbolos.crear(n1, type.getValue(), false); 
+                        }else{
+                            System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                            ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                        }
+                                 
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar la variable");            
+                    }
+
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
                     :}
@@ -930,8 +949,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo type = (Nodo) child1;
             Nodo exp = (Nodo) child2;
             try{
-                TablaSimbolos.crear(n1, type.getValue(), false);
-                TablaSimbolos.insertar(n1, exp.getValue(), false);           
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, type.getValue(), false);
+                    TablaSimbolos.insertar(n1, exp.getValue(), false);
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }
+                           
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
@@ -964,8 +991,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             // Tabla de Símbolos
             Nodo type = (Nodo) child1;
             try{
-                TablaSimbolos.crear(n1, type.getValue(), false);
-                TablaSimbolos.insertar(n1, n4, false);           
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, type.getValue(), false);
+                    TablaSimbolos.insertar(n1, n4, false);
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }
+                           
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
@@ -999,8 +1034,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             // Tabla de Símbolos
             Nodo type = (Nodo) child1;
             try{
-                TablaSimbolos.crear(n1, type.getValue(), false);
-                TablaSimbolos.insertar(n1, n4, false);           
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, type.getValue(), false);
+                    TablaSimbolos.insertar(n1, n4, false);
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }
+                           
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
@@ -1033,8 +1076,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             // Tabla de Símbolos
             Nodo type = (Nodo) child1;
             try{
-                TablaSimbolos.crear(n1, type.getValue(), false);
-                TablaSimbolos.insertar(n1, n4, false);           
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, type.getValue(), false);
+                    TablaSimbolos.insertar(n1, n4, false);
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }
+                           
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
@@ -1056,12 +1107,32 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo(nodoId);
             nodo.AddHijo((Nodo) child1);
 //--------------------------------Puede estar malo este metodo ---------------------------------------------------------------------
+//===================================ESTE CÓDIGO FALTA VALIDAR================================================
             // Tabla de Símbolos
             Nodo type = (Nodo) child1;
             String cadena = NumGlobal + "";
             try{
-                TablaSimbolos.crear(n1, type.getValue(), false);
-                TablaSimbolos.insertar(n1, cadena, false);           
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal != null ){ //Significa que la variable ya existe
+                    //Verificar el tipo de la variable
+                    if(temporal.tipoVariable.equals("INTEGER")){ //Verificar si es float
+                        Object temp2 = type;
+                        System.out.println("expresion_aritmetica:"+temp2);
+                        if(temp2 instanceof Double ){//Verifica si se trata de asignar un float a un int
+                            System.out.println("ENTRA 2");
+                            System.out.println("Error: Tipos Incompatibles. No se puede asignar un Float a Entero.");
+                            ErroresSemanticos.add("Error:  Tipos Incompatibles. No se puede asignar un Float a Entero.");
+                        }else{
+                            //TablaSimbolos.crear(n1, type.getValue(), false);
+                            TablaSimbolos.insertar(n1, cadena, false);   
+                        }
+                    }
+                }else{
+                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                }
+                          
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
@@ -1190,9 +1261,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo type = (Nodo) child1;
             Nodo exp = (Nodo) child2;
             try{
-                System.out.println(exp.getValue() + " exp value");
-                TablaSimbolos.crear(n1, type.getValue(), true);
-                TablaSimbolos.insertar(n1, exp.getValue(), true);           
+                //System.out.println(exp.getValue() + " exp value");
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, type.getValue(), true);
+                    TablaSimbolos.insertar(n1, exp.getValue(), true);
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }           
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
@@ -1230,8 +1308,15 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             // Tabla de Símbolos
             Nodo hijo = (Nodo) child1;
             try{
-                TablaSimbolos.crear(n1, hijo.getValue(), true);
-                TablaSimbolos.insertar(n1, String.valueOf(n5), true);           
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, hijo.getValue(), true);
+                    TablaSimbolos.insertar(n1, String.valueOf(n5), true); 
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }             
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
@@ -1271,8 +1356,15 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             // Tabla de Símbolos
             Nodo hijo = (Nodo) child1;
             try{
-                TablaSimbolos.crear(n1, hijo.getValue(), true);
-                TablaSimbolos.insertar(n1, String.valueOf(n5), true);           
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, hijo.getValue(), true);
+                    TablaSimbolos.insertar(n1, String.valueOf(n5), true); 
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }            
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
@@ -1307,9 +1399,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             // Tabla de Símbolos
             Nodo hijo = (Nodo) child1;
-            try{
-                TablaSimbolos.crear(n1, hijo.getValue(), true);
-                TablaSimbolos.insertar(n1, String.valueOf(n5), true);           
+            try{     
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, hijo.getValue(), true);
+                    TablaSimbolos.insertar(n1, String.valueOf(n5), true);
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }       
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            

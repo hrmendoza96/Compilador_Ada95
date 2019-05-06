@@ -16,7 +16,7 @@ public class Main {
     try {
       parser p = new parser(new Lexer(new FileReader(argv[0])));
       p.parse();
-      if (Lexer.ErroresLexicos.isEmpty() && parser.ErroresSintacticos.isEmpty()) {
+      if (Lexer.ErroresLexicos.isEmpty() && parser.ErroresSintacticos.isEmpty() && parser.ErroresSemanticos.isEmpty()) {
         Nodo root = parser.padre;
         Graficar(recorrido(root), "AST_Output");
         System.out.println("Succesful Compile.");

@@ -96,7 +96,7 @@ public class TablaSimbolos {
         System.out.println("    Valores de la tabla de simbolos:");
         for (Simbolo s : tablaSimbolos.values())
             System.out.println(String.format("      "
-                    + "Nombre: %s, valor: %s, tipoVariable: %s, tipoConstante: %s",s.nombre, s.valor, s.tipoVariable, s.tipoConstante));        
+                    + "| Nombre: %s | valor: %s | tipoVariable: %s | tipoConstante: %s |",s.nombre, s.valor, s.tipoVariable, s.tipoConstante));        
         System.out.println("Saliendo de imprimir en TablaSimbolos\n ");        
     }
     

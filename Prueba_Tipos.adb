@@ -1,15 +1,25 @@
 procedure Calc is
-    a : constant String := "hola"; 
-    b :  String := "Adios"; 
+      a : constant String := "hola"; 
+      b :  String := "Adios"; 
     
-    c : constant Integer := 10 / 2;
-    d : Integer := 11;
+      c : constant Integer := 10 / 2;
+      d : Integer := 11;
     
-    e : constant Boolean := true;   
-    f :  Boolean := false;
+      e : constant Boolean := true;   
+      f :  Boolean := false;
 
-    g : constant Boolean := false;   
-    h :  Boolean := true; 
+      g : constant Boolean := false;   
+      h :  Boolean := true; 
+
+      i : Integer;
+      --a : Integer;
+
+      --g : Integer := 4;
+      --f : Integer := true;
+      --d := 12.5; 
+      a : constant String := "ss";
+
+
      
 begin
   loop
