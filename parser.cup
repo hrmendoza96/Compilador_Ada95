@@ -925,6 +925,18 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo(nodoId);
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo((Nodo) child2);
+//---------------------------------------------------------Puede estar malo----------------------------------------
+            // Tabla de Símbolos
+            Nodo type = (Nodo) child1;
+            Nodo exp = (Nodo) child2;
+            try{
+                TablaSimbolos.crear(n1, type.getValue(), false);
+                TablaSimbolos.insertar(n1, exp.getValue(), false);           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -948,6 +960,18 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo(nodoId);
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo(nodoTrue);
+
+            // Tabla de Símbolos
+            Nodo type = (Nodo) child1;
+            try{
+                TablaSimbolos.crear(n1, type.getValue(), false);
+                TablaSimbolos.insertar(n1, n4, false);           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
+
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -972,6 +996,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo(nodoFalse);
             
+            // Tabla de Símbolos
+            Nodo type = (Nodo) child1;
+            try{
+                TablaSimbolos.crear(n1, type.getValue(), false);
+                TablaSimbolos.insertar(n1, n4, false);           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -996,29 +1030,15 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo(nodoString);
 
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
-            RESULT = nodo;
-            :}
-            | ID:n1 error tipo_variable:child1 ASIGNACION:n3 STRING:n4 SEMICOLON
-            | ID:n1 DECLARACION:n2 tipo_variable:child1 error STRING:n4 SEMICOLON
-            | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 STRING:n4 error
-            | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 CHAR:n4 SEMICOLON {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoChar = new Nodo("CHAR", n4.toString(), parser.cont);
-            parser.cont++;
-
-            /*Se añaden los hijos*/
-            nodo.AddHijo(nodoId);
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoChar);
+            // Tabla de Símbolos
+            Nodo type = (Nodo) child1;
+            try{
+                TablaSimbolos.crear(n1, type.getValue(), false);
+                TablaSimbolos.insertar(n1, n4, false);           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -1038,7 +1058,19 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
             nodo.AddHijo((Nodo) child1);
+//--------------------------------Puede estar malo este metodo ---------------------------------------------------------------------
+            // Tabla de Símbolos
+            Nodo type = (Nodo) child1;
+            try{
+                TablaSimbolos.crear(n1, type.getValue(), false);
+                TablaSimbolos.insertar(n1, type.getValue(), false);           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
             
+
+
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -1060,6 +1092,15 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
             nodo.AddHijo(nodoTrue);
+
+            // Tabla de Símbolos
+            try{
+                TablaSimbolos.crear(n1, "Boolean", false);
+                TablaSimbolos.insertar(n1, String.valueOf(n3), false);           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -1083,6 +1124,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
             nodo.AddHijo(nodoFalse);
+
+            // Tabla de Símbolos
+            try{
+                TablaSimbolos.crear(n1, "Boolean", false);
+                TablaSimbolos.insertar(n1, String.valueOf(n3), false);           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -1106,27 +1157,14 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo(nodoId);
             nodo.AddHijo(nodoString);         
 
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
-            RESULT = nodo;
-            :}
-            | ID:n1 error STRING:n3 SEMICOLON
-            | ID:n1 ASIGNACION:n2 STRING:n3 error
-            | ID:n1 ASIGNACION:n2 CHAR:n3 SEMICOLON {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoChar = new Nodo("CHAR", n3.toString(), parser.cont);
-            parser.cont++;
-
-            /*Se añaden los hijos*/
-            nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoChar); 
+            // Tabla de Símbolos
+            try{
+                TablaSimbolos.crear(n1, String.valueOf(n3), false);
+                TablaSimbolos.insertar(n1, n3, false);           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -1151,7 +1189,18 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo(nodoConstant);
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo((Nodo) child2);
-            
+
+            // Tabla de Símbolos
+            Nodo type = (Nodo) child1;
+            Nodo exp = (Nodo) child2;
+            try{
+                System.out.println(exp.getValue() + " exp value");
+                TablaSimbolos.crear(n1, type.getValue(), true);
+                TablaSimbolos.insertar(n1, exp.getValue(), true);           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -1181,6 +1230,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo(nodoConstant);
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo(nodoTrue);
+
+            // Tabla de Símbolos
+            Nodo hijo = (Nodo) child1;
+            try{
+                TablaSimbolos.crear(n1, hijo.getValue(), true);
+                TablaSimbolos.insertar(n1, String.valueOf(n5), true);           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -1213,6 +1272,17 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo(nodoFalse);
             
+            // Tabla de Símbolos
+            Nodo hijo = (Nodo) child1;
+            try{
+                TablaSimbolos.crear(n1, hijo.getValue(), true);
+                TablaSimbolos.insertar(n1, String.valueOf(n5), true);           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
+            
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -1224,62 +1294,34 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo("asignacion", parser.cont);
             parser.cont++;
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoConstant = new Nodo("CONSTANT", n3.toString(), parser.cont);
             parser.cont++;
-
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoString = new Nodo("STRING", n5.toString().replaceAll("\"", ""), parser.cont);
             parser.cont++;
-
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
             nodo.AddHijo(nodoConstant);
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo(nodoString);
-            
+
+            // Tabla de Símbolos
+            Nodo hijo = (Nodo) child1;
+            try{
+                TablaSimbolos.crear(n1, hijo.getValue(), true);
+                TablaSimbolos.insertar(n1, String.valueOf(n5), true);           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
-            | ID:n1 error CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 STRING:n5 SEMICOLON
-            | ID:n1 DECLARACION:n2 error tipo_variable:child1 ASIGNACION:n4 STRING:n5 SEMICOLON
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 error STRING:n5 SEMICOLON
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 STRING:n5 error
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 CHAR:n5 SEMICOLON {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoConstant = new Nodo("CONSTANT", n3.toString(), parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoChar = new Nodo("CHAR", n5.toString(), parser.cont);
-            parser.cont++;
-
-            /*Se añaden los hijos*/
-            nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoConstant);
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoChar);
-            
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
-            RESULT = nodo;
-            :}
-            | ID:n1 error CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 CHAR:n5 SEMICOLON
-            | ID:n1 DECLARACION:n2 error tipo_variable:child1 ASIGNACION:n4 CHAR:n5 SEMICOLON
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 error CHAR:n5 SEMICOLON
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 CHAR:n5 error
             ;
 
 /*OPERACIONES ARITMETICA POST ORDER*/
@@ -1384,7 +1426,7 @@ F   ::= ID:n1
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo("NUM", n1.toString(), parser.cont);
         parser.cont++;
-        
+
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
     :}
@@ -1456,16 +1498,6 @@ tipo_variable   ::= INTEGER  {:
                 
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
-                
-                :}
-                | CHARACTER {:
-                /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("tipo_variable", "CHARACTER", parser.cont);
-                parser.cont++;
-                
-                /*Asignar el nodo al RESULT para continuar el recorrido*/
-                RESULT = nodo;
-                
                 :}
                 ;
 

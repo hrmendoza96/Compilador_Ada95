@@ -2,20 +2,23 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 class Simbolo {  
     String nombre;
-    String tipo;
+    String tipoVariable;
     Object valor;
+    Boolean tipoConstante;
     
-    public Simbolo(String nombre, String tipo ,Object valor) {
+    public Simbolo(String nombre, String tipoVariable, Object valor, Boolean tipoConstante) {
         this.nombre = nombre;       
-        this.tipo = tipo;
+        this.tipoVariable = tipoVariable;
         this.valor = valor;
+        this.tipoConstante = tipoConstante;
     }
 }
 
 public class TablaSimbolos {
-    static Map<String, Simbolo> tablaSimbolos;
+    static Map<String, Simbolo> tablaSimbolos = new HashMap();
     static Stack<String> lista;
     static ArrayList<Nodo> repeticiones;        
     
@@ -26,52 +29,52 @@ public class TablaSimbolos {
         lista = new Stack<String>();                
     }
     
-    static public String verificarTipo(String nombre) {
+    static public String verificarTipoVariable(String nombre) {
         Simbolo s = tablaSimbolos.get(nombre);
-        return s.tipo;
+        return s.tipoVariable;
+    }
+
+    static public Boolean verificarTipoConstante(String nombre) {
+        Simbolo s = tablaSimbolos.get(nombre);
+        return s.tipoConstante;
     }
     
     static public String eliminar(String nombre) {             
         System.out.println("Eliminando variable: " + nombre);
-        try
-        {
+        try {
             tablaSimbolos.remove(nombre);
             return nombre;
-        }
-        catch(Exception e)
-        {
+        } catch(Exception e) {
             System.out.println("Error al eliminar una variable de la tabla de simbolos");
             return nombre;
         }                
     }
             
-    static public Simbolo crear(String nombre, String tipo) {        
-        Simbolo simbolo = buscar(nombre);                            
-        if(simbolo == null) // La variable no existe
-        {
-            simbolo = new Simbolo(nombre, tipo, null);
+    static public Simbolo crear(String nombre, String tipoVariable, Boolean constante) {        
+        Simbolo simbolo = null;    
+        // La variable no existe         
+        if (!tablaSimbolos.containsKey(nombre)) {
+            simbolo = new Simbolo(nombre, tipoVariable, null, constante);
             System.out.println("Agregando a tabla de simbolos con nombre: " + nombre);
             tablaSimbolos.put(nombre, simbolo);            
             //System.out.println("Variable creada exitosamente!!!");
-              
-            imprimir();                
-            System.out.println(" ");
+            imprimir();               
+            System.out.println("Termino de imprimir");
             return simbolo;
-        }
-        else
-        {
-            log.log(Level.SEVERE, "Redefinición de la variable: " + nombre);
-            return null; // La variable ya existía                
+        } else {
+            System.out.println("NO se agrego a la tabla de simbolos.");
+            return null;
         }
     }
         
-    static public Simbolo insertar(String nombre, Object valor) {
+    static public Simbolo insertar(String nombre, Object valor, Boolean constante) {
         System.out.println("\nIngreso a insertar valor a variable.");
         Simbolo simbolo = buscar(nombre);
-        if(simbolo != null) //La variable existe
-        {
+        //La variable existe
+        if(simbolo != null)  {
             //Actualizar el valor
             simbolo.valor = valor;
+            simbolo.tipoConstante = constante;
             tablaSimbolos.remove(nombre);//Elimino para actualizar
             tablaSimbolos.put(nombre, simbolo);
             
@@ -79,13 +82,13 @@ public class TablaSimbolos {
             imprimir();
             System.out.println("Saliendo de insertar de TablaSimbolos\n");
             return simbolo;
-        }
-        else
+        } else
             return null;
     }
     
     static public Simbolo buscar(String nombre) {
-        return (Simbolo)tablaSimbolos.get(nombre);
+        Simbolo n = (Simbolo)tablaSimbolos.get(nombre); 
+        return n;
     }
     
     static public void imprimir() {
@@ -93,7 +96,7 @@ public class TablaSimbolos {
         System.out.println("    Valores de la tabla de simbolos:");
         for (Simbolo s : tablaSimbolos.values())
             System.out.println(String.format("      "
-                    + "Nombre: %s, valor: %s, tipo: %s",s.nombre, s.valor, s.tipo));        
+                    + "Nombre: %s, valor: %s, tipoVariable: %s, tipoConstante: %s",s.nombre, s.valor, s.tipoVariable, s.tipoConstante));        
         System.out.println("Saliendo de imprimir en TablaSimbolos\n ");        
     }
     
