@@ -1,5 +1,0 @@
-digraph G {node[shape=box, style=filled, color=Gray95]; edge[color=blue];rankdir=UD 
-
-"6. Inicio = null"->"4. cuerpo_principal = null""4. cuerpo_principal = null"->"5. PROCEDURE = procedure""4. cuerpo_principal = null"->"3. comienza_cuerpo_principal = null""3. comienza_cuerpo_principal = null"->"2. codigo = null""2. codigo = null"->"0. PUT = null""0. PUT = null"->"1. STRING = Hello, World!"
-
-}
