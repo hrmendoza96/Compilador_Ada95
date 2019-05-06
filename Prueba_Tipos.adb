@@ -22,7 +22,7 @@ begin
       -- Skip leading blanks and read the operation.
       loop
          Get(Op);
-         exit when Op /= " ";
+         exit when Op /= 10;
       end loop;
 
       -- Stop when we're s'posed to.
@@ -31,6 +31,6 @@ begin
       -- Read the integer value (skips leading blanks) and discard the
       -- remainder of the line.
       Get(In_Val);
-      exit when Op = "Q" or Op = "q";
+      exit when Op = 11 or Op = 12;
    end loop;
 end Calc;
