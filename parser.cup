@@ -22,11 +22,11 @@ parser code
 // Terminales
 terminal PROCEDURE, FUNCTION, RETURN, CONSTANT, IS, BEGIN, END, IF, THEN, ELSE, ELSIF, FOR, IN, OUT, WHILE, LOOP;
 terminal AND,OR,XOR,FALSE,TRUE,EXIT,WHEN,NULL,GET,PUT;
-terminal INTEGER,FLOAT,BOOLEAN,CHARACTER,STRINGTYPE;
+terminal INTEGER,FLOAT,BOOLEAN,STRINGTYPE;
 terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,SEMICOLON,COMA, DOSPUNTOS;
 terminal String ID;
 terminal String NUM;
-terminal String STRING,CHAR;
+terminal String STRING;
 
 // No Terminales
 non terminal inicio, cuerpo_principal, comienza_cuerpo_principal;
@@ -1043,9 +1043,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
-            | ID:n1 error tipo_variable:child1 ASIGNACION:n3 CHAR:n4 SEMICOLON
-            | ID:n1 DECLARACION:n2 tipo_variable:child1 error CHAR:n4 SEMICOLON
-            | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 CHAR:n4 error
             | ID:n1 ASIGNACION:n2 expresion_aritmetica:child1 SEMICOLON {:
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo("asignacion", parser.cont);
@@ -1169,8 +1166,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
-            | ID:n1 error CHAR:n3 SEMICOLON
-            | ID:n1 ASIGNACION:n2 CHAR:n3 error
             | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 expresion_aritmetica:child2 SEMICOLON {:
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo("asignacion", parser.cont);
@@ -1642,13 +1637,6 @@ operando    ::= NUM:n1 {:
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
-            | CHAR:n1
-            {:
-                Nodo nodo = new Nodo("CHAR", n1.toString());
-                parser.cont++;
-
-                RESULT = nodo;
-            :}
             | NULL {:
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo("operando", "NULL", parser.cont);
@@ -1839,26 +1827,6 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         | PUT error STRING:n2 PARDER:n3 SEMICOLON
         | PUT PARIZQ:n1 STRING:n2 error SEMICOLON
         | PUT PARIZQ:n1 STRING:n2 PARDER:n3 error
-
-        | PUT PARIZQ:n1 CHAR:n2 PARDER:n3 SEMICOLON {:
-        /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("PUT", parser.cont);
-        parser.cont++;
-
-        /*Nuevo Nodo: TERMINAL*/
-        Nodo nodoChar = new Nodo("CHAR", n2.toString(), parser.cont);
-        parser.cont++;
-
-        /*Se añaden los hijos*/
-        nodo.AddHijo(nodoChar);
-        
-        /*Asignar el nodo al RESULT para continuar el recorrido*/
-        RESULT = nodo;
-        :}
-        | PUT error CHAR:n2 PARDER:n3 SEMICOLON
-        | PUT PARIZQ:n1 CHAR:n2 error SEMICOLON
-        | PUT PARIZQ:n1 CHAR:n2 PARDER:n3 error
-
         | PUT PARIZQ:n1 TRUE:n2 PARDER:n3 SEMICOLON {:
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo("PUT", parser.cont);

@@ -48,13 +48,11 @@ NUM= ({signoNegativo}|""){numeros}+(({punto}{numeros}+)|"")
 // Para los comentarios
 COMENTARIO = {guionesComentario}({letras}|{numeros}|" "|{signosEspeciales}|{OPREL}|{PARDER}|{PARIZQ})*
 
-// Para los Strings y Chars
+// Para los Strings
 STRING ="\""({letras}|{numeros}|{espacios}|{signosEspeciales}|{OPREL}|{PARDER}|{PARIZQ})*"\"" 
-CHAR = "\'"({letras}|{numeros}|" "|{signosEspeciales}|"="|">"|"<"|{PARDER}|{PARIZQ})"\'" 
 
 // Tipos de variables
 BOOLEAN = ("boolean")
-CHARACTER = ("character")
 FLOAT = ("float")
 INTEGER = ("integer")
 STRINGTYPE = ("String")
@@ -128,7 +126,6 @@ LOOP = ("loop")
     {INTEGER} { return new Symbol(sym.INTEGER, yycolumn, yyline, yytext()); }
     {FLOAT} { return new Symbol(sym.FLOAT, yycolumn, yyline, yytext()); }
     {BOOLEAN} { return new Symbol(sym.BOOLEAN, yycolumn, yyline, yytext()); }
-    {CHARACTER} { return new Symbol(sym.CHARACTER, yycolumn, yyline, yytext()); }
     {STRINGTYPE} { return new Symbol(sym.STRINGTYPE, yycolumn, yyline, yytext()); }
 
     {ASIGNACION} { return new Symbol(sym.ASIGNACION, yycolumn, yyline, yytext()); }
@@ -144,7 +141,6 @@ LOOP = ("loop")
     
     {ID} { return new Symbol(sym.ID, yycolumn, yyline, new String(yytext())); }
     {STRING} { return new Symbol(sym.STRING, yycolumn, yyline, new String(yytext())); }
-    {CHAR} { return new Symbol(sym.CHAR, yycolumn, yyline, new String(yytext())); }
     {NUM} { return new Symbol(sym.NUM, yycolumn, yyline, new String(yytext())); }
     {COMENTARIO} {}
     {espacios} {}
