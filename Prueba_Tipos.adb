@@ -2,7 +2,7 @@ procedure Calc is
     a : constant String := "hola"; 
     b :  String := "Adios"; 
     
-    c : constant Integer := 10;
+    c : constant Integer := 10 / 2;
     d : Integer := 11;
     
     e : constant Boolean := true;   

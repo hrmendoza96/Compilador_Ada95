@@ -16,7 +16,7 @@ parser code
         System.out.println("Error No Recuperable de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
         ErroresSintacticos.add("Error No Recuperable de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
     }
-
+    int NumGlobal = 0;
 :}
 
 // Terminales
@@ -1058,9 +1058,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 //--------------------------------Puede estar malo este metodo ---------------------------------------------------------------------
             // Tabla de Símbolos
             Nodo type = (Nodo) child1;
+            String cadena = NumGlobal + "";
             try{
                 TablaSimbolos.crear(n1, type.getValue(), false);
-                TablaSimbolos.insertar(n1, type.getValue(), false);           
+                TablaSimbolos.insertar(n1, cadena, false);           
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
@@ -1320,143 +1321,39 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             ;
 
 /*OPERACIONES ARITMETICA POST ORDER*/
-expresion_aritmetica    ::= E:child1 
-                        {:
-                            /*Se crea el nodo prinicipal*/
-                            Nodo nodo = new Nodo("expresion_aritmetica", parser.cont);
-                            parser.cont++;
+expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmetica:n3
+                            | expresion_aritmetica:n1 OPMULTIPLICACION:n2 expresion_aritmetica:n3
+                            {:
 
-                            /*Se añaden los hijos*/
-                            nodo.AddHijo((Nodo) child1);
-                            
-                            /*Asignar el nodo al RESULT para continuar el recorrido*/
-                            RESULT = nodo;
-                        :}
-                        ;
-E   ::= T:child1 E_prima:child2 
-    {:
-        /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("E", parser.cont);
-        parser.cont++;
-        
-        /*Se añaden los hijos*/
-        nodo.AddHijo((Nodo) child1);
-        nodo.AddHijo((Nodo) child2);
-        
-        /*Asignar el nodo al RESULT para continuar el recorrido*/
-        RESULT = nodo;
-    :}
-    ;
+                                Nodo aux = (Nodo) n1;
+                                Nodo aux2 = (Nodo) n3;
+                                int valor1 = Integer.parseInt(aux.getValue());
+                                int valor2 = Integer.parseInt(aux2.getValue());
+                                int resultado = 0;
+                                String cadena = "";
+                                if (n2.equals("*")) {
+                                    resultado = valor1 * valor2;     
+                                    cadena = "MULTIPLICACION";                              
+                                } else if (n2.equals("/")) {
+                                    resultado = valor1 / valor2;
+                                    cadena = "DIVISION";
+                                }
+                                Nodo nodo = new Nodo(cadena,resultado + "", parser.cont);
+                                parser.cont++;
+                                RESULT = nodo;
+                            :}
+                            | NUM:n1
+                            {:
+                                Nodo nodo = new Nodo("NUM", n1.toString(), parser.cont);
+                                parser.cont++;
+                                RESULT = nodo;
+                            :}
+                            | ID
+                            | llamar_funcion
+                            | PARIZQ expresion_aritmetica PARDER
+                            ;
 
-E_prima ::= OPSUMA:n1 T:child1 E_prima:child2 
-        {:
-            Nodo nodo = new Nodo("E_prima", parser.cont);
-            parser.cont++;
-            
-            Nodo nodoOPSUMA = new Nodo("OPSUMA", n1.toString(), parser.cont);
-            parser.cont++;
 
-            nodo.AddHijo(nodoOPSUMA);
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo((Nodo) child2);
-
-            RESULT = nodo;
-        :}
-        | 
-        {:
-            Nodo nodo = new Nodo("VACIO", parser.cont);
-            parser.cont++;
-            RESULT = nodo;
-        :}
-        ;
-
-T   ::= F:child1 T_prima:child2 
-    {:
-        /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("T", parser.cont);
-        parser.cont++;
-        
-        /*Se añaden los hijos*/
-        nodo.AddHijo((Nodo) child1);
-        nodo.AddHijo((Nodo) child2);
-        
-        /*Asignar el nodo al RESULT para continuar el recorrido*/
-        RESULT = nodo;
-    :}
-    ;
-
-T_prima ::= OPMULTIPLICACION:n1 F:child1 T_prima:child2 
-        {:
-            Nodo nodo = new Nodo("T_prima", parser.cont);
-            parser.cont++;
-            
-            Nodo nodoMult = new Nodo("OPMULTIPLICACION", n1.toString(), parser.cont);
-            parser.cont++;
-
-            nodo.AddHijo(nodoMult);
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo((Nodo) child2);
-
-            RESULT = nodo;
-        :}
-        |
-        {:
-            Nodo nodo = new Nodo("VACIO", parser.cont);
-            parser.cont++;
-
-            RESULT = nodo;
-        :}
-        ;
-
-F   ::= ID:n1 
-    {:
-        Nodo nodo = new Nodo("ID", n1.toString(), parser.cont);
-        parser.cont++;
-
-        RESULT = nodo;
-    :}
-    | NUM:n1 
-    {:
-        
-        /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("NUM", n1.toString(), parser.cont);
-        parser.cont++;
-
-        /*Asignar el nodo al RESULT para continuar el recorrido*/
-        RESULT = nodo;
-    :}
-    | PARIZQ:n1 expresion_aritmetica:child1 PARDER:n2 
-    {:
-        /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("F", parser.cont);
-        parser.cont++;
-
-        /*Nuevo Nodo: TERMINAL*/
-        Nodo nodoParizq = new Nodo("PARIZQ", n1.toString(), parser.cont);
-        parser.cont++;
-
-        /*Nuevo Nodo: TERMINAL*/
-        Nodo nodoParder = new Nodo("PARDER", n2.toString(), parser.cont);
-        parser.cont++;
-
-        /*Se añaden los hijos*/
-        nodo.AddHijo(nodoParizq);
-        nodo.AddHijo((Nodo) child1);
-        nodo.AddHijo(nodoParder);
-        
-        /*Asignar el nodo al RESULT para continuar el recorrido*/
-        RESULT = nodo;
-    :}
-    | llamar_funcion:child1
-    {:
-        Nodo nodo = new Nodo("F", parser.cont);
-        parser.cont++;
-
-        nodo.AddHijo((Nodo) child1);
-
-        RESULT = nodo;
-    :}
-    ;
 
 
 // Estos son los tipos de variable que se permiten en el programa.
