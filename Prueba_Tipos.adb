@@ -3,7 +3,7 @@ procedure Calc is
     b :  String := "Adios"; 
     
     c : constant Integer := 10;
-    d : Integer := 11;
+    d : Integer := 33;
     
     e : constant Boolean := true;   
     f :  Boolean := false;
