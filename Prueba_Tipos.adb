@@ -16,8 +16,8 @@ procedure Calc is
 
       --g : Integer := 4;
       --f : Integer := true;
-      --d := 12.5; 
-      --a : constant String := "ss";
+      d := 12; 
+      
 
 
      

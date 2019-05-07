@@ -17,7 +17,6 @@ parser code
         System.out.println("Error No Recuperable de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
         ErroresSintacticos.add("Error No Recuperable de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
     }
-    int NumGlobal = 0;
 :}
 
 // Terminales
@@ -892,9 +891,9 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     Nodo type = (Nodo) child1;
                     try{
                         //Validar si la variable existe
-                        Simbolo temporal = null;
-                        temporal = TablaSimbolos.buscar(n1);
-                        if(temporal == null){ //Significa que la variable No existe
+                        // Simbolo temporal = null;
+                        // temporal = TablaSimbolos.buscar(n1);
+                        if(TablaSimbolos.buscar(n1) == null){ //Significa que la variable No existe
                             TablaSimbolos.crear(n1, type.getValue(), false); 
                         }else{
                             System.out.println("Error: Variable \""+n1+"\" ya existe.");
@@ -1107,25 +1106,23 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo(nodoId);
             nodo.AddHijo((Nodo) child1);
 //--------------------------------Puede estar malo este metodo ---------------------------------------------------------------------
-//===================================ESTE CÓDIGO FALTA VALIDAR================================================
+//===================================FALTA VALIDAR DE DOUBLE A INT================================================
             // Tabla de Símbolos
             Nodo type = (Nodo) child1;
-            String cadena = NumGlobal + "";
             try{
                 Simbolo temporal = null;
                 temporal = TablaSimbolos.buscar(n1);
                 if(temporal != null ){ //Significa que la variable ya existe
                     //Verificar el tipo de la variable
                     if(temporal.tipoVariable.equals("INTEGER")){ //Verificar si es float
-                        Object temp2 = type;
+                        String temp2 = type.getValue();
                         System.out.println("expresion_aritmetica:"+temp2);
-                        if(temp2 instanceof Double ){//Verifica si se trata de asignar un float a un int
-                            System.out.println("ENTRA 2");
+                        if(temp2.contains(".")){//Verifica si se trata de asignar un float a un int
                             System.out.println("Error: Tipos Incompatibles. No se puede asignar un Float a Entero.");
                             ErroresSemanticos.add("Error:  Tipos Incompatibles. No se puede asignar un Float a Entero.");
                         }else{
-                            //TablaSimbolos.crear(n1, type.getValue(), false);
-                            TablaSimbolos.insertar(n1, cadena, false);   
+                            //Asigna nuevo valor al valor en la tabla de simbolos
+                            TablaSimbolos.insertar(n1, type.getValue(), false);   
                         }
                     }
                 }else{
