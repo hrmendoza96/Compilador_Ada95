@@ -2,8 +2,9 @@ procedure Calc is
       a : constant String := "hola"; 
       b :  String := "Adios"; 
     
-      c : constant Integer := 10 / 2;
-      d : Float := 11.5;
+      c : constant Integer := 10 * 2;
+      d : Float := 11 * 2.3;
+      k : Integer := 15;
     
       e : constant Boolean := true;   
       f :  Boolean := false;
@@ -11,15 +12,15 @@ procedure Calc is
       g : constant Boolean := false;   
       h :  Boolean := true; 
 
-      i : Integer;
-      --a : Integer;
+      i : Integer := 5;
+      a := "cambio";
 
       --g : Integer := 4;
       --f : Integer := true;
-      d := 12.5; 
-      
 
-
+      L : String;
+      d := d * k;   
+      d := d * i;   
      
 begin
   loop

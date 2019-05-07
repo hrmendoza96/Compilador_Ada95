@@ -43,7 +43,8 @@ DOSPUNTOS = ".."
 ID = {letras}+({guionBajo}({letras}|{numeros})+)*
 
 // Para los numeros
-NUM= ({signoNegativo}|""){numeros}+(({punto}{numeros}+)|"")
+NUM= ({signoNegativo}|""){numeros}+
+NUMFLOAT = ({signoNegativo}|""){numeros}+{punto}{numeros}+
 
 // Para los comentarios
 COMENTARIO = {guionesComentario}({letras}|{numeros}|" "|{signosEspeciales}|{OPREL}|{PARDER}|{PARIZQ})*
@@ -142,6 +143,7 @@ LOOP = ("loop")
     {ID} { return new Symbol(sym.ID, yycolumn, yyline, new String(yytext())); }
     {STRING} { return new Symbol(sym.STRING, yycolumn, yyline, new String(yytext())); }
     {NUM} { return new Symbol(sym.NUM, yycolumn, yyline, new String(yytext())); }
+    {NUMFLOAT} { return new Symbol(sym.NUMFLOAT, yycolumn, yyline, new String(yytext())); }
     {COMENTARIO} {}
     {espacios} {}
 
