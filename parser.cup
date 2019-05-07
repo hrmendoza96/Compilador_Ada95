@@ -1106,7 +1106,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.AddHijo(nodoId);
             nodo.AddHijo((Nodo) child1);
 //--------------------------------Puede estar malo este metodo ---------------------------------------------------------------------
-//===================================FALTA VALIDAR DE DOUBLE A INT================================================
+//===========================VALIDACION REALIZADA. FALTA VALIDAR  LOS OTROS METODOS PARA LOS OTROS TIPOS DE VARIABLES================================================
             // Tabla de Símbolos
             Nodo type = (Nodo) child1;
             try{
@@ -1120,6 +1120,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                         if(temp2.contains(".")){//Verifica si se trata de asignar un float a un int
                             System.out.println("Error: Tipos Incompatibles. No se puede asignar un Float a Entero.");
                             ErroresSemanticos.add("Error:  Tipos Incompatibles. No se puede asignar un Float a Entero.");
+                        }else{
+                            //Asigna nuevo valor al valor en la tabla de simbolos
+                            TablaSimbolos.insertar(n1, type.getValue(), false);   
+                        }
+                    }else if (temporal.tipoVariable.equals("FLOAT")){
+                        String temp2 = type.getValue();
+                        System.out.println("expresion_aritmetica:"+temp2);
+                        if(!temp2.contains(".")){//Verifica si se trata de asignar un float a un int
+                            System.out.println("Error: Tipos Incompatibles. No se puede asignar un Entero a Float.");
+                            ErroresSemanticos.add("Error:  Tipos Incompatibles. No se puede asignar un Entero a Float.");
                         }else{
                             //Asigna nuevo valor al valor en la tabla de simbolos
                             TablaSimbolos.insertar(n1, type.getValue(), false);   

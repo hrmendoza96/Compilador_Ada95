@@ -3,7 +3,7 @@ procedure Calc is
       b :  String := "Adios"; 
     
       c : constant Integer := 10 / 2;
-      d : Integer := 11;
+      d : Float := 11.5;
     
       e : constant Boolean := true;   
       f :  Boolean := false;
@@ -16,7 +16,7 @@ procedure Calc is
 
       --g : Integer := 4;
       --f : Integer := true;
-      d := 12; 
+      d := 12.5; 
       
 
 
