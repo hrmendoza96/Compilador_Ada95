@@ -13,6 +13,7 @@ procedure Calc is
       h :  Boolean := true; 
 
       i : Integer := 5;
+      m : Integer := 7;
       a := "cambio";
 
       --g : Integer := 4;
@@ -21,6 +22,7 @@ procedure Calc is
       L : String;
       d := d * k;   
       d := d * i;   
+      k := ( (3*2) + (5/3) )* 5;
      
 begin
   loop
