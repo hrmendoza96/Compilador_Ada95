@@ -1,5 +1,5 @@
 procedure Calc is
-   Op: Character;               
+   Op: Integer;               
    Disp: Integer := 0;          
    In_Val: Integer;             
 begin
@@ -13,7 +13,7 @@ begin
       -- Skip leading blanks and read the operation.
       loop
          Get(Op);
-         exit when Op /= ' ';
+         exit when Op /= 1;
       end loop;
 
       -- Stop when we're s'posed to.
@@ -22,6 +22,6 @@ begin
       -- Read the integer value (skips leading blanks) and discard the
       -- remainder of the line.
       Get(In_Val);
-      exit when Op = 'Q' or Op = 'q';
+      exit when Op = 1 or Op = 2;
    end loop;
 end Calc;

@@ -8,13 +8,16 @@ class Simbolo {
     String tipoVariable;
     Object valor;
     Boolean tipoConstante;
+    Boolean isFunction;
     
-    public Simbolo(String nombre, String tipoVariable, Object valor, Boolean tipoConstante) {
+    public Simbolo(String nombre, String tipoVariable, Object valor, Boolean tipoConstante, Boolean isFunction) {
         this.nombre = nombre;       
         this.tipoVariable = tipoVariable;
         this.valor = valor;
         this.tipoConstante = tipoConstante;
+        this.isFunction = isFunction;
     }
+
 }
 
 public class TablaSimbolos {
@@ -38,6 +41,11 @@ public class TablaSimbolos {
         Simbolo s = tablaSimbolos.get(nombre);
         return s.tipoConstante;
     }
+
+    static public Boolean verificarIsFunction(String nombre) {
+        Simbolo s = tablaSimbolos.get(nombre);
+        return s.isFunction;
+    }
     
     static public String eliminar(String nombre) {             
         System.out.println("Eliminando variable: " + nombre);
@@ -50,11 +58,11 @@ public class TablaSimbolos {
         }                
     }
             
-    static public Simbolo crear(String nombre, String tipoVariable, Boolean constante) {        
+    static public Simbolo crear(String nombre, String tipoVariable, Boolean constante, Boolean function) {        
         Simbolo simbolo = null;    
         // La variable no existe         
         if (!tablaSimbolos.containsKey(nombre)) {
-            simbolo = new Simbolo(nombre, tipoVariable, null, constante);
+            simbolo = new Simbolo(nombre, tipoVariable, null, constante, function);
             System.out.println("Agregando a tabla de simbolos con nombre: " + nombre);
             tablaSimbolos.put(nombre, simbolo);            
             //System.out.println("Variable creada exitosamente!!!");
@@ -96,7 +104,7 @@ public class TablaSimbolos {
         System.out.println("    Valores de la tabla de simbolos:");
         for (Simbolo s : tablaSimbolos.values())
             System.out.println(String.format("      "
-                    + "| Nombre: %s | valor: %s | tipoVariable: %s | tipoConstante: %s |",s.nombre, s.valor, s.tipoVariable, s.tipoConstante));        
+                    + "| Nombre: %s | valor: %s | tipoVariable: %s | tipoConstante: %s | Function: %s",s.nombre, s.valor, s.tipoVariable, s.tipoConstante, s.isFunction));        
         System.out.println("Saliendo de imprimir en TablaSimbolos\n ");        
     }
     

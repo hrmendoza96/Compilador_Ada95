@@ -4,7 +4,7 @@ begin
    return 1;
  elsif A = 0 then
     return 1;
- else
-   return A * Factorial(A - 1);   -- recurse.
+ --else
+   --return A * Factorial(A - 1);   -- recurse.
  end if;
 end Sum;

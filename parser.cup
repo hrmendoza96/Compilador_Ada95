@@ -7,6 +7,7 @@ parser code
     public static Nodo padre;
     public static ArrayList<String> ErroresSintacticos = new ArrayList<String>();
     public static ArrayList<String> ErroresSemanticos = new ArrayList<String>();
+    public static ArrayList<String> variablesEnFuncion = new ArrayList<String>();
     public int cont = 0;
     public void syntax_error (Symbol s) {
         System.out.println("Error de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
@@ -129,12 +130,32 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoIs = new Nodo("IS", n4.toString(), parser.cont);
                     parser.cont++;
+
+                    
                     
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoFunction);
                     nodo.AddHijo((Nodo) child1);
                     nodo.AddHijo((Nodo) child2);
                     nodo.AddHijo((Nodo) child3);
+
+                    // Tabla de Símbolos
+                    Nodo type = (Nodo) child2;
+                    try{
+                        Simbolo temporal = null;
+                        temporal = TablaSimbolos.buscar(n2);
+                        if(temporal == null ){ //Significa que la variable NO existe
+                            TablaSimbolos.crear(n2, type.getValue(), false, true);
+                            // TablaSimbolos.insertar(n1, exp.getValue(), false);
+                        }else{
+                            System.out.println("Error: Función  \""+n2+"\" ya existe.");
+                            ErroresSemanticos.add("Error: Función \""+n2+"\" ya existe.");
+                        }
+                                
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar la función");            
+                    }
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
@@ -442,6 +463,27 @@ datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo
                     nodo.AddHijo((Nodo) child3);
                     nodo.AddHijo((Nodo) child4);
 
+                    Nodo type = (Nodo) child3;
+                    try{
+                        //Validar si la variable existe
+                        for(String temporal : variablesEnFuncion){
+                            if(TablaSimbolos.buscar(temporal) == null){ //Significa que la variable No existe
+                                TablaSimbolos.crear(temporal, type.getValue(),false, false);
+                                TablaSimbolos.insertar(temporal, null, false); 
+                            }else{
+                                System.out.println("Error: Variable \""+temporal+"\" ya existe.");
+                                ErroresSemanticos.add("Error: Variable \""+temporal+"\" ya existe.");
+                            }
+                        }
+                        
+                                 
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar la variable");            
+                    }
+
+
+
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
                     :}
@@ -457,6 +499,24 @@ datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo
                     nodo.AddHijo((Nodo) child2);
                     nodo.AddHijo((Nodo) child3);
 
+                    Nodo type = (Nodo) child3;
+                    try{
+                        //Validar si la variable existe
+                        for(String temporal : variablesEnFuncion){
+                            if(TablaSimbolos.buscar(temporal) == null){ //Significa que la variable No existe
+                                TablaSimbolos.crear(temporal, type.getValue(),false, false);
+                                TablaSimbolos.insertar(temporal, null, false); 
+                            }else{
+                                System.out.println("Error: Variable \""+temporal+"\" ya existe.");
+                                ErroresSemanticos.add("Error: Variable \""+temporal+"\" ya existe.");
+                            }
+                        }    
+                                 
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar la variable");            
+                    }
+                    
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
                     :}
@@ -539,6 +599,12 @@ listar_ids  ::= ID:n1 COMA:n2 listar_ids:child1 {:
             nodo.AddHijo(nodoComa);
             nodo.AddHijo((Nodo) child1);
 
+            //Obtener lista de los nombres de variables
+            variablesEnFuncion = new ArrayList<String>();
+            variablesEnFuncion.add(n1);
+
+
+
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -552,9 +618,12 @@ listar_ids  ::= ID:n1 COMA:n2 listar_ids:child1 {:
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont );
             parser.cont++;
 
-
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
+           
+            //Obtener lista de los nombres de variables
+            variablesEnFuncion = new ArrayList<String>();
+            variablesEnFuncion.add(n1);
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -770,7 +839,7 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo("declarar_funcion", parser.cont);
                     parser.cont++;
-
+                    System.out.println("entraaaa");
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
                     parser.cont++;
@@ -781,6 +850,24 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     nodo.AddHijo((Nodo) child2);
                     nodo.AddHijo((Nodo) child3);
                     nodo.AddHijo((Nodo) child4);
+
+                    // Tabla de Símbolos
+                    Nodo type = (Nodo) child2;
+                    try{
+                        Simbolo temporal = null;
+                        temporal = TablaSimbolos.buscar(n1);
+                        if(temporal == null ){ //Significa que la variable NO existe
+                            TablaSimbolos.crear(n1, type.getValue(), false, true);
+                            // TablaSimbolos.insertar(n1, exp.getValue(), false);
+                        }else{
+                            System.out.println("Error: Función  \""+n1+"\" ya existe.");
+                            ErroresSemanticos.add("Error: Función \""+n1+"\" ya existe.");
+                        }
+                                
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar la función");            
+                    }
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
@@ -806,6 +893,25 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     nodo.AddHijo((Nodo) child1);
                     nodo.AddHijo((Nodo) child2);
                     nodo.AddHijo((Nodo) child3);
+
+                    
+                    // Tabla de Símbolos
+                    Nodo type = (Nodo) child2;
+                    try{
+                        Simbolo temporal = null;
+                        temporal = TablaSimbolos.buscar(n1);
+                        if(temporal == null ){ //Significa que la variable NO existe
+                            TablaSimbolos.crear(n1, type.getValue(), false, true);
+                            // TablaSimbolos.insertar(n1, exp.getValue(), false);
+                        }else{
+                            System.out.println("Error: Función  \""+n1+"\" ya existe.");
+                            ErroresSemanticos.add("Error: Función \""+n1+"\" ya existe.");
+                        }
+                                
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar la función");            
+                    }
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
@@ -894,7 +1000,7 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                         // Simbolo temporal = null;
                         // temporal = TablaSimbolos.buscar(n1);
                         if(TablaSimbolos.buscar(n1) == null){ //Significa que la variable No existe
-                            TablaSimbolos.crear(n1, type.getValue(), false); 
+                            TablaSimbolos.crear(n1, type.getValue(), false, false); 
                         }else{
                             System.out.println("Error: Variable \""+n1+"\" ya existe.");
                             ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
@@ -951,7 +1057,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 Simbolo temporal = null;
                 temporal = TablaSimbolos.buscar(n1);
                 if(temporal == null ){ //Significa que la variable NO existe
-                    TablaSimbolos.crear(n1, type.getValue(), false);
+                    TablaSimbolos.crear(n1, type.getValue(), false, false);
                     TablaSimbolos.insertar(n1, exp.getValue(), false);
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
@@ -993,7 +1099,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 Simbolo temporal = null;
                 temporal = TablaSimbolos.buscar(n1);
                 if(temporal == null ){ //Significa que la variable NO existe
-                    TablaSimbolos.crear(n1, type.getValue(), false);
+                    TablaSimbolos.crear(n1, type.getValue(), false, false);
                     TablaSimbolos.insertar(n1, n4, false);
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
@@ -1036,7 +1142,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 Simbolo temporal = null;
                 temporal = TablaSimbolos.buscar(n1);
                 if(temporal == null ){ //Significa que la variable NO existe
-                    TablaSimbolos.crear(n1, type.getValue(), false);
+                    TablaSimbolos.crear(n1, type.getValue(), false, false);
                     TablaSimbolos.insertar(n1, n4, false);
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
@@ -1078,7 +1184,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 Simbolo temporal = null;
                 temporal = TablaSimbolos.buscar(n1);
                 if(temporal == null ){ //Significa que la variable NO existe
-                    TablaSimbolos.crear(n1, type.getValue(), false);
+                    TablaSimbolos.crear(n1, type.getValue(), false, false);
                     TablaSimbolos.insertar(n1, n4, false);
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
@@ -1325,7 +1431,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 Simbolo temporal = null;
                 temporal = TablaSimbolos.buscar(n1);
                 if(temporal == null ){ //Significa que la variable NO existe
-                    TablaSimbolos.crear(n1, type.getValue(), true);
+                    TablaSimbolos.crear(n1, type.getValue(), true, false);
                     TablaSimbolos.insertar(n1, exp.getValue(), true);
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
@@ -1371,7 +1477,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 Simbolo temporal = null;
                 temporal = TablaSimbolos.buscar(n1);
                 if(temporal == null ){ //Significa que la variable NO existe
-                    TablaSimbolos.crear(n1, hijo.getValue(), true);
+                    TablaSimbolos.crear(n1, hijo.getValue(), true, false);
                     TablaSimbolos.insertar(n1, String.valueOf(n5), true); 
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
@@ -1419,7 +1525,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 Simbolo temporal = null;
                 temporal = TablaSimbolos.buscar(n1);
                 if(temporal == null ){ //Significa que la variable NO existe
-                    TablaSimbolos.crear(n1, hijo.getValue(), true);
+                    TablaSimbolos.crear(n1, hijo.getValue(), true, false);
                     TablaSimbolos.insertar(n1, String.valueOf(n5), true); 
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
@@ -1463,7 +1569,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 Simbolo temporal = null;
                 temporal = TablaSimbolos.buscar(n1);
                 if(temporal == null ){ //Significa que la variable NO existe
-                    TablaSimbolos.crear(n1, hijo.getValue(), true);
+                    TablaSimbolos.crear(n1, hijo.getValue(), true, false);
                     TablaSimbolos.insertar(n1, String.valueOf(n5), true);
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
