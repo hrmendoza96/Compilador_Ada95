@@ -29,6 +29,7 @@ procedure Calc is
       z : Float := 5/3;
       d := 10.0; 
 
+      
       --g := true; 
      
 begin
