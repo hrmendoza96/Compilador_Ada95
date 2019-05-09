@@ -23,7 +23,7 @@ parser code
 terminal PROCEDURE, FUNCTION, RETURN, CONSTANT, IS, BEGIN, END, IF, THEN, ELSE, ELSIF, FOR, IN, OUT, WHILE, LOOP;
 terminal AND,OR,XOR,FALSE,TRUE,EXIT,WHEN,NULL,GET,PUT;
 terminal INTEGER,FLOAT,BOOLEAN,STRINGTYPE;
-terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,SEMICOLON,COMA, DOSPUNTOS;
+terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,SEMICOLON,COMA, DOSPUNTOS, PUNTO;
 terminal String ID;
 terminal String NUM;
 terminal String STRING;
@@ -40,7 +40,7 @@ non terminal asignacion,get,put;
 
 // Tipos de datos para Tabla de Símbolos
 terminal Intger ENTERO;
-terminal Float NUMFLOAT;
+terminal String NUMFLOAT;
 terminal String TEXTO;
 terminal Boolean BOOLEANO;
 
@@ -1105,8 +1105,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
             nodo.AddHijo((Nodo) child1);
-//--------------------------------Puede estar malo este metodo ---------------------------------------------------------------------
-//==========================VALIDACION REALIZADA. FALTA VALIDAR  LOS OTROS METODOS PARA LOS OTROS TIPOS DE VARIABLES================================================
+//--------------------------------Insertar a tabla de simbolos ---------------------------------------------------------------------
             // Tabla de Símbolos
             Nodo type = (Nodo) child1;
             try{
@@ -1121,8 +1120,14 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                             System.out.println("Error: Tipos Incompatibles. No se puede asignar un Float a Entero.");
                             ErroresSemanticos.add("Error:  Tipos Incompatibles. No se puede asignar un Float a Entero.");
                         }else{
-                            //Asigna nuevo valor al valor en la tabla de simbolos
-                            TablaSimbolos.insertar(n1, type.getValue(), false);   
+                            //Verificar si es constante o no
+                            if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
+                                //Al NO ser constante entonces se asigna el valor en la tabla de simbolos
+                                TablaSimbolos.insertar(n1, type.getValue(), false);
+                            }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
+                                System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                                ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                            }   
                         }
                     }else if (temporal.tipoVariable.equals("FLOAT")){
                         String temp2 = type.getValue();
@@ -1131,8 +1136,14 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                             System.out.println("Error: Tipos Incompatibles. No se puede asignar un Entero a Float.");
                             ErroresSemanticos.add("Error:  Tipos Incompatibles. No se puede asignar un Entero a Float.");
                         }else{
-                            //Asigna nuevo valor al valor en la tabla de simbolos
-                            TablaSimbolos.insertar(n1, type.getValue(), false);   
+                            //Verificar si es constante o no
+                            if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
+                                //Al NO ser constante entonces se asigna el valor en la tabla de simbolos
+                                TablaSimbolos.insertar(n1, type.getValue(), false);
+                            }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
+                                System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                                ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                            }    
                         }
                     }
                 }else{
@@ -1171,8 +1182,22 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             // Tabla de Símbolos
             try{
-                TablaSimbolos.crear(n1, "Boolean", false);
-                TablaSimbolos.insertar(n1, String.valueOf(n3), false);           
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal != null ){ //Significa que la variable ya existe
+                    /*Los analizadores lexicos y sintacticos ya validan que este tipo de dato es booleano.*/
+                    if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
+                        //Al NO ser constante entonces se asigna el valor
+                        TablaSimbolos.insertar(n1, String.valueOf(n3), false);
+                    }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
+                        System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                        ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                    }
+                    
+                }else{
+                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                }           
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
@@ -1203,8 +1228,22 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             // Tabla de Símbolos
             try{
-                TablaSimbolos.crear(n1, "Boolean", false);
-                TablaSimbolos.insertar(n1, String.valueOf(n3), false);           
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal != null ){ //Significa que la variable ya existe
+                    /*Los analizadores lexicos y sintacticos ya validan que este tipo de dato es booleano.*/
+                    if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
+                        //Al NO ser constante entonces se asigna el valor
+                        TablaSimbolos.insertar(n1, String.valueOf(n3), false);
+                    }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
+                        System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                        ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                    }
+                    
+                }else{
+                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                }             
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
@@ -1235,8 +1274,22 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             // Tabla de Símbolos
             try{
-                TablaSimbolos.crear(n1, String.valueOf(n3), false);
-                TablaSimbolos.insertar(n1, n3, false);           
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal != null ){ //Significa que la variable ya existe
+                    /*Los analizadores lexicos y sintacticos ya validan que este tipo de dato es String.*/
+                    if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
+                        //Al NO ser constante entonces se asigna el valor
+                        TablaSimbolos.insertar(n1, n3, false);
+                    }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
+                        System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                        ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                    }
+                    
+                }else{
+                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                }        
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
@@ -1428,35 +1481,689 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
 /*OPERACIONES ARITMETICA POST ORDER*/
 expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmetica:n3
-                            | expresion_aritmetica:n1 OPMULTIPLICACION:n2 expresion_aritmetica:n3
                             {:
-
                                 Nodo aux = (Nodo) n1;
                                 Nodo aux2 = (Nodo) n3;
-                                int valor1 = Integer.parseInt(aux.getValue());
-                                int valor2 = Integer.parseInt(aux2.getValue());
-                                int resultado = 0;
-                                String cadena = "";
-                                if (n2.equals("*")) {
-                                    resultado = valor1 * valor2;     
-                                    cadena = "MULTIPLICACION";                              
-                                } else if (n2.equals("/")) {
-                                    resultado = valor1 / valor2;
-                                    cadena = "DIVISION";
+                                String operacion = "";
+                                String resultado = "";
+                                String tipo = "";
+                                if (n2.equals("+")) {
+                                    if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
+                                     // Debemos averiguar si el valor es un id, función o simplemente un número
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        // Nuestros dos valores a operar
+                                        int cant1 = 0;
+                                        int cant2 = 0;
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant1 = Integer.parseInt(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant2 = Integer.parseInt(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        int auxi = cant1 + cant2;
+                                        resultado = auxi + "";
+                                        operacion = "SUMA";
+                                        tipo = "INTEGER";
+                                    } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
+                                        // Debemos averiguar si el valor es un id, función o simplemente un número
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        // Nuestros dos valores a operar
+                                        int cant1 = 0;
+                                        float cant2 = 0;
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant1 = Integer.parseInt(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        /* Se asigna el texto a un float. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant2 = Float.parseFloat(aux2.getValue());
+                                        } catch (NumberFormatException e) {                                           
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        float auxi = (float) cant1 + cant2;
+                                        resultado = auxi + "";
+                                        operacion = "SUMA";
+                                        tipo = "FLOAT";
+                                    } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        float cant1 = 0;
+                                        int cant2 = 0;
+                                        try {
+                                            cant1 = Float.parseFloat(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        try {
+                                            cant2 = Integer.parseInt(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        float auxi = (float) cant1 + cant2;
+                                        resultado = auxi + "";
+                                        operacion = "SUMA";
+                                        tipo = "FLOAT";
+                                    } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
+                                        // Debemos averiguar si el valor es un id, función o simplemente un número
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        // Nuestros dos valores a operar
+                                        float cant1 = 0;
+                                        float cant2 = 0;
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant1 = Float.parseFloat(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        /* Se asigna el texto a un float. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant2 = Float.parseFloat(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        float auxi = (float) cant1 + cant2;
+                                        resultado = auxi + "";
+                                        operacion = "SUMA";
+                                        tipo = "FLOAT";
+                                    }           
+                                } else if (n2.equals("-")) {
+                                    if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
+                                     // Debemos averiguar si el valor es un id, función o simplemente un número
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        // Nuestros dos valores a operar
+                                        int cant1 = 0;
+                                        int cant2 = 0;
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant1 = Integer.parseInt(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant2 = Integer.parseInt(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        int auxi = cant1 - cant2;
+                                        resultado = auxi + "";
+                                        operacion = "RESTA";
+                                        tipo = "INTEGER";
+                                    } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
+                                        // Debemos averiguar si el valor es un id, función o simplemente un número
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        // Nuestros dos valores a operar
+                                        int cant1 = 0;
+                                        float cant2 = 0;
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant1 = Integer.parseInt(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        /* Se asigna el texto a un float. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant2 = Float.parseFloat(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        float auxi = (float) cant1 - cant2;
+                                        resultado = auxi + "";
+                                        operacion = "RESTA";
+                                        tipo = "FLOAT";
+                                    } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        float cant1 = 0;
+                                        int cant2 = 0;
+                                        try {
+                                            cant1 = Float.parseFloat(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        try {
+                                            cant2 = Integer.parseInt(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        float auxi = (float) cant1 - cant2;
+                                        resultado = auxi + "";
+                                        operacion = "RESTA";
+                                        tipo = "FLOAT";
+                                    } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
+                                        // Debemos averiguar si el valor es un id, función o simplemente un número
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        // Nuestros dos valores a operar
+                                        float cant1 = 0;
+                                        float cant2 = 0;
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant1 = Float.parseFloat(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        /* Se asigna el texto a un float. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant2 = Float.parseFloat(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        float auxi = (float) cant1 - cant2;
+                                        resultado = auxi + "";
+                                        operacion = "RESTA";
+                                        tipo = "FLOAT";
+                                    }          
                                 }
-                                Nodo nodo = new Nodo(cadena,resultado + "", parser.cont);
+                                Nodo nodo = new Nodo(operacion,resultado, parser.cont, tipo);
+                                nodo.AddHijo(aux);
+                                nodo.AddHijo(aux2);
+                                parser.cont++;
+                                RESULT = nodo;
+                            :}
+                            | expresion_aritmetica:n1 OPMULTIPLICACION:n2 expresion_aritmetica:n3
+                            {:
+                                Nodo aux = (Nodo) n1;
+                                Nodo aux2 = (Nodo) n3;
+                                String operacion = "";
+                                String resultado = "";
+                                String tipo = "";
+                                if (n2.equals("*")) {
+                                    if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
+                                     // Debemos averiguar si el valor es un id, función o simplemente un número
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        // Nuestros dos valores a operar
+                                        int cant1 = 0;
+                                        int cant2 = 0;
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant1 = Integer.parseInt(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant2 = Integer.parseInt(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        int auxi = cant1 * cant2;
+                                        resultado = auxi + "";
+                                        operacion = "MULTIPLICACION";
+                                        tipo = "INTEGER";
+                                    } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
+                                        // Debemos averiguar si el valor es un id, función o simplemente un número
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        // Nuestros dos valores a operar
+                                        int cant1 = 0;
+                                        float cant2 = 0;
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant1 = Integer.parseInt(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        /* Se asigna el texto a un float. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant2 = Float.parseFloat(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        float auxi = (float) cant1 * cant2;
+                                        resultado = auxi + "";
+                                        operacion = "MULTIPLICACION";
+                                        tipo = "FLOAT";
+                                    } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        float cant1 = 0;
+                                        int cant2 = 0;
+                                        try {
+                                            cant1 = Float.parseFloat(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        try {
+                                            cant2 = Integer.parseInt(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                           System.out.println("ENtra");
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        float auxi = (float) cant1 * cant2;
+                                        resultado = auxi + "";
+                                        operacion = "MULTIPLICACION";
+                                        tipo = "FLOAT";
+                                    } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
+                                        // Debemos averiguar si el valor es un id, función o simplemente un número
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        // Nuestros dos valores a operar
+                                        float cant1 = 0;
+                                        float cant2 = 0;
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant1 = Float.parseFloat(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        /* Se asigna el texto a un float. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant2 = Float.parseFloat(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                           System.out.println("ENtra");
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        float auxi = (float) cant1 * cant2;
+                                        resultado = auxi + "";
+                                        operacion = "MULTIPLICACION";
+                                        tipo = "FLOAT";
+                                    }           
+                                } else if (n2.equals("/")) {
+                                    if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
+                                     // Debemos averiguar si el valor es un id, función o simplemente un número
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        // Nuestros dos valores a operar
+                                        int cant1 = 0;
+                                        int cant2 = 0;
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant1 = Integer.parseInt(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant2 = Integer.parseInt(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        int auxi = cant1 / cant2;
+                                        resultado = auxi + "";
+                                        operacion = "DIVISION";
+                                        tipo = "INTEGER";
+                                    } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
+                                        // Debemos averiguar si el valor es un id, función o simplemente un número
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        // Nuestros dos valores a operar
+                                        int cant1 = 0;
+                                        float cant2 = 0;
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant1 = Integer.parseInt(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        /* Se asigna el texto a un float. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant2 = Float.parseFloat(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                           System.out.println("ENtra");
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        float auxi = (float) cant1 / cant2;
+                                        resultado = auxi + "";
+                                        operacion = "DIVISION";
+                                        tipo = "FLOAT";
+                                    } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        float cant1 = 0;
+                                        int cant2 = 0;
+                                        try {
+                                            cant1 = Float.parseFloat(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        try {
+                                            cant2 = Integer.parseInt(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                           System.out.println("ENtra");
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Integer.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        float auxi = (float) cant1 / cant2;
+                                        resultado = auxi + "";
+                                        operacion = "DIVISION";
+                                        tipo = "FLOAT";
+                                    } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
+                                        // Debemos averiguar si el valor es un id, función o simplemente un número
+                                        String valor1 = aux.getValue();
+                                        String valor2 = aux2.getValue();
+                                        // Nuestros dos valores a operar
+                                        float cant1 = 0;
+                                        float cant2 = 0;
+                                        /* Se asigna el texto a un entero. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant1 = Float.parseFloat(valor1);
+                                        } catch (NumberFormatException e) {
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant1 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        /* Se asigna el texto a un float. Si esto falla, significa
+                                        que estamos lidiando con un identificador.*/
+                                        try {
+                                            cant2 = Float.parseFloat(aux2.getValue());
+                                        } catch (NumberFormatException e) {
+                                           System.out.println("ENtra");
+                                            Simbolo identificador = null;
+                                            identificador = TablaSimbolos.buscar(aux2.getValue());
+                                            if(identificador != null ){ //Significa que la variable ya existe
+                                                cant2 = Float.valueOf((String)identificador.valor);
+                                            }else{
+                                                System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                            }
+                                        }
+                                        float auxi = (float) cant1 / cant2;
+                                        resultado = auxi + "";
+                                        operacion = "DIVISION";
+                                        tipo = "FLOAT";
+                                    }          
+                                }
+                                Nodo nodo = new Nodo(operacion,resultado, parser.cont, tipo);
+                                nodo.AddHijo(aux);
+                                nodo.AddHijo(aux2);
                                 parser.cont++;
                                 RESULT = nodo;
                             :}
                             | NUM:n1
                             {:
-                                Nodo nodo = new Nodo("NUM", n1.toString(), parser.cont);
+                                Nodo nodo = new Nodo("NUM", n1.toString(), parser.cont,"INTEGER");
                                 parser.cont++;
                                 RESULT = nodo;
                             :}
-                            | ID
-                            | llamar_funcion
-                            | PARIZQ expresion_aritmetica PARDER
+                            | ID:n1
+                            {:
+                                String tipo = "";
+                                try{
+                                    Simbolo identificador = null;
+                                    identificador = TablaSimbolos.buscar(n1);
+                                    if(identificador != null ){ //Significa que la variable ya existe
+                                        tipo = identificador.tipoVariable;
+                                    }else{
+                                        System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                        ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                    }
+                                } catch(Exception e) {
+                                    e.printStackTrace();
+                                    System.out.println("Error al agregar la variable");            
+                                }
+                                Nodo nodo = new Nodo("ID", n1, parser.cont,tipo);
+                                parser.cont++;
+                                RESULT = nodo;                  
+                            :}
+                            | NUMFLOAT:n1
+                            {:
+                                Nodo nodo = new Nodo("NUMFLOAT", n1, parser.cont,"FLOAT");
+                                parser.cont++;
+                                RESULT = nodo;
+                            :}
+                            | llamar_funcion:n1
+                            {:
+                            
+                            :}
+                            | PARIZQ expresion_aritmetica:n1 PARDER
+                            {:
+                                Nodo aux = (Nodo) n1;
+                                Nodo nodo = new Nodo(aux.tag,aux.value,parser.cont,aux.tipo);
+                                parser.cont++;
+                                RESULT = nodo;
+                            :}
                             ;
 
 
@@ -1894,7 +2601,7 @@ get ::= GET PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
     parser.cont++;
 
     /*Nuevo Nodo: TERMINAL*/
-    Nodo nodoId = new Nodo("ID", n2.toString(), parser.cont);
+    Nodo nodoId = new Nodo("ID", n2.toString(), parser.cont,"STRING");
     parser.cont++;
 
     /*Se añaden los hijos*/
