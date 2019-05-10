@@ -142,9 +142,7 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     // Tabla de Símbolos
                     Nodo type = (Nodo) child2;
                     try{
-                        Simbolo temporal = null;
-                        temporal = TablaSimbolos.buscar(n2);
-                        if(temporal == null ){ //Significa que la variable NO existe
+                        if(TablaSimbolos.buscar(n2) == null){ //Significa que la variable NO existe
                             TablaSimbolos.crear(n2, type.getValue(), false, true);
                             // TablaSimbolos.insertar(n1, exp.getValue(), false);
                         }else{

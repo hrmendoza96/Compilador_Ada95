@@ -17,6 +17,9 @@ class Simbolo {
         this.tipoConstante = tipoConstante;
         this.isFunction = isFunction;
     }
+    public Simbolo() {
+
+    }
 
 }
 
