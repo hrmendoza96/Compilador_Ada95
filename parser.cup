@@ -403,12 +403,21 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | RETURN expresion_aritmetica:child1 SEMICOLON
         {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("codigo", parser.cont);
+
+            Nodo type = (Nodo) child1;
+            Nodo nodo = null;
+            try {
+                if (type.getValue() != null) {
+                    nodo = new Nodo("EXPRESION",type.getValue(), parser.cont, type.getTipo());
+                    parser.cont++;
+                    RESULT = nodo;
+                } else {
+                    System.out.println("En la expresion es nulo el valor.");
+                } 
+            } catch (Exception e) {
+                System.out.println("No sé cuál es el error.");
+            }
             parser.cont++;
-    
-            /*Se añaden los hijos*/
-            nodo.AddHijo((Nodo) child1);
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -421,7 +430,6 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
     
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
-
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
         :}
@@ -473,8 +481,6 @@ datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo
                                 ErroresSemanticos.add("Error: Variable \""+temporal+"\" ya existe.");
                             }
                         }
-                        
-                                 
                     } catch(Exception e) {
                         e.printStackTrace();
                         System.out.println("Error al agregar la variable");            
@@ -521,11 +527,19 @@ datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo
                     | listar_ids:child1 error tipo_parametro:child2 tipo_variable:child3
                     | expresion_aritmetica:child1 
                     {:
-                        Nodo nodo = new Nodo("datos_parametros", parser.cont);
-                        parser.cont++;
-                        nodo.AddHijo((Nodo) child1);
-
-                        RESULT = nodo;
+                        Nodo type = (Nodo) child1;
+                        System.out.println("Entra a los parametros");
+                        try {
+                            if (type.getValue() != null) {
+                                Nodo nodo = new Nodo("EXPRESION",type.getValue(), parser.cont, type.getTipo());
+                                parser.cont++;
+                                RESULT = nodo;
+                            } else {
+                                System.out.println("En la expresion es nulo el valor.");
+                            } 
+                        } catch (Exception e) {
+                            System.out.println("Error principal en parametros.");
+                        }
                     :}
                     ;
 // Aquí se definen los tipos de parámetros que pueden ser IN, OUT, IN OUT o ninguno.
@@ -1759,7 +1773,11 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             Simbolo identificador = null;
                                             identificador = TablaSimbolos.buscar(aux.getValue());
                                             if(identificador != null ){ //Significa que la variable ya existe
-                                                cant1 = Integer.valueOf((String)identificador.valor);
+                                                if (identificador.valor != null) {
+                                                    cant1 = Integer.valueOf((String)identificador.valor);
+                                                } else {
+                                                    System.out.println("El valor 1 es nulo en la resta.");
+                                                }
                                             }else{
                                                 System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
                                                 ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
@@ -1773,16 +1791,25 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             Simbolo identificador = null;
                                             identificador = TablaSimbolos.buscar(aux2.getValue());
                                             if(identificador != null ){ //Significa que la variable ya existe
-                                                cant2 = Integer.valueOf((String)identificador.valor);
+                                                if (identificador.valor != null) {
+                                                    cant2 = Integer.valueOf((String)identificador.valor);
+                                                } else {
+                                                    System.out.println("El valor 2 es nulo en la resta 2.");
+                                                }
                                             }else{
                                                 System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
                                                 ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
                                             }
                                         }
-                                        int auxi = cant1 - cant2;
-                                        resultado = auxi + "";
-                                        operacion = "RESTA";
-                                        tipo = "INTEGER";
+                                        if (cant1 != 0 && cant2 != 0) {
+                                            int auxi = cant1 - cant2;
+                                            resultado = auxi + "";
+                                            operacion = "RESTA";
+                                            tipo = "INTEGER";
+                                        } else {
+                                            System.out.println("Hay algun valor nulo en la resta.");
+                                        }
+                                       
                                     } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
                                         // Debemos averiguar si el valor es un id, función o simplemente un número
                                         String valor1 = aux.getValue();
@@ -1925,7 +1952,11 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             Simbolo identificador = null;
                                             identificador = TablaSimbolos.buscar(aux.getValue());
                                             if(identificador != null ){ //Significa que la variable ya existe
-                                                cant1 = Integer.valueOf((String)identificador.valor);
+                                                if (identificador.valor != null) {
+                                                    cant1 = Integer.valueOf((String)identificador.valor);
+                                                } else {
+                                                    System.out.println("El valor de la variable es nulo.");
+                                                }                                              
                                             }else{
                                                 System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
                                                 ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
