@@ -1,7 +1,8 @@
 procedure Calc is
    Op: Integer;               
    Disp: Integer := 0;          
-   In_Val: Integer;             
+   In_Val2: Integer := 10; 
+   Otra_tontera: Integer := 10;                 
 begin
    loop
       -- Print the display.
