@@ -1,0 +1,2821 @@
+import java_cup.runtime.*;
+import java.util.ArrayList;
+
+
+parser code
+{:
+    public static Nodo padre;
+    public static ArrayList<String> ErroresSintacticos = new ArrayList<String>();
+    public static ArrayList<String> ErroresSemanticos = new ArrayList<String>();
+    public static ArrayList<String> variablesEnFuncion = new ArrayList<String>();
+    public int cont = 0;
+    public void syntax_error (Symbol s) {
+        System.out.println("Error de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
+        ErroresSintacticos.add("Error de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
+    }
+
+    public void unrecovered_syntax_error (Symbol s) throws java.lang.Exception {
+        System.out.println("Error No Recuperable de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
+        ErroresSintacticos.add("Error No Recuperable de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
+    }
+:}
+
+// Terminales
+terminal PROCEDURE, FUNCTION, RETURN, CONSTANT, IS, BEGIN, END, IF, THEN, ELSE, ELSIF, FOR, IN, OUT, WHILE, LOOP;
+terminal AND,OR,XOR,FALSE,TRUE,EXIT,WHEN,NULL,GET,PUT;
+terminal INTEGER,FLOAT,BOOLEAN,STRINGTYPE;
+terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,SEMICOLON,COMA, DOSPUNTOS, PUNTO;
+terminal String ID;
+terminal String NUM;
+terminal String STRING;
+
+// No Terminales
+non terminal inicio, cuerpo_principal, comienza_cuerpo_principal;
+non terminal parametros, datos_parametros, tipo_parametro, tipo_declaracion, declarar_procedimiento, declarar_funcion, llamar_funcion, funcion, declarar_variable;
+non terminal tipo_variable, listar_ids;
+non terminal codigo;
+non terminal condicion, operando, expresion_booleana;
+non terminal ciclo_loop, ciclo_for, ciclo_while, salir_ciclo, bloque_if, bloque_elsif, bloque_else, procedimiento;
+non terminal expresion_aritmetica, E, E_prima, T, T_prima, F;
+non terminal asignacion,get,put;
+
+// Tipos de datos para Tabla de Símbolos
+terminal Intger ENTERO;
+terminal String NUMFLOAT;
+terminal String TEXTO;
+terminal Boolean BOOLEANO;
+
+// Precedencia de Operadores - de menor a mayor
+precedence left OPREL;
+precedence left OPSUMA;
+precedence left OPMULTIPLICACION;
+
+// Gramatica
+
+start with inicio;
+
+/* Cuerpo principal contiene el procedimiento o la funcion principal.
+Declaramos primero un procedure y una function en su forma principal.*/
+inicio  ::= cuerpo_principal:child1 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("Inicio", parser.cont);
+        parser.cont++;
+
+        /*Se añaden el hijo*/
+        nodo.AddHijo((Nodo) child1);
+
+        /*Solamente en el cuerpo inicial se le asigna el nodo principal al padre.*/
+        parser.padre = (Nodo) nodo;
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+        :}
+        ;
+
+cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuerpo_principal:child2 {:
+                    // /*Se crea el nodo prinicipal*/
+                    // Nodo nodo = new Nodo("cuerpo_principal", parser.cont);
+                    // parser.cont++;
+                    
+                    // /*Nuevo Nodo: TERMINAL*/
+                    // Nodo nodoProcedure = new Nodo("PROCEDURE", n1.toString(), parser.cont );
+                    // parser.cont++;
+
+                    /*Nuevo Nodo: TERMINAL*/
+                    Nodo nodoId = new Nodo("ID",n2.toString(),parser.cont);
+                    parser.cont++;
+                    System.out.println(n2.toString());
+                    System.out.println("Entra al primer procedure");
+                                        
+                    /*Se añaden los hijos*/
+                    //nodo.AddHijo(nodoProcedure);
+                    nodoId.AddHijo((Nodo) child1);
+                    nodoId.AddHijo((Nodo) child2);
+
+                    // Tabla de Símbolos
+                    Nodo type = (Nodo) n1;
+                    try{
+                        if(TablaSimbolos.buscar(n2) == null){ //Significa que la variable NO existe
+                            TablaSimbolos.crear(n2, "PROCEDURE", false, false);
+                            TablaSimbolos.insertar(n2,"PROCEDURE", false);
+                        }else{
+                            System.out.println("Error: Procedure  \""+n2+"\" ya existe.");
+                            ErroresSemanticos.add("Error: Procedure \""+n2+"\" ya existe.");
+                        }
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar el procedure");            
+                    }
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodoId;
+                    :}
+                    | error ID:n2 parametros:child1 IS:n3 comienza_cuerpo_principal:child2
+                    | PROCEDURE:n1 error parametros:child1 IS:n3 comienza_cuerpo_principal:child2
+                    | PROCEDURE:n1 ID:n2 parametros:child1 error comienza_cuerpo_principal:child2
+                    | PROCEDURE:n1 ID:n2 IS:n3 comienza_cuerpo_principal:child1 {:
+                    // /*Se crea el nodo prinicipal*/
+                    // Nodo nodo = new Nodo("cuerpo_principal",parser.cont);
+                    // parser.cont++;
+                    
+                    // /*Nuevo Nodo: TERMINAL*/
+                    // Nodo nodoProcedure = new Nodo("PROCEDURE", n1.toString(),parser.cont );
+                    // parser.cont++;
+                    
+                    // /*Se añaden los hijos*/
+                    // nodo.AddHijo(nodoProcedure);
+                    // nodo.AddHijo((Nodo) child1);
+
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    //RESULT = nodo;
+                    /*Nuevo Nodo: TERMINAL*/
+                    Nodo nodoId = new Nodo("ID",n2.toString(),parser.cont);
+                    parser.cont++;
+                                        
+                    /*Se añaden los hijos*/
+                    //nodo.AddHijo(nodoProcedure);
+                    nodoId.AddHijo((Nodo) child1);
+                    // Tabla de Símbolos
+                    try{
+                        if(TablaSimbolos.buscar(n2) == null){ //Significa que la variable NO existe
+                            TablaSimbolos.crear(n2, "PROCEDURE", false, false);
+                            // TablaSimbolos.insertar(n1, exp.getValue(), false);
+                        }else{
+                            System.out.println("Error: Procedure  \""+n2+"\" ya existe.");
+                            ErroresSemanticos.add("Error: Procedure \""+n2+"\" ya existe.");
+                        }
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar el procedure");            
+                    }
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodoId;
+                    :}
+                    | error ID:n2 IS:n3 comienza_cuerpo_principal:child1
+                    | PROCEDURE:n1 error IS:n3 comienza_cuerpo_principal:child1
+                    | PROCEDURE:n1 ID:n2 error comienza_cuerpo_principal:child1
+                    | FUNCTION:n1 ID:n2 parametros:child1 RETURN:n3 tipo_variable:child2 IS:n4 comienza_cuerpo_principal:child3 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("cuerpo_principal",parser.cont);
+                    parser.cont++;
+                    
+                    /*Nuevo Nodo: TERMINAL*/
+                    Nodo nodoFunction = new Nodo("FUNCTION", n1.toString(),parser.cont );
+                    parser.cont++;
+
+                    /*Nuevo Nodo: TERMINAL*/
+                    Nodo nodoIs = new Nodo("IS", n4.toString(), parser.cont);
+                    parser.cont++;
+
+                    
+                    
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo(nodoFunction);
+                    nodo.AddHijo((Nodo) child1);
+                    nodo.AddHijo((Nodo) child2);
+                    nodo.AddHijo((Nodo) child3);
+
+                    // Tabla de Símbolos
+                    Nodo type = (Nodo) child2;
+                    try{
+                        if(TablaSimbolos.buscar(n2) == null){ //Significa que la variable NO existe
+                            TablaSimbolos.crear(n2, type.getValue(), false, true);
+                            // TablaSimbolos.insertar(n1, exp.getValue(), false);
+                        }else{
+                            System.out.println("Error: Función  \""+n2+"\" ya existe.");
+                            ErroresSemanticos.add("Error: Función \""+n2+"\" ya existe.");
+                        }
+                                
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar la función");            
+                    }
+
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | error ID:n2 parametros:child1 RETURN:n3 tipo_variable:child2 IS:n4 comienza_cuerpo_principal:child3
+                    | FUNCTION:n1 error parametros:child1 RETURN:n3 tipo_variable:child2 IS:n4 comienza_cuerpo_principal:child3
+                    | FUNCTION:n1 ID:n2 parametros:child1 error tipo_variable:child2 IS:n4 comienza_cuerpo_principal:child3
+                    | FUNCTION:n1 ID:n2 parametros:child1 RETURN:n3 tipo_variable:child2 error comienza_cuerpo_principal:child3
+                    ; 
+
+/*Este es el área donde comenzará el codigo del programa.*/
+comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 END:n2 ID:n3 SEMICOLON:n4 {:
+                            /*Se crea el nodo prinicipal*/
+                            Nodo nodo = new Nodo("comienza_cuerpo_principal",parser.cont);
+                            parser.cont++;
+                            
+                            /*Se añaden los hijos*/
+                            nodo.AddHijo((Nodo) child1);
+                            nodo.AddHijo((Nodo) child2);
+
+                            /*Asignar el nodo al RESULT para continuar el recorrido*/
+                            RESULT = nodo;
+                            :}
+                            | tipo_declaracion:child1 error codigo:child2 END:n2 ID:n3 SEMICOLON:n4
+                            | tipo_declaracion:child1 BEGIN:n1 codigo:child2 error ID:n3 SEMICOLON:n4
+                            | tipo_declaracion:child1 BEGIN:n1 codigo:child2 END:n2 error SEMICOLON:n4
+                            | tipo_declaracion:child1 BEGIN:n1 codigo:child2 END:n2 ID:n3 error
+
+                            | BEGIN:n1 codigo:child1 END:n2 ID:n3 SEMICOLON:n4 {:
+                            /*Se crea el nodo prinicipal*/
+                            Nodo nodo = new Nodo("comienza_cuerpo_principal",parser.cont);
+                            parser.cont++;
+                            
+                            /*Se añaden los hijos*/
+                            nodo.AddHijo((Nodo) child1);
+
+                            /*Asignar el nodo al RESULT para continuar el recorrido*/
+                            RESULT = nodo;
+                            :}
+                            | 
+                            | error codigo:child1 END:n2 ID:n3 SEMICOLON:n4
+                            | BEGIN:n1 codigo:child1 error ID:n3 SEMICOLON:n4
+                            | BEGIN:n1 codigo:child1 END:n2 error SEMICOLON:n4
+                            | BEGIN:n1 codigo:child1 END:n2 ID:n3 error
+
+                            ;
+/*Esta es la forma en la que ese presenta el código. Se podrá poner cualquiera de estas opciones
+para comenzar a declarar código.*/
+codigo  ::= ciclo_for:child1 codigo:child2 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo", parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+        nodo.AddHijo((Nodo) child2);
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+        :}
+        | ciclo_for:child1 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo", parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+        :}
+        | ciclo_while:child1 codigo:child2 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo",parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+        nodo.AddHijo((Nodo) child2);
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+        :}
+        | ciclo_while:child1 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo",parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+        :}
+        | ciclo_loop:child1 codigo:child2 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo",parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+        nodo.AddHijo((Nodo) child2);
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+
+        :}
+        | ciclo_loop:child1 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo",parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+
+        :}
+        | bloque_if:child1 codigo:child2 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo",parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+        nodo.AddHijo((Nodo) child2);
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+
+        :}
+        | bloque_if:child1 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo", parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+
+        :}
+        | get:child1 codigo:child2 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo", parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+        nodo.AddHijo((Nodo) child2);
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+
+        :}
+        | get:child1 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo", parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+
+        :}
+        | put:child1 codigo:child2 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo", parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+        nodo.AddHijo((Nodo) child2);
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+
+        :}
+        | put:child1 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo", parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+
+        :}
+        | asignacion:child1 codigo:child2 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo", parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+        nodo.AddHijo((Nodo) child2);
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+
+        :}
+        | asignacion:child1 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo", parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+
+        :}
+        | llamar_funcion:child1 codigo:child2 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo", parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+        nodo.AddHijo((Nodo) child2);
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+
+        :}
+        | llamar_funcion:child1 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("codigo", parser.cont);
+        parser.cont++;
+ 
+        /*Se añaden los hijos*/
+        nodo.AddHijo((Nodo) child1);
+
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+
+        :}
+        | RETURN expresion_aritmetica:child1 SEMICOLON
+        {:
+
+            Nodo type = (Nodo) child1;
+            Nodo nodo = null;
+            try {
+                if (type.getValue() != null) {
+                    nodo = new Nodo("EXPRESION",type.getValue(), parser.cont, type.getTipo());
+                    parser.cont++;
+                    System.out.println(type.getValue());
+                    RESULT = nodo;
+                } else {
+
+                } 
+            } catch (Exception e) {
+                System.out.println("No sé cuál es el error.");
+            }
+            parser.cont++;
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+        :}
+        | RETURN expresion_aritmetica:child1 
+        {:
+            Nodo type = (Nodo) child1;
+            Nodo nodo = null;
+            try {
+                if (type.getValue() != null) {
+                    nodo = new Nodo("EXPRESION",type.getValue(), parser.cont, type.getTipo());
+                    parser.cont++;
+                    System.out.println(type.getValue() + "Esta parte es la de abajo");
+                    RESULT = nodo;
+                } else {
+
+                } 
+            } catch (Exception e) {
+                System.out.println("No sé cuál es el error.");
+            }
+            parser.cont++;
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+        :}
+        ;
+
+/*Estos son los parámetros para procedimientos.*/
+parametros  ::=  PARIZQ datos_parametros:child1 PARDER {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("parametros", parser.cont );
+            parser.cont++;
+    
+            /*Se añaden los hijos*/
+            nodo.AddHijo((Nodo) child1);
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | PARIZQ PARDER:n2 {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("parametros", parser.cont );
+            parser.cont++;
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            ;
+
+/*Estos son los datos de los paáametros.*/
+datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo_variable:child3 SEMICOLON datos_parametros:child4 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("datos_parametros", parser.cont);
+                    parser.cont++;
+
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo((Nodo) child1);
+                    nodo.AddHijo((Nodo) child2);
+                    nodo.AddHijo((Nodo) child3);
+                    nodo.AddHijo((Nodo) child4);
+
+                    Nodo type = (Nodo) child3;
+                    try{
+                        //Validar si la variable existe
+                        for(String temporal : variablesEnFuncion){
+                            if(TablaSimbolos.buscar(temporal) == null){ //Significa que la variable No existe
+                                TablaSimbolos.crear(temporal, type.getValue(),false, false);
+                                TablaSimbolos.insertar(temporal, null, false); 
+                            }else{
+                                System.out.println("Error: Variable \""+temporal+"\" ya existe.");
+                                ErroresSemanticos.add("Error: Variable \""+temporal+"\" ya existe.");
+                            }
+                        }
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar la variable");            
+                    }
+
+
+
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | listar_ids:child1 error tipo_parametro:child2 tipo_variable:child3 SEMICOLON datos_parametros:child4
+                    | listar_ids:child1 DECLARACION tipo_parametro:child2 tipo_variable:child3 error datos_parametros:child4
+                    | listar_ids:child1 DECLARACION tipo_parametro:child2 tipo_variable:child3 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("datos_parametros", parser.cont);
+                    parser.cont++;
+                
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo((Nodo) child1);
+                    nodo.AddHijo((Nodo) child2);
+                    nodo.AddHijo((Nodo) child3);
+
+                    Nodo type = (Nodo) child3;
+                    try{
+                        //Validar si la variable existe
+                        for(String temporal : variablesEnFuncion){
+                            if(TablaSimbolos.buscar(temporal) == null){ //Significa que la variable No existe
+                                TablaSimbolos.crear(temporal, type.getValue(),false, false);
+                                TablaSimbolos.insertar(temporal, null, false); 
+                            }else{
+                                System.out.println("Error: Variable \""+temporal+"\" ya existe.");
+                                ErroresSemanticos.add("Error: Variable \""+temporal+"\" ya existe.");
+                            }
+                        }    
+                                 
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar la variable");            
+                    }
+                    
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | listar_ids:child1 error tipo_parametro:child2 tipo_variable:child3
+                    | expresion_aritmetica:child1 
+                    {:
+                        
+                        Nodo nodo = new Nodo("datos_parametros", parser.cont);
+                        parser.cont++;
+                        /*Se añaden los hijos*/
+                        nodo.AddHijo((Nodo) child1);
+                        Nodo type = (Nodo) child1;
+                        try {
+                            if (type.getValue() == null) {
+                                System.out.println("Error: Valor Nulo");
+                                ErroresSemanticos.add("Error: Valor Nulo.");
+                                   
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Error principal en parametros.");
+                        }
+
+                        RESULT = nodo;
+                        
+                    :}
+                    ;
+// Aquí se definen los tipos de parámetros que pueden ser IN, OUT, IN OUT o ninguno.
+tipo_parametro  ::= IN:n1 {:
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("tipo_parametro", n1.toString(), parser.cont);
+                parser.cont++;
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+                :}
+                | OUT:n2 {:
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("tipo_parametro", n2.toString(), parser.cont);
+                parser.cont++;
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+                :}
+                | error
+                | IN:n1 OUT:n2 {:
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("tipo_parametro", parser.cont);
+                parser.cont++;
+
+                /*Nuevo Nodo: TERMINAL*/
+                Nodo nodoIn = new Nodo("IN",n1.toString(), parser.cont);
+                parser.cont++;
+
+                /*Nuevo Nodo: TERMINAL*/
+                Nodo nodoOut = new Nodo("OUT",n2.toString(), parser.cont);
+                parser.cont++;
+
+                /*Se añaden los hijos*/
+                nodo.AddHijo(nodoIn);
+                nodo.AddHijo(nodoOut);
+
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+                :}
+                | {:
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("VACIO", parser.cont );
+                parser.cont++;
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+
+                :}
+                | error OUT:n2
+                | IN:n1 error
+                ;
+
+/*Aquí permitimos listar los identificadores. La razón por la cual se tiene listar_ids
+y declaracion_variables es porque en declarar_variable se puede, valga la redundancia,
+declarar variables.*/
+listar_ids  ::= ID:n1 COMA:n2 listar_ids:child1 {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("listar_ids", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID", n1.toString(),parser.cont );
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoComa = new Nodo("COMA",n2.toString(), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo(nodoComa);
+            nodo.AddHijo((Nodo) child1);
+
+            //Obtener lista de los nombres de variables
+            variablesEnFuncion = new ArrayList<String>();
+            variablesEnFuncion.add(n1);
+
+
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | error COMA:n2 listar_ids:child1
+            | ID:n1 {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("listar_ids", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont );
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+           
+            //Obtener lista de los nombres de variables
+            variablesEnFuncion = new ArrayList<String>();
+            variablesEnFuncion.add(n1);
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+
+            :}
+            | error
+            ;                    
+
+/*Aquí tenemos los tipos de declaraciones que se pueden hacer en el programa. Se pone
+procedimiento y declaracion procedimiento como dos diferentes porque la declaracion
+de un procedimiento es mas corta que un procedimiento en si, igual que la funcion.*/
+tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
+                    parser.cont++;
+            
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo((Nodo) child1);
+                    nodo.AddHijo((Nodo) child2);
+
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | declarar_variable:child1 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
+                    parser.cont++;
+            
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo((Nodo) child1);
+
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | declarar_funcion:child1 tipo_declaracion:child2 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
+                    parser.cont++;
+            
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo((Nodo) child1);
+                    nodo.AddHijo((Nodo) child2);
+
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | declarar_funcion:child1 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
+                    parser.cont++;
+            
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo((Nodo) child1);
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | declarar_procedimiento:child1 tipo_declaracion:child2 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
+                    parser.cont++;
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo((Nodo) child1);
+                    nodo.AddHijo((Nodo) child2);
+
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | declarar_procedimiento:child1 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
+                    parser.cont++;
+            
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo((Nodo) child1);
+
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | llamar_funcion:child1 tipo_declaracion:child2 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
+                    parser.cont++;
+            
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo((Nodo) child1);
+                    nodo.AddHijo((Nodo) child2);
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | llamar_funcion:child1 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
+                    parser.cont++;
+            
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo((Nodo) child1);
+
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | procedimiento:child1 tipo_declaracion:child2 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
+                    parser.cont++;
+            
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo((Nodo) child1);
+                    nodo.AddHijo((Nodo) child2);
+
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | procedimiento:child1 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
+                    parser.cont++;
+            
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo((Nodo) child1);
+
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | asignacion:child1 tipo_declaracion:child2
+                    {:
+                        Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
+                        parser.cont++;
+
+                        nodo.AddHijo((Nodo) child1);
+                        nodo.AddHijo((Nodo) child2);
+
+                        RESULT = nodo;
+                    :}
+                    | asignacion:child1
+                    {:
+                        Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
+                        parser.cont++;
+
+                        nodo.AddHijo((Nodo) child1);
+
+                        RESULT = nodo;
+                    :}
+                    ;
+
+/*Aquí declaramos un procedimiento y luego están las versiones con error.*/
+declarar_procedimiento  ::= PROCEDURE:n1 ID:n2 parametros:child1 SEMICOLON {:
+                        /*Se crea el nodo prinicipal*/
+                        Nodo nodo = new Nodo("declarar_procedimiento", parser.cont);
+                        parser.cont++;
+
+                        /*Nuevo Nodo: TERMINAL*/
+                        Nodo nodoId = new Nodo("ID", n2.toString(), parser.cont );
+                        parser.cont++;
+
+                        /*Se añaden los hijos*/
+                        nodo.AddHijo(nodoId);
+                        nodo.AddHijo((Nodo) child1);
+
+                        /*Asignar el nodo al RESULT para continuar el recorrido*/
+                        RESULT = nodo;
+
+                        :}
+                        | PROCEDURE:n1 error parametros:child1 SEMICOLON
+                        | PROCEDURE:n1 ID:n2 parametros:child1 error
+                        ;
+
+procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2 BEGIN codigo:child3 END ID:n6 SEMICOLON {:
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("procedimiento", parser.cont);
+                parser.cont++;
+
+                /*Nuevo Nodo: TERMINAL*/
+                Nodo nodoId = new Nodo("ID", n2.toString(), parser.cont);
+                parser.cont++;
+
+                /*Nuevo Nodo: TERMINAL*/
+                Nodo nodoId2 = new Nodo("ID", n6.toString(), parser.cont);
+                parser.cont++;
+
+                /*Se añaden los hijos*/
+                nodo.AddHijo(nodoId);
+                nodo.AddHijo((Nodo) child1);
+                nodo.AddHijo((Nodo) child2);
+                nodo.AddHijo((Nodo) child3);
+                nodo.AddHijo(nodoId2);
+
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+                :}
+                | PROCEDURE error parametros:child1 IS tipo_declaracion:child2 BEGIN codigo:child3 END ID:n6 SEMICOLON
+                | PROCEDURE ID:n2 parametros:child1 IS BEGIN codigo:child2 END ID:n6 SEMICOLON
+                {:
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("procedimiento", parser.cont);
+                parser.cont++;
+
+                /*Nuevo Nodo: TERMINAL*/
+                Nodo nodoId = new Nodo("ID", n2.toString(), parser.cont);
+                parser.cont++;
+
+                /*Se añaden los hijos*/
+                nodo.AddHijo(nodoId);
+                nodo.AddHijo((Nodo) child1);
+                nodo.AddHijo((Nodo) child2);
+
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;                
+                :}
+                | PROCEDURE error parametros:child1 IS BEGIN codigo:child2 END ID:n6 SEMICOLON
+                ;
+
+declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 IS tipo_declaracion:child3 BEGIN codigo:child4 END ID:n2 SEMICOLON {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("declarar_funcion", parser.cont);
+                    parser.cont++;
+                    System.out.println("entraaaa");
+                    /*Nuevo Nodo: TERMINAL*/
+                    Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+                    parser.cont++;
+
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo(nodoId);
+                    nodo.AddHijo((Nodo) child1);
+                    nodo.AddHijo((Nodo) child2);
+                    nodo.AddHijo((Nodo) child3);
+                    nodo.AddHijo((Nodo) child4);
+
+                    // Tabla de Símbolos
+                    Nodo type = (Nodo) child2;
+                    try{
+                        Simbolo temporal = null;
+                        temporal = TablaSimbolos.buscar(n1);
+                        if(temporal == null ){ //Significa que la variable NO existe
+                            TablaSimbolos.crear(n1, type.getValue(), false, true);
+                            // TablaSimbolos.insertar(n1, exp.getValue(), false);
+                        }else{
+                            System.out.println("Error: Función  \""+n1+"\" ya existe.");
+                            ErroresSemanticos.add("Error: Función \""+n1+"\" ya existe.");
+                        }
+                                
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar la función");            
+                    }
+
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | FUNCTION error parametros:child1 RETURN tipo_variable:child2 IS tipo_declaracion:child3 BEGIN codigo:child4 END ID:n2 SEMICOLON
+                    | FUNCTION ID:n1 parametros:child1 error tipo_variable:child2 IS tipo_declaracion:child3 BEGIN codigo:child4 END ID:n2 SEMICOLON
+                    | FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 error tipo_declaracion:child3 BEGIN codigo:child4 END ID:n2 SEMICOLON
+                    | FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 IS tipo_declaracion:child3 error codigo:child4 END ID:n2 SEMICOLON
+                    | FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 IS tipo_declaracion:child3 BEGIN codigo:child4 error ID:n2 SEMICOLON
+                    | FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 IS tipo_declaracion:child3 BEGIN codigo:child4 END error SEMICOLON
+                    | FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 IS tipo_declaracion:child3 BEGIN codigo:child4 END ID:n2 error
+                    | FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 IS BEGIN codigo:child3 END ID:n2 SEMICOLON {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("declarar_funcion", parser.cont);
+                    parser.cont++;
+
+                    /*Nuevo Nodo: TERMINAL*/
+                    Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+                    parser.cont++;
+
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo(nodoId);
+                    nodo.AddHijo((Nodo) child1);
+                    nodo.AddHijo((Nodo) child2);
+                    nodo.AddHijo((Nodo) child3);
+
+                    
+                    // Tabla de Símbolos
+                    Nodo type = (Nodo) child2;
+                    try{
+                        Simbolo temporal = null;
+                        temporal = TablaSimbolos.buscar(n1);
+                        if(temporal == null ){ //Significa que la variable NO existe
+                            TablaSimbolos.crear(n1, type.getValue(), false, true);
+                            // TablaSimbolos.insertar(n1, exp.getValue(), false);
+                        }else{
+                            System.out.println("Error: Función  \""+n1+"\" ya existe.");
+                            ErroresSemanticos.add("Error: Función \""+n1+"\" ya existe.");
+                        }
+                                
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar la función");            
+                    }
+
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | FUNCTION error parametros:child1 RETURN tipo_variable:child2 IS BEGIN codigo:child3 END ID:n2 SEMICOLON
+                    | FUNCTION ID:n1 parametros:child1 error tipo_variable:child2 IS BEGIN codigo:child3 END ID:n2 SEMICOLON
+                    | FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 error BEGIN codigo:child3 END ID:n2 SEMICOLON
+                    | FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 IS error codigo:child3 END ID:n2 SEMICOLON
+                    | FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 IS BEGIN codigo:child3 error ID:n2 SEMICOLON
+                    | FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 IS BEGIN codigo:child3 END error SEMICOLON
+                    | FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 IS BEGIN codigo:child3 END ID:n2 error
+                    ;
+
+/*Llamar Funcion: Estructura de la funcion + el Punto y Coma
+Funcion: El ID (Nombre de la funcion) y la non terminal parametros 
+(La cual incluye: PARIZQ datos_parametros PARDER).*/
+llamar_funcion  ::= funcion:child1 SEMICOLON {:
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("llamar_funcion", parser.cont);
+                parser.cont++;
+               
+                /*Se añaden los hijos*/
+                nodo.AddHijo((Nodo) child1);
+
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+                :}
+                | funcion:child1 error
+                ;
+
+funcion ::= ID:n1 parametros:child1 {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("funcion", parser.cont);
+        parser.cont++;
+
+        /*Nuevo Nodo: TERMINAL*/
+        Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+        parser.cont++;
+
+        /*Se añaden los hijos*/
+        nodo.AddHijo(nodoId);
+        nodo.AddHijo((Nodo) child1);
+
+        //=================================Debe Retornar el valor de retorno de la función====================
+        
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+        :}
+        ;
+
+
+/*Aquí tenemos la opción de declarara una o más variables. Luego están las versiones
+con errores.*/
+declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("declarar_variable", parser.cont);
+                    parser.cont++;
+
+                    /*Nuevo Nodo: TERMINAL*/
+                    Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+                    parser.cont++;
+
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo(nodoId);
+                    nodo.AddHijo((Nodo) child1);
+                    
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | ID:n1 error declarar_variable:child1
+                    | ID:n1 DECLARACION:n2 tipo_variable:child1 SEMICOLON {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("declarar_variable", parser.cont);
+                    parser.cont++;
+
+                    /*Nuevo Nodo: TERMINAL*/
+                    Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+                    parser.cont++;
+                    
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo(nodoId);
+                    nodo.AddHijo((Nodo) child1);
+
+                    // Tabla de Símbolos
+                    Nodo type = (Nodo) child1;
+                    try{
+                        //Validar si la variable existe
+                        // Simbolo temporal = null;
+                        // temporal = TablaSimbolos.buscar(n1);
+                        if(TablaSimbolos.buscar(n1) == null){ //Significa que la variable No existe
+                            TablaSimbolos.crear(n1, type.getValue(), false, false); 
+                        }else{
+                            System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                            ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                        }
+                                 
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar la variable");            
+                    }
+
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | ID:n1 error tipo_variable:child1 SEMICOLON
+                    | ID:n1 DECLARACION:n2 tipo_variable:child1 error
+                    ;
+
+/*Asignación de un valor a una variable*/
+asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("asignacion", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo((Nodo) child1);
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | ID:n1 error asignacion:child1
+            | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 expresion_aritmetica:child2 SEMICOLON:n4 {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("asignacion", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo((Nodo) child2);
+//---------------------------------------------------------Puede estar malo----------------------------------------
+            // Tabla de Símbolos
+            Nodo type = (Nodo) child1;
+            Nodo exp = (Nodo) child2;
+            try{
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, type.getValue(), false, false);
+                    TablaSimbolos.insertar(n1, exp.getValue(), false);
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }
+                           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | ID:n1 error tipo_variable:child1 ASIGNACION:n3 expresion_aritmetica:child2 SEMICOLON:n4
+            | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 expresion_aritmetica:child2 error
+            | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 TRUE:n4 SEMICOLON {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("asignacion", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoTrue = new Nodo("TRUE", n4.toString(), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo(nodoTrue);
+
+            // Tabla de Símbolos
+            Nodo type = (Nodo) child1;
+            try{
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, type.getValue(), false, false);
+                    TablaSimbolos.insertar(n1, n4, false);
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }
+                           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
+
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | ID:n1 error tipo_variable:child1 ASIGNACION:n3 TRUE:n4 SEMICOLON
+            | ID:n1 DECLARACION:n2 tipo_variable:child1 error TRUE:n4 SEMICOLON
+            | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 error SEMICOLON
+            | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 TRUE:n4 error
+            | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 FALSE:n4 SEMICOLON {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("asignacion", parser.cont);
+            parser.cont++;
+
+            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+            parser.cont++;
+            
+            Nodo nodoFalse = new Nodo("FALSE", n4.toString(), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo(nodoFalse);
+            
+            // Tabla de Símbolos
+            Nodo type = (Nodo) child1;
+            try{
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, type.getValue(), false, false);
+                    TablaSimbolos.insertar(n1, n4, false);
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }
+                           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | ID:n1 error tipo_variable:child1 ASIGNACION:n3 FALSE:n4 SEMICOLON
+            | ID:n1 DECLARACION:n2 tipo_variable:child1 error FALSE:n4 SEMICOLON
+            | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 FALSE:n4 error
+            | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 STRING:n4 SEMICOLON {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("asignacion", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID",n1.toString(), parser.cont);
+            parser.cont++;
+       
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoString = new Nodo("STRING", n4.toString().replaceAll("\"", ""), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo(nodoString);
+
+            // Tabla de Símbolos
+            Nodo type = (Nodo) child1;
+            try{
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, type.getValue(), false, false);
+                    TablaSimbolos.insertar(n1, n4, false);
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }
+                           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | ID:n1 ASIGNACION:n2 expresion_aritmetica:child1 SEMICOLON {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("asignacion", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo((Nodo) child1);
+//--------------------------------Insertar a tabla de simbolos ---------------------------------------------------------------------
+            // Tabla de Símbolos
+            Nodo type = (Nodo) child1;
+            try{
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal != null ){ //Significa que la variable ya existe
+                    //Verificar el tipo de la variable
+                    if(temporal.tipoVariable.equals("INTEGER")){ //Verificar si es float
+                        String temp2 = type.getValue();
+                        System.out.println("expresion_aritmetica:"+temp2);
+                        if(temp2.contains(".")){//Verifica si se trata de asignar un float a un int
+                            System.out.println("Error: Tipos Incompatibles. No se puede asignar un Float a Entero.");
+                            ErroresSemanticos.add("Error:  Tipos Incompatibles. No se puede asignar un Float a Entero.");
+                        }else{
+                            //Verificar si es constante o no
+                            if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
+                                //Al NO ser constante entonces se asigna el valor en la tabla de simbolos
+                                TablaSimbolos.insertar(n1, type.getValue(), false);
+                            }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
+                                System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                                ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                            }   
+                        }
+                    }else if (temporal.tipoVariable.equals("FLOAT")){
+                        String temp2 = type.getValue();
+                        System.out.println("expresion_aritmetica:"+temp2);
+                        if(!temp2.contains(".")){//Verifica si se trata de asignar un float a un int
+                            System.out.println("Error: Tipos Incompatibles. No se puede asignar un Entero a Float.");
+                            ErroresSemanticos.add("Error:  Tipos Incompatibles. No se puede asignar un Entero a Float.");
+                        }else{
+                            //Verificar si es constante o no
+                            if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
+                                //Al NO ser constante entonces se asigna el valor en la tabla de simbolos
+                                TablaSimbolos.insertar(n1, type.getValue(), false);
+                            }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
+                                System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                                ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                            }    
+                        }
+                    }
+                }else{
+                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                }
+                          
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+            
+
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | ID:n1 error expresion_aritmetica:child1 SEMICOLON
+            | ID:n1 ASIGNACION:n2 expresion_aritmetica:child1 error
+            | ID:n1 ASIGNACION:n2 TRUE:n3 SEMICOLON {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("asignacion", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoTrue = new Nodo("TRUE", n3.toString(), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo(nodoTrue);
+
+            // Tabla de Símbolos
+            try{
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal != null ){ //Significa que la variable ya existe
+                    /*Los analizadores lexicos y sintacticos ya validan que este tipo de dato es booleano.*/
+                    if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
+                        //Al NO ser constante entonces se asigna el valor
+                        TablaSimbolos.insertar(n1, String.valueOf(n3), false);
+                    }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
+                        System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                        ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                    }
+                    
+                }else{
+                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                }           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | ID:n1 error TRUE:n3 SEMICOLON
+            | ID:n1 ASIGNACION:n2 error SEMICOLON
+            | ID:n1 ASIGNACION:n2 TRUE:n3 error
+            | ID:n1 ASIGNACION:n2 FALSE:n3 SEMICOLON {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("asignacion", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoFalse = new Nodo("FALSE", n3.toString(), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo(nodoFalse);
+
+            // Tabla de Símbolos
+            try{
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal != null ){ //Significa que la variable ya existe
+                    /*Los analizadores lexicos y sintacticos ya validan que este tipo de dato es booleano.*/
+                    if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
+                        //Al NO ser constante entonces se asigna el valor
+                        TablaSimbolos.insertar(n1, String.valueOf(n3), false);
+                    }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
+                        System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                        ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                    }
+                    
+                }else{
+                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                }             
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | ID:n1 error FALSE:n3 SEMICOLON
+            | ID:n1 ASIGNACION:n2 FALSE:n3 error
+            | ID:n1 ASIGNACION:n2 STRING:n3 SEMICOLON {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("asignacion", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoString = new Nodo("STRING",n3.toString().replaceAll("\"", ""), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo(nodoString);         
+
+            // Tabla de Símbolos
+            try{
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal != null ){ //Significa que la variable ya existe
+                    /*Los analizadores lexicos y sintacticos ya validan que este tipo de dato es String.*/
+                    if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
+                        //Al NO ser constante entonces se asigna el valor
+                        TablaSimbolos.insertar(n1, n3, false);
+                    }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
+                        System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                        ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
+                    }
+                    
+                }else{
+                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                }        
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 expresion_aritmetica:child2 SEMICOLON {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("asignacion", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoConstant = new Nodo("CONSTANT", n3.toString(), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo(nodoConstant);
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo((Nodo) child2);
+
+            // Tabla de Símbolos
+            Nodo type = (Nodo) child1;
+            Nodo exp = (Nodo) child2;
+            try{
+                //System.out.println(exp.getValue() + " exp value");
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, type.getValue(), true, false);
+                    TablaSimbolos.insertar(n1, exp.getValue(), true);
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }           
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | ID:n1 error CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 expresion_aritmetica:child2 SEMICOLON
+            | ID:n1 DECLARACION:n2 error tipo_variable:child1 ASIGNACION:n4 expresion_aritmetica:child2 SEMICOLON
+            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 error expresion_aritmetica:child2 SEMICOLON
+            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 expresion_aritmetica:child2 error
+            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 TRUE:n5 SEMICOLON {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("asignacion", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoConstant = new Nodo("CONSTANT", n3.toString(), parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoTrue = new Nodo("TRUE", n5.toString(), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo(nodoConstant);
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo(nodoTrue);
+
+            // Tabla de Símbolos
+            Nodo hijo = (Nodo) child1;
+            try{
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, hijo.getValue(), true, false);
+                    TablaSimbolos.insertar(n1, String.valueOf(n5), true); 
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }             
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | ID:n1 error CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 TRUE:n5 SEMICOLON
+            | ID:n1 DECLARACION:n2 error tipo_variable:child1 ASIGNACION:n4 TRUE:n5 SEMICOLON
+            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 error TRUE:n5 SEMICOLON
+            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 error SEMICOLON
+            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 TRUE:n5 error
+            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 FALSE:n5 SEMICOLON {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("asignacion", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoConstant = new Nodo("CONSTANT", n3.toString(), parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoFalse = new Nodo("FALSE", n5.toString(), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo(nodoConstant);
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo(nodoFalse);
+            
+            // Tabla de Símbolos
+            Nodo hijo = (Nodo) child1;
+            try{
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, hijo.getValue(), true, false);
+                    TablaSimbolos.insertar(n1, String.valueOf(n5), true); 
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }            
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | ID:n1 error CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 FALSE:n5 SEMICOLON
+            | ID:n1 DECLARACION:n2 error tipo_variable:child1 ASIGNACION:n4 FALSE:n5 SEMICOLON
+            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 error FALSE:n5 SEMICOLON
+            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 FALSE:n5 error
+            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 STRING:n5 SEMICOLON {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("asignacion", parser.cont);
+            parser.cont++;
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+            parser.cont++;
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoConstant = new Nodo("CONSTANT", n3.toString(), parser.cont);
+            parser.cont++;
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoString = new Nodo("STRING", n5.toString().replaceAll("\"", ""), parser.cont);
+            parser.cont++;
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo(nodoConstant);
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo(nodoString);
+
+            // Tabla de Símbolos
+            Nodo hijo = (Nodo) child1;
+            try{     
+                Simbolo temporal = null;
+                temporal = TablaSimbolos.buscar(n1);
+                if(temporal == null ){ //Significa que la variable NO existe
+                    TablaSimbolos.crear(n1, hijo.getValue(), true, false);
+                    TablaSimbolos.insertar(n1, String.valueOf(n5), true);
+                }else{
+                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                }       
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            ;
+
+/*OPERACIONES ARITMETICA POST ORDER*/
+expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmetica:n3
+                            {:
+                                Nodo aux = (Nodo) n1;
+                                Nodo aux2 = (Nodo) n3;
+                                String operacion = "";
+                                String resultado = "";
+                                String tipo = "";
+                                if(aux.getValue() != null && aux2.getValue() != null){
+                                    if (n2.equals("+")) {
+                                        if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
+                                        // Debemos averiguar si el valor es un id, función o simplemente un número
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            // Nuestros dos valores a operar
+                                            int cant1 = 0;
+                                            int cant2 = 0;
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant1 = Integer.parseInt(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant1 = Integer.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant2 = Integer.parseInt(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Integer.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            int auxi = cant1 + cant2;
+                                            resultado = auxi + "";
+                                            operacion = "SUMA";
+                                            tipo = "INTEGER";
+                                        } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
+                                            // Debemos averiguar si el valor es un id, función o simplemente un número
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            // Nuestros dos valores a operar
+                                            int cant1 = 0;
+                                            float cant2 = 0;
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant1 = Integer.parseInt(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant1 = Integer.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            /* Se asigna el texto a un float. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant2 = Float.parseFloat(aux2.getValue());
+                                            } catch (NumberFormatException e) {                                           
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            float auxi = (float) cant1 + cant2;
+                                            resultado = auxi + "";
+                                            operacion = "SUMA";
+                                            tipo = "FLOAT";
+                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            float cant1 = 0;
+                                            int cant2 = 0;
+                                            try {
+                                                cant1 = Float.parseFloat(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant1 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            try {
+                                                cant2 = Integer.parseInt(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Integer.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            float auxi = (float) cant1 + cant2;
+                                            resultado = auxi + "";
+                                            operacion = "SUMA";
+                                            tipo = "FLOAT";
+                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
+                                            // Debemos averiguar si el valor es un id, función o simplemente un número
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            // Nuestros dos valores a operar
+                                            float cant1 = 0;
+                                            float cant2 = 0;
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant1 = Float.parseFloat(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant1 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            /* Se asigna el texto a un float. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant2 = Float.parseFloat(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            float auxi = (float) cant1 + cant2;
+                                            resultado = auxi + "";
+                                            operacion = "SUMA";
+                                            tipo = "FLOAT";
+                                        }           
+                                    } else if (n2.equals("-")) {
+                                        if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
+                                        // Debemos averiguar si el valor es un id, función o simplemente un número
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            // Nuestros dos valores a operar
+                                            int cant1 = 0;
+                                            int cant2 = 0;
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant1 = Integer.parseInt(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    if (identificador.valor != null) {
+                                                        cant1 = Integer.valueOf((String)identificador.valor);
+                                                    } else {
+                                                        System.out.println("El valor 1 es nulo en la resta.");
+                                                    }
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant2 = Integer.parseInt(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    if (identificador.valor != null) {
+                                                        cant2 = Integer.valueOf((String)identificador.valor);
+                                                    } else {
+                                                        System.out.println("El valor 2 es nulo en la resta 2.");
+                                                    }
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            if (cant1 != 0 && cant2 != 0) {
+                                                int auxi = cant1 - cant2;
+                                                resultado = auxi + "";
+                                                operacion = "RESTA";
+                                                tipo = "INTEGER";
+                                            } else {
+                                                System.out.println("Hay algun valor nulo en la resta.");
+                                            }
+                                        
+                                        } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
+                                            // Debemos averiguar si el valor es un id, función o simplemente un número
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            // Nuestros dos valores a operar
+                                            int cant1 = 0;
+                                            float cant2 = 0;
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant1 = Integer.parseInt(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant1 = Integer.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            /* Se asigna el texto a un float. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant2 = Float.parseFloat(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            float auxi = (float) cant1 - cant2;
+                                            resultado = auxi + "";
+                                            operacion = "RESTA";
+                                            tipo = "FLOAT";
+                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            float cant1 = 0;
+                                            int cant2 = 0;
+                                            try {
+                                                cant1 = Float.parseFloat(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant1 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            try {
+                                                cant2 = Integer.parseInt(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Integer.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            float auxi = (float) cant1 - cant2;
+                                            resultado = auxi + "";
+                                            operacion = "RESTA";
+                                            tipo = "FLOAT";
+                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
+                                            // Debemos averiguar si el valor es un id, función o simplemente un número
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            // Nuestros dos valores a operar
+                                            float cant1 = 0;
+                                            float cant2 = 0;
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant1 = Float.parseFloat(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant1 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            /* Se asigna el texto a un float. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant2 = Float.parseFloat(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            float auxi = (float) cant1 - cant2;
+                                            resultado = auxi + "";
+                                            operacion = "RESTA";
+                                            tipo = "FLOAT";
+                                        }          
+                                    }
+
+                                }else{
+                                    System.out.println("Error: Valor de funcion aun retorna nulo.");
+                                    ErroresSemanticos.add("Error: Valor de funcion aun retorna nulo.");
+                                }
+                                
+                                Nodo nodo = new Nodo(operacion,resultado, parser.cont, tipo);
+                                nodo.AddHijo(aux);
+                                nodo.AddHijo(aux2);
+                                parser.cont++;
+                                RESULT = nodo;
+                            :}
+                            | expresion_aritmetica:n1 OPMULTIPLICACION:n2 expresion_aritmetica:n3
+                            {:
+                                Nodo aux = (Nodo) n1;
+                                Nodo aux2 = (Nodo) n3;
+                                String operacion = "";
+                                String resultado = "";
+                                String tipo = "";
+                                if(aux.getValue() != null && aux2.getValue() != null){
+                                
+                                    if (n2.equals("*")) {
+                                        if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
+                                        // Debemos averiguar si el valor es un id, función o simplemente un número
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            // Nuestros dos valores a operar
+                                            int cant1 = 0;
+                                            int cant2 = 0;
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant1 = Integer.parseInt(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    if (identificador.valor != null) {
+                                                        cant1 = Integer.valueOf((String)identificador.valor);
+                                                    } else {
+                                                        System.out.println("El valor de la variable es nulo.");
+                                                    }                                              
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant2 = Integer.parseInt(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Integer.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            int auxi = cant1 * cant2;
+                                            resultado = auxi + "";
+                                            operacion = "MULTIPLICACION";
+                                            tipo = "INTEGER";
+                                        } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
+                                            // Debemos averiguar si el valor es un id, función o simplemente un número
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            // Nuestros dos valores a operar
+                                            int cant1 = 0;
+                                            float cant2 = 0;
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant1 = Integer.parseInt(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant1 = Integer.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            /* Se asigna el texto a un float. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant2 = Float.parseFloat(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            float auxi = (float) cant1 * cant2;
+                                            resultado = auxi + "";
+                                            operacion = "MULTIPLICACION";
+                                            tipo = "FLOAT";
+                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            float cant1 = 0;
+                                            int cant2 = 0;
+                                            try {
+                                                cant1 = Float.parseFloat(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant1 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            try {
+                                                cant2 = Integer.parseInt(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                            System.out.println("ENtra");
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Integer.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            float auxi = (float) cant1 * cant2;
+                                            resultado = auxi + "";
+                                            operacion = "MULTIPLICACION";
+                                            tipo = "FLOAT";
+                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
+                                            // Debemos averiguar si el valor es un id, función o simplemente un número
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            // Nuestros dos valores a operar
+                                            float cant1 = 0;
+                                            float cant2 = 0;
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant1 = Float.parseFloat(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant1 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            /* Se asigna el texto a un float. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant2 = Float.parseFloat(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                            System.out.println("ENtra");
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            float auxi = (float) cant1 * cant2;
+                                            resultado = auxi + "";
+                                            operacion = "MULTIPLICACION";
+                                            tipo = "FLOAT";
+                                        }           
+                                    } else if (n2.equals("/")) {
+                                        if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
+                                        // Debemos averiguar si el valor es un id, función o simplemente un número
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            // Nuestros dos valores a operar
+                                            int cant1 = 0;
+                                            int cant2 = 0;
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant1 = Integer.parseInt(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant1 = Integer.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant2 = Integer.parseInt(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Integer.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            int auxi = cant1 / cant2;
+                                            resultado = auxi + "";
+                                            operacion = "DIVISION";
+                                            tipo = "INTEGER";
+                                        } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
+                                            // Debemos averiguar si el valor es un id, función o simplemente un número
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            // Nuestros dos valores a operar
+                                            int cant1 = 0;
+                                            float cant2 = 0;
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant1 = Integer.parseInt(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant1 = Integer.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            /* Se asigna el texto a un float. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant2 = Float.parseFloat(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                            System.out.println("ENtra");
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            float auxi = (float) cant1 / cant2;
+                                            resultado = auxi + "";
+                                            operacion = "DIVISION";
+                                            tipo = "FLOAT";
+                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            float cant1 = 0;
+                                            int cant2 = 0;
+                                            try {
+                                                cant1 = Float.parseFloat(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant1 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            try {
+                                                cant2 = Integer.parseInt(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                            System.out.println("ENtra");
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Integer.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            float auxi = (float) cant1 / cant2;
+                                            resultado = auxi + "";
+                                            operacion = "DIVISION";
+                                            tipo = "FLOAT";
+                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
+                                            // Debemos averiguar si el valor es un id, función o simplemente un número
+                                            String valor1 = aux.getValue();
+                                            String valor2 = aux2.getValue();
+                                            // Nuestros dos valores a operar
+                                            float cant1 = 0;
+                                            float cant2 = 0;
+                                            /* Se asigna el texto a un entero. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant1 = Float.parseFloat(valor1);
+                                            } catch (NumberFormatException e) {
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant1 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            /* Se asigna el texto a un float. Si esto falla, significa
+                                            que estamos lidiando con un identificador.*/
+                                            try {
+                                                cant2 = Float.parseFloat(aux2.getValue());
+                                            } catch (NumberFormatException e) {
+                                            System.out.println("ENtra");
+                                                Simbolo identificador = null;
+                                                identificador = TablaSimbolos.buscar(aux2.getValue());
+                                                if(identificador != null ){ //Significa que la variable ya existe
+                                                    cant2 = Float.valueOf((String)identificador.valor);
+                                                }else{
+                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                                }
+                                            }
+                                            float auxi = (float) cant1 / cant2;
+                                            resultado = auxi + "";
+                                            operacion = "DIVISION";
+                                            tipo = "FLOAT";
+                                        }          
+                                    }
+                                }else{
+                                    System.out.println("Error: Valor de funcion aun retorna nulo.");
+                                    ErroresSemanticos.add("Error: Valor de funcion aun retorna nulo.");
+                                }
+                                Nodo nodo = new Nodo(operacion,resultado, parser.cont, tipo);
+                                nodo.AddHijo(aux);
+                                nodo.AddHijo(aux2);
+                                parser.cont++;
+                                RESULT = nodo;
+                            :}
+                            | NUM:n1
+                            {:
+                                Nodo nodo = new Nodo("NUM", n1.toString(), parser.cont,"INTEGER");
+                                parser.cont++;
+                                RESULT = nodo;
+                            :}
+                            | ID:n1
+                            {:
+                                String tipo = "";
+                                try{
+                                    Simbolo identificador = null;
+                                    identificador = TablaSimbolos.buscar(n1);
+                                    if(identificador != null ){ //Significa que la variable ya existe
+                                        tipo = identificador.tipoVariable;
+                                    }else{
+                                        System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                        ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
+                                    }
+                                } catch(Exception e) {
+                                    e.printStackTrace();
+                                    System.out.println("Error al agregar la variable");            
+                                }
+                                Nodo nodo = new Nodo("ID", n1, parser.cont,tipo);
+                                parser.cont++;
+                                RESULT = nodo;                  
+                            :}
+                            | NUMFLOAT:n1
+                            {:
+                                Nodo nodo = new Nodo("NUMFLOAT", n1, parser.cont,"FLOAT");
+                                parser.cont++;
+                                RESULT = nodo;
+                            :}
+                            | llamar_funcion:n1
+                            {:
+                                Nodo aux = (Nodo) n1;
+                                Nodo nodo = new Nodo(aux.tag, aux.value, parser.cont, aux.tipo );
+                                parser.cont++;
+                                RESULT = nodo;
+                            :}
+                            | PARIZQ expresion_aritmetica:n1 PARDER
+                            {:
+                                Nodo aux = (Nodo) n1;
+                                Nodo nodo = new Nodo(aux.tag,aux.value,parser.cont,aux.tipo);
+                                parser.cont++;
+                                RESULT = nodo;
+                            :}
+                            ;
+
+
+
+
+// Estos son los tipos de variable que se permiten en el programa.
+tipo_variable   ::= INTEGER  {: 
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("tipo_variable", "INTEGER", parser.cont);
+                parser.cont++;
+                
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+                :}
+                | FLOAT {:
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("tipo_variable", "FLOAT", parser.cont);
+                parser.cont++;
+                
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+                
+                :}
+                | BOOLEAN {:
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("tipo_variable", "BOOLEAN", parser.cont);
+                parser.cont++;
+                
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+                
+                :}
+                | STRINGTYPE {:
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("tipo_variable", "STRINGTYPE", parser.cont);
+                parser.cont++;
+                
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+                :}
+                ;
+
+/*================================BLOQUE IF======================================*/
+/*BLOQUE IF: Estructura de un bloque if que internamente manda a llamar non terminales de
+bloque elseif y del bloque else.*/
+bloque_if   ::= IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloque_else:child4 END IF SEMICOLON {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("bloque_if", parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo((Nodo) child2);
+            nodo.AddHijo((Nodo) child3);
+            nodo.AddHijo((Nodo) child4);
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | IF condicion:child1 error codigo:child2 bloque_elsif:child3 bloque_else:child4 END IF SEMICOLON
+            | IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloque_else:child4 error IF SEMICOLON
+            | IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloque_else:child4 END error SEMICOLON
+            | IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloque_else:child4 END IF error
+            ;
+
+//CONDICION = Condicion interna para los ifs y los ciclos loop y while.
+condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("condicion", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoOr = new Nodo("OR", n1.toString(), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo(nodoOr);
+            nodo.AddHijo((Nodo) child2);
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | expresion_booleana:child1 AND:n1 condicion:child2 {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("condicion", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoAnd = new Nodo("AND", n1.toString(), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo(nodoAnd);
+            nodo.AddHijo((Nodo) child2);
+            
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | expresion_booleana:child1 XOR:n1 condicion:child2 {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("condicion", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoXor = new Nodo("XOR", n1.toString(), parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo(nodoXor);
+            nodo.AddHijo((Nodo) child2);
+            
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | expresion_booleana:child1 {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("expresion_booleana", parser.cont);
+            parser.cont++;     
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo((Nodo) child1);
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            ;
+
+//EXPRESION BOOLEANA: Expresion booleana en el que se comparan dos operandos con un operador relacional.
+expresion_booleana  ::= operando:child1 OPREL:n1 operando:child2 {:
+                    /*Se crea el nodo prinicipal*/
+                    Nodo nodo = new Nodo("expresion_booleana", parser.cont);
+                    parser.cont++;
+
+                    /*Nuevo Nodo: TERMINAL*/
+                    Nodo nodoOPREL = new Nodo("OPREL", n1.toString(), parser.cont);
+                    parser.cont++;
+
+                    /*Se añaden los hijos*/
+                    nodo.AddHijo((Nodo) child1);
+                    nodo.AddHijo(nodoOPREL);
+                    nodo.AddHijo((Nodo) child2);
+                    
+                    
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodo;
+                    :}
+                    | operando:child1 error operando:child2
+                    ;
+
+//OPERANDO: Operandos Relacionales utilizados en la expresion booleana.
+operando    ::= NUM:n1 {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("NUM", n1.toString(), parser.cont);
+            parser.cont++;
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | ID:n1 {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("ID", n1.toString(), parser.cont);
+            parser.cont++;
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | error
+            | funcion:child1 {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("operando", parser.cont);
+            parser.cont++;
+            
+            /*Se añaden los hijos*/
+            nodo.AddHijo((Nodo) child1);
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | NULL {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("operando", "NULL", parser.cont);
+            parser.cont++;
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            ;
+
+/*Bloque ELSEIF y Bloque ELSE que vienen del bloque if. Este puede incluir vacio ya que
+no en todos los ifs se requiere un bloque else if.*/
+bloque_elsif    ::= ELSIF condicion:child1 THEN codigo:child2 bloque_elsif:child3 {:
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("bloque_elsif", parser.cont);
+                parser.cont++;
+                
+                /*Se añaden los hijos*/
+                nodo.AddHijo((Nodo) child1);
+                nodo.AddHijo((Nodo) child2);
+                nodo.AddHijo((Nodo) child3);
+
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+                :}
+                | {:
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("VACIO", parser.cont);
+                parser.cont++;
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+                :}
+                | ELSIF condicion:child1 error codigo:child2 bloque_elsif:child3
+                ;
+
+bloque_else ::= ELSE codigo:child1 {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("bloque_else", parser.cont);
+            parser.cont++;
+            
+            /*Se añaden los hijos*/
+            nodo.AddHijo((Nodo) child1);
+
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | {:
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("VACIO", parser.cont);
+                parser.cont++;
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+
+            :}
+            ;
+
+
+/*==========================================CICLOS=====================================*/
+/* Ciclos LOOP, While, y For */
+ciclo_loop  ::= LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("ciclo_loop", parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo((Nodo) child2);
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | LOOP codigo:child1 salir_ciclo:child2 error END LOOP SEMICOLON
+            | LOOP codigo:child1 salir_ciclo:child2 SEMICOLON error LOOP SEMICOLON
+            | LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END error SEMICOLON
+            | LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP error
+            ;
+
+ciclo_while ::= WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEMICOLON END LOOP SEMICOLON {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("ciclo_while", parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo((Nodo) child2);
+            nodo.AddHijo((Nodo) child3);
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+
+            :}
+            | WHILE condicion:child1 error codigo:child2 salir_ciclo:child3 SEMICOLON END LOOP SEMICOLON
+            | WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 error END LOOP SEMICOLON
+            | WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEMICOLON error LOOP SEMICOLON
+            | WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEMICOLON END error SEMICOLON
+            | WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEMICOLON END LOOP error
+            ;
+
+ciclo_for   ::= FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON{:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("ciclo_for", parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoNum = new Nodo("NUM", n3.toString(), parser.cont);
+            parser.cont++;
+
+            /*Nuevo Nodo: TERMINAL*/
+            Nodo nodoNum2 = new Nodo("NUM",n5.toString(), parser.cont);
+            parser.cont++;
+            
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo(nodoNum);
+            nodo.AddHijo(nodoNum2);
+            nodo.AddHijo((Nodo) child1);
+            nodo.AddHijo((Nodo) child2);
+    
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | FOR error IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON
+            | FOR ID:n1 error NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON
+            | FOR ID:n1 IN:n2 error DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON
+            | FOR ID:n1 IN:n2 NUM:n3 error NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON
+            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 error LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON
+            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 error codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON
+            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 error END LOOP SEMICOLON
+            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON error LOOP SEMICOLON
+            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END error SEMICOLON
+            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP error
+            ;
+
+salir_ciclo ::= EXIT WHEN condicion:child1 {:
+            /*Se crea el nodo prinicipal*/
+            Nodo nodo = new Nodo("salir_ciclo", parser.cont);
+            parser.cont++;
+
+            /*Se añaden los hijos*/
+            nodo.AddHijo((Nodo) child1);
+            
+            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            RESULT = nodo;
+            :}
+            | error WHEN condicion:child1
+            | EXIT error condicion:child1
+            ;
+
+/*==========================================PUT y GET===========================================*/
+put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("PUT", parser.cont);
+        parser.cont++;
+
+        /*Nuevo Nodo: TERMINAL*/
+        Nodo nodoNum = new Nodo("NUM", n2.toString(), parser.cont);
+        parser.cont++;
+
+        /*Se añaden los hijos*/
+        nodo.AddHijo(nodoNum);
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+        :}
+        | PUT error NUM:n2 PARDER:n3 SEMICOLON
+        | PUT PARIZQ:n1 error PARDER:n3 SEMICOLON
+        | PUT PARIZQ:n1 NUM:n2 error SEMICOLON
+        | PUT PARIZQ:n1 NUM:n2 PARDER:n3 error
+
+	    | PUT PARIZQ:n1 STRING:n2 PARDER:n3 SEMICOLON {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("PUT", parser.cont);
+        parser.cont++;
+        
+        /*Nuevo Nodo: TERMINAL*/
+        Nodo nodoString = new Nodo("STRING", n2.toString().replaceAll("\"", ""), parser.cont);
+        parser.cont++;
+
+        /*Se añaden los hijos*/
+        nodo.AddHijo(nodoString);
+        
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+        :}
+        | PUT error STRING:n2 PARDER:n3 SEMICOLON
+        | PUT PARIZQ:n1 STRING:n2 error SEMICOLON
+        | PUT PARIZQ:n1 STRING:n2 PARDER:n3 error
+        | PUT PARIZQ:n1 TRUE:n2 PARDER:n3 SEMICOLON {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("PUT", parser.cont);
+        parser.cont++;
+
+        /*Nuevo Nodo: TERMINAL*/
+        Nodo nodoTrue = new Nodo("TRUE", n2.toString(), parser.cont);
+        parser.cont++;
+
+        /*Se añaden los hijos*/
+        nodo.AddHijo(nodoTrue);
+        
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+        :}
+        | PUT error TRUE:n2 PARDER:n3 SEMICOLON
+        | PUT PARIZQ:n1 TRUE:n2 error SEMICOLON
+        | PUT PARIZQ:n1 TRUE:n2 PARDER:n3 error
+
+        | PUT PARIZQ:n1 FALSE:n2 PARDER:n3 SEMICOLON {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("PUT", parser.cont);
+        parser.cont++;
+
+        /*Nuevo Nodo: TERMINAL*/
+        Nodo nodoFalse = new Nodo("FALSE", n2.toString(), parser.cont);
+        parser.cont++;
+
+        /*Se añaden los hijos*/
+        nodo.AddHijo(nodoFalse);
+        
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+        :}
+        | PUT error FALSE:n2 PARDER:n3 SEMICOLON
+        | PUT PARIZQ:n1 FALSE:n2 error SEMICOLON
+        | PUT PARIZQ:n1 FALSE:n2 PARDER:n3 error
+
+        | PUT PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
+        /*Se crea el nodo prinicipal*/
+        Nodo nodo = new Nodo("PUT", parser.cont);
+        parser.cont++;
+
+        /*Nuevo Nodo: TERMINAL*/
+        Nodo nodoID = new Nodo("ID", n2.toString(), parser.cont);
+        parser.cont++;
+
+        /*Se añaden los hijos*/
+        nodo.AddHijo(nodoID);
+        
+        /*Asignar el nodo al RESULT para continuar el recorrido*/
+        RESULT = nodo;
+        :}
+        | PUT error ID:n2 PARDER:n3 SEMICOLON
+        | PUT PARIZQ:n1 ID:n2 error SEMICOLON
+        | PUT PARIZQ:n1 ID:n2 PARDER:n3 error
+	    ;
+
+get ::= GET PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
+    /*Se crea el nodo prinicipal*/
+    Nodo nodo = new Nodo("get", parser.cont);
+    parser.cont++;
+
+    /*Nuevo Nodo: TERMINAL*/
+    Nodo nodoId = new Nodo("ID", n2.toString(), parser.cont,"STRING");
+    parser.cont++;
+
+    /*Se añaden los hijos*/
+    nodo.AddHijo(nodoId);
+    
+    /*Asignar el nodo al RESULT para continuar el recorrido*/
+    RESULT = nodo;
+
+    :}
+    | GET error ID:n2 PARDER:n3 SEMICOLON
+    | GET PARIZQ:n1 error PARDER:n3 SEMICOLON
+    | GET PARIZQ:n1 ID:n2 error SEMICOLON
+    | GET PARIZQ:n1 ID:n2 PARDER:n3 error
+	;

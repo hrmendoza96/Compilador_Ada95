@@ -1243,27 +1243,41 @@ class CUP$parser$actions {
 		int child2right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object child2 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-                    /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("cuerpo_principal", parser.cont);
-                    parser.cont++;
+                    // /*Se crea el nodo prinicipal*/
+                    // Nodo nodo = new Nodo("cuerpo_principal", parser.cont);
+                    // parser.cont++;
                     
-                    /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoProcedure = new Nodo("PROCEDURE", n1.toString(), parser.cont );
-                    parser.cont++;
+                    // /*Nuevo Nodo: TERMINAL*/
+                    // Nodo nodoProcedure = new Nodo("PROCEDURE", n1.toString(), parser.cont );
+                    // parser.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoId = new Nodo("ID",n2.toString(),parser.cont);
                     parser.cont++;
-
+                    System.out.println(n2.toString());
+                    System.out.println("Entra al primer procedure");
                                         
                     /*Se añaden los hijos*/
-                    nodo.AddHijo(nodoProcedure);
-                    nodo.AddHijo(nodoId);
-                    nodo.AddHijo((Nodo) child1);
-                    nodo.AddHijo((Nodo) child2);
+                    //nodo.AddHijo(nodoProcedure);
+                    nodoId.AddHijo((Nodo) child1);
+                    nodoId.AddHijo((Nodo) child2);
 
+                    // Tabla de Símbolos
+                    Nodo type = (Nodo) n1;
+                    try{
+                        if(TablaSimbolos.buscar(n2) == null){ //Significa que la variable NO existe
+                            TablaSimbolos.crear(n2, "PROCEDURE", false, false);
+                            TablaSimbolos.insertar(n2,"PROCEDURE", false);
+                        }else{
+                            System.out.println("Error: Procedure  \""+n2+"\" ya existe.");
+                            ErroresSemanticos.add("Error: Procedure \""+n2+"\" ya existe.");
+                        }
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar el procedure");            
+                    }
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
-                    RESULT = nodo;
+                    RESULT = nodoId;
                     
               CUP$parser$result = parser.getSymbolFactory().newSymbol("cuerpo_principal",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1349,21 +1363,42 @@ class CUP$parser$actions {
 		int child1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object child1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-                    /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("cuerpo_principal",parser.cont);
-                    parser.cont++;
+                    // /*Se crea el nodo prinicipal*/
+                    // Nodo nodo = new Nodo("cuerpo_principal",parser.cont);
+                    // parser.cont++;
                     
-                    /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoProcedure = new Nodo("PROCEDURE", n1.toString(),parser.cont );
-                    parser.cont++;
+                    // /*Nuevo Nodo: TERMINAL*/
+                    // Nodo nodoProcedure = new Nodo("PROCEDURE", n1.toString(),parser.cont );
+                    // parser.cont++;
                     
-                    /*Se añaden los hijos*/
-                    nodo.AddHijo(nodoProcedure);
-                    nodo.AddHijo((Nodo) child1);
+                    // /*Se añaden los hijos*/
+                    // nodo.AddHijo(nodoProcedure);
+                    // nodo.AddHijo((Nodo) child1);
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
-                    RESULT = nodo;
-                    
+                    //RESULT = nodo;
+                    /*Nuevo Nodo: TERMINAL*/
+                    Nodo nodoId = new Nodo("ID",n2.toString(),parser.cont);
+                    parser.cont++;
+                                        
+                    /*Se añaden los hijos*/
+                    //nodo.AddHijo(nodoProcedure);
+                    nodoId.AddHijo((Nodo) child1);
+                    // Tabla de Símbolos
+                    try{
+                        if(TablaSimbolos.buscar(n2) == null){ //Significa que la variable NO existe
+                            TablaSimbolos.crear(n2, "PROCEDURE", false, false);
+                            // TablaSimbolos.insertar(n1, exp.getValue(), false);
+                        }else{
+                            System.out.println("Error: Procedure  \""+n2+"\" ya existe.");
+                            ErroresSemanticos.add("Error: Procedure \""+n2+"\" ya existe.");
+                        }
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar el procedure");            
+                    }
+                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    RESULT = nodoId;
                     
               CUP$parser$result = parser.getSymbolFactory().newSymbol("cuerpo_principal",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -2275,9 +2310,10 @@ class CUP$parser$actions {
                 if (type.getValue() != null) {
                     nodo = new Nodo("EXPRESION",type.getValue(), parser.cont, type.getTipo());
                     parser.cont++;
+                    System.out.println(type.getValue());
                     RESULT = nodo;
                 } else {
-                    System.out.println("En la expresion es nulo el valor.");
+
                 } 
             } catch (Exception e) {
                 System.out.println("No sé cuál es el error.");
@@ -2299,12 +2335,21 @@ class CUP$parser$actions {
 		int child1right = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Object child1 = (Object)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("codigo", parser.cont);
+            Nodo type = (Nodo) child1;
+            Nodo nodo = null;
+            try {
+                if (type.getValue() != null) {
+                    nodo = new Nodo("EXPRESION",type.getValue(), parser.cont, type.getTipo());
+                    parser.cont++;
+                    System.out.println(type.getValue() + "Esta parte es la de abajo");
+                    RESULT = nodo;
+                } else {
+
+                } 
+            } catch (Exception e) {
+                System.out.println("No sé cuál es el error.");
+            }
             parser.cont++;
-    
-            /*Se añaden los hijos*/
-            nodo.AddHijo((Nodo) child1);
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
         
