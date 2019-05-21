@@ -66,6 +66,10 @@ inicio  ::= cuerpo_principal:child1 {:
 
         /*Solamente en el cuerpo inicial se le asigna el nodo principal al padre.*/
         parser.padre = (Nodo) nodo;
+   ArrayList<Nodo> hijos = nodo.getChildren();
+                    for (int i = 0; i < hijos.size(); i++) {
+                        System.out.println("Hijo: " + i + " " +  hijos.get(i).id);
+                    }
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -92,12 +96,16 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     nodoId.AddHijo((Nodo) child1);
                     nodoId.AddHijo((Nodo) child2);
 
+        
+
                     // Tabla de Símbolos
                     Nodo type = (Nodo) n1;
                     try{
                         if(TablaSimbolos.buscar(n2) == null){ //Significa que la variable NO existe
                             TablaSimbolos.crear(n2, "PROCEDURE", false, false);
                             TablaSimbolos.insertar(n2,"PROCEDURE", false);
+                            System.out.println("SE CREA LA TABLA");
+                            
                         }else{
                             System.out.println("Error: Procedure  \""+n2+"\" ya existe.");
                             ErroresSemanticos.add("Error: Procedure \""+n2+"\" ya existe.");
@@ -134,11 +142,14 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     /*Se añaden los hijos*/
                     //nodo.AddHijo(nodoProcedure);
                     nodoId.AddHijo((Nodo) child1);
+                    
+                 
                     // Tabla de Símbolos
                     try{
                         if(TablaSimbolos.buscar(n2) == null){ //Significa que la variable NO existe
                             TablaSimbolos.crear(n2, "PROCEDURE", false, false);
-                            // TablaSimbolos.insertar(n1, exp.getValue(), false);
+                            //TablaSimbolos.insertar(n2, "PROCEDURE", false);
+                       
                         }else{
                             System.out.println("Error: Procedure  \""+n2+"\" ya existe.");
                             ErroresSemanticos.add("Error: Procedure \""+n2+"\" ya existe.");
@@ -1065,6 +1076,7 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                         // temporal = TablaSimbolos.buscar(n1);
                         if(TablaSimbolos.buscar(n1) == null){ //Significa que la variable No existe
                             TablaSimbolos.crear(n1, type.getValue(), false, false); 
+                             
                         }else{
                             System.out.println("Error: Variable \""+n1+"\" ya existe.");
                             ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
@@ -1123,6 +1135,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 if(temporal == null ){ //Significa que la variable NO existe
                     TablaSimbolos.crear(n1, type.getValue(), false, false);
                     TablaSimbolos.insertar(n1, exp.getValue(), false);
+                  
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
                     ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
