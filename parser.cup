@@ -66,10 +66,14 @@ inicio  ::= cuerpo_principal:child1 {:
 
         /*Solamente en el cuerpo inicial se le asigna el nodo principal al padre.*/
         parser.padre = (Nodo) nodo;
-   ArrayList<Nodo> hijos = nodo.getChildren();
-                    for (int i = 0; i < hijos.size(); i++) {
-                        System.out.println("Hijo: " + i + " " +  hijos.get(i).id);
-                    }
+        ArrayList<Nodo> hijos = nodo.getChildren();
+        try{
+            for (int i = 0; i < hijos.size(); i++) {
+                System.out.println("Hijo: " + i + " " +  hijos.get(i).id);
+            }
+        }catch(Exception e){
+        }
+        
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
