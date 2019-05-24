@@ -6,12 +6,21 @@ public class Nodo {
     public String tag;
     public String value;
     public String tipo;
+    public String ambito;
     public ArrayList<Nodo> children = new ArrayList<>();
 
     public Nodo(){
         /* Empty Constructor */
     }
 
+    public Nodo(String tag, String value, int id, String tipo, String ambito){
+        /* Empty Constructor */
+        this.tag = tag;
+        this.value = value;
+        this.id = id;
+        this.tipo = tipo;
+        this.ambito = ambito;
+    }
     public Nodo(String tag, String value, int id, String tipo){
         /* Empty Constructor */
         this.tag = tag;
@@ -80,6 +89,15 @@ public class Nodo {
     public String getTipo() {
         return tipo;
     }
+
+    public void setAmbito(String ambito) {
+        this.ambito = ambito;
+    }
+
+    public String getAmbito() {
+        return ambito;
+    }
+
 
 
     public ArrayList<Nodo> getChildren() {

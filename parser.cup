@@ -126,8 +126,8 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     | PROCEDURE:n1 ID:n2 parametros:child1 error comienza_cuerpo_principal:child2
                     | PROCEDURE:n1 ID:n2 IS:n3 comienza_cuerpo_principal:child1 {:
                     // /*Se crea el nodo prinicipal*/
-                    // Nodo nodo = new Nodo("cuerpo_principal",parser.cont);
-                    // parser.cont++;
+                    Nodo nodo = new Nodo("cuerpo_principal",parser.cont);
+                    parser.cont++;
                     
                     // /*Nuevo Nodo: TERMINAL*/
                     // Nodo nodoProcedure = new Nodo("PROCEDURE", n1.toString(),parser.cont );
@@ -144,9 +144,11 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     parser.cont++;
                                         
                     /*Se añaden los hijos*/
-                    //nodo.AddHijo(nodoProcedure);
-                    nodoId.AddHijo((Nodo) child1);
-                    
+                    //nodo.AddHijo();
+                    nodo.AddHijo((Nodo) child1);
+                    Nodo hijo = (Nodo) child1;
+                    nodo.ambito = n2 + "/" + hijo.value;
+                    System.out.println("Viendo el AMBITO: " + nodo.ambito);
                  
                     // Tabla de Símbolos
                     try{
@@ -163,7 +165,7 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                         System.out.println("Error al agregar el procedure");            
                     }
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
-                    RESULT = nodoId;
+                    RESULT = nodo;
                     :}
                     | error ID:n2 IS:n3 comienza_cuerpo_principal:child1
                     | PROCEDURE:n1 error IS:n3 comienza_cuerpo_principal:child1
@@ -220,9 +222,12 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 E
                             Nodo nodo = new Nodo("comienza_cuerpo_principal",parser.cont);
                             parser.cont++;
                             
+                            Nodo hijo = (Nodo) child1;
                             /*Se añaden los hijos*/
-                            nodo.AddHijo((Nodo) child1);
+                            nodo.AddHijo(hijo);
                             nodo.AddHijo((Nodo) child2);
+
+                            nodo.value = hijo.value;
 
                             /*Asignar el nodo al RESULT para continuar el recorrido*/
                             RESULT = nodo;
@@ -720,6 +725,13 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
                     nodo.AddHijo((Nodo) child2);
+                    
+                    Nodo hijo1 = (Nodo) child1;
+                    Nodo hijo2 = (Nodo) child2;
+                    nodo.value = hijo1.value + "," + hijo2.value;
+
+                    
+                                        
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
@@ -728,9 +740,12 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
                     parser.cont++;
-            
+
+                    Nodo hijo = (Nodo) child1;
                     /*Se añaden los hijos*/
-                    nodo.AddHijo((Nodo) child1);
+                    nodo.AddHijo(hijo);
+                    
+                    nodo.value = hijo.value;
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
@@ -886,7 +901,8 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                 nodo.AddHijo((Nodo) child2);
                 nodo.AddHijo((Nodo) child3);
                 nodo.AddHijo(nodoId2);
-
+                    Nodo prueba = (Nodo) child2;
+                    System.out.println("Imprimimos el procedimiento " + prueba.value);
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
                 :}
@@ -1054,14 +1070,37 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoId);
                     nodo.AddHijo((Nodo) child1);
-                    
+                    Nodo hijo = (Nodo) child1;
+                    nodo.value = n1 + "," + hijo.value;
+                    nodo.tipo = hijo.getTipo();
+                    System.out.println("Aqui estan las VARIABLES del procedure: " + nodo.value);
+
+
+                    try{
+                        //Validar si la variable existe
+                        // Simbolo temporal = null;
+                        // temporal = TablaSimbolos.buscar(n1);
+                        if(TablaSimbolos.buscar(n1) == null){ //Significa que la variable No existe
+                            TablaSimbolos.crear(n1, hijo.getTipo(), false, false); 
+                        }else{
+                            System.out.println("Error: Variable \""+n1+"\" ya existe.");
+                            ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
+                        }  
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        System.out.println("Error al agregar la variable");            
+                    }
+
+
+                  
+
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
                     :}
                     | ID:n1 error declarar_variable:child1
                     | ID:n1 DECLARACION:n2 tipo_variable:child1 SEMICOLON {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("declarar_variable", parser.cont);
+                    Nodo nodoDeclarar = new Nodo("declarar_variable", parser.cont);
                     parser.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
@@ -1069,8 +1108,8 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     parser.cont++;
                     
                     /*Se añaden los hijos*/
-                    nodo.AddHijo(nodoId);
-                    nodo.AddHijo((Nodo) child1);
+                    nodoDeclarar.AddHijo(nodoId);
+                    nodoDeclarar.AddHijo((Nodo) child1);
 
                     // Tabla de Símbolos
                     Nodo type = (Nodo) child1;
@@ -1080,19 +1119,20 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                         // temporal = TablaSimbolos.buscar(n1);
                         if(TablaSimbolos.buscar(n1) == null){ //Significa que la variable No existe
                             TablaSimbolos.crear(n1, type.getValue(), false, false); 
-                             
                         }else{
                             System.out.println("Error: Variable \""+n1+"\" ya existe.");
                             ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
-                        }
-                                 
+                        }  
                     } catch(Exception e) {
                         e.printStackTrace();
                         System.out.println("Error al agregar la variable");            
                     }
 
+                    nodoDeclarar.value = n1;
+                    nodoDeclarar.tipo = type.getValue();
+                    
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
-                    RESULT = nodo;
+                    RESULT = nodoDeclarar;
                     :}
                     | ID:n1 error tipo_variable:child1 SEMICOLON
                     | ID:n1 DECLARACION:n2 tipo_variable:child1 error
