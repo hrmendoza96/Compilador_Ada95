@@ -78,7 +78,30 @@ public class TablaSimbolos {
         s.ambito  =  ambito;
         int pos = tablaSimbolos.indexOf(s);
         tablaSimbolos.set(pos, s);
-        
+    }
+
+    static public Simbolo insertar2(String nombre, String tipoVariable, Object valor, Boolean tipoConstante, Boolean tipoFuncion, String ambito) {
+        Simbolo simbolo = null;
+        boolean existe = false;
+        for (Simbolo s : tablaSimbolos) {
+            if (s.nombre.equals(nombre)) {
+                existe = true;
+                break;
+            }
+        }
+        // La variable no existe
+        if (!existe) {
+            simbolo = new Simbolo(nombre, tipoVariable, valor.toString(), tipoConstante, tipoFuncion, ambito);
+            System.out.println("Agregando a tabla de simbolos con nombre: " + nombre);
+            tablaSimbolos.add(simbolo);
+            // System.out.println("Variable creada exitosamente!!!");
+            imprimir();
+            System.out.println("Termino de imprimir");
+            return simbolo;
+        } else {
+            System.out.println("NO se agrego a la tabla de simbolos.");
+            return null;
+        }
     }
 
     static public String eliminar(String nombre) {
@@ -117,6 +140,7 @@ public class TablaSimbolos {
             return null;
         }
     }
+
 
     static public Simbolo insertar(String nombre, Object valor, Boolean constante) {
         System.out.println("\nIngreso a insertar valor a variable.");

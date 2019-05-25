@@ -66,14 +66,6 @@ inicio  ::= cuerpo_principal:child1 {:
 
         /*Solamente en el cuerpo inicial se le asigna el nodo principal al padre.*/
         parser.padre = (Nodo) nodo;
-        ArrayList<Nodo> hijos = nodo.getChildren();
-        try{
-            for (int i = 0; i < hijos.size(); i++) {
-                System.out.println("Hijo: " + i + " " +  hijos.get(i).id);
-            }
-        }catch(Exception e){
-        }
-        
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -82,8 +74,8 @@ inicio  ::= cuerpo_principal:child1 {:
 
 cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuerpo_principal:child2 {:
                     // /*Se crea el nodo prinicipal*/
-                    // Nodo nodo = new Nodo("cuerpo_principal", parser.cont);
-                    // parser.cont++;
+                    Nodo nodo = new Nodo("cuerpo_principal", parser.cont);
+                    parser.cont++;
                     
                     // /*Nuevo Nodo: TERMINAL*/
                     // Nodo nodoProcedure = new Nodo("PROCEDURE", n1.toString(), parser.cont );
@@ -92,15 +84,11 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoId = new Nodo("ID",n2.toString(),parser.cont);
                     parser.cont++;
-                    System.out.println(n2.toString());
-                    System.out.println("Entra al primer procedure");
-                                        
+
                     /*Se añaden los hijos*/
                     //nodo.AddHijo(nodoProcedure);
                     nodoId.AddHijo((Nodo) child1);
                     nodoId.AddHijo((Nodo) child2);
-
-        
 
                     // Tabla de Símbolos
                     Nodo type = (Nodo) n1;
@@ -118,6 +106,8 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                         e.printStackTrace();
                         System.out.println("Error al agregar el procedure");            
                     }
+
+
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodoId;
                     :}
@@ -144,18 +134,19 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     parser.cont++;
                                         
                     /*Se añaden los hijos*/
-                    //nodo.AddHijo();
+                    nodo.AddHijo(nodoId);
                     nodo.AddHijo((Nodo) child1);
                     Nodo hijo = (Nodo) child1;
                     nodo.ambito = n2 + "/" + hijo.value;
+                    nodo.value = "Valores guardados";
+
                     System.out.println("Viendo el AMBITO: " + nodo.ambito);
                  
                     // Tabla de Símbolos
                     try{
                         if(TablaSimbolos.buscar(n2) == null){ //Significa que la variable NO existe
-                            TablaSimbolos.crear(n2, "PROCEDURE", false, false);
-                            //TablaSimbolos.insertar(n2, "PROCEDURE", false);
-                       
+                            //TablaSimbolos.crear(n2, "PROCEDURE", false, false);
+                            TablaSimbolos.insertar2(n2, "PROCEDURE", "Valores Guardados", false, false, nodo.ambito);
                         }else{
                             System.out.println("Error: Procedure  \""+n2+"\" ya existe.");
                             ErroresSemanticos.add("Error: Procedure \""+n2+"\" ya existe.");
@@ -228,6 +219,7 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 E
                             nodo.AddHijo((Nodo) child2);
 
                             nodo.value = hijo.value;
+                            nodo.ambito = hijo.ambito;
 
                             /*Asignar el nodo al RESULT para continuar el recorrido*/
                             RESULT = nodo;
@@ -728,11 +720,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     
                     Nodo hijo1 = (Nodo) child1;
                     Nodo hijo2 = (Nodo) child2;
-                    nodo.value = hijo1.value + "," + hijo2.value;
-
-                    
-                                        
-
+                    nodo.value = hijo1.value + "," + hijo2.value;       
+                    nodo.ambito = hijo1.value + "," + hijo2.ambito;    
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
                     :}
@@ -746,6 +735,7 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     nodo.AddHijo(hijo);
                     
                     nodo.value = hijo.value;
+                    nodo.ambito = hijo.ambito;
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
@@ -824,6 +814,12 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
                     nodo.AddHijo((Nodo) child2);
+                    Nodo hijo = (Nodo) child1;
+                    Nodo hijo2 = (Nodo) child2;
+                    nodo.value = hijo.value + "!" + hijo2.value;
+                    nodo.ambito = hijo.ambito + hijo2.ambito;
+
+                    
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
@@ -835,6 +831,13 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
             
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
+                    Nodo hijo = (Nodo) child1;
+                    
+                    nodo.value = hijo.value;
+                    nodo.ambito = hijo.ambito;
+                    nodo.tipo = "PROCEDURE";
+
+
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
@@ -846,6 +849,11 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
 
                         nodo.AddHijo((Nodo) child1);
                         nodo.AddHijo((Nodo) child2);
+                        Nodo hijo1 = (Nodo) child1;
+                        Nodo hijo2 = (Nodo) child2;
+
+                        nodo.value = hijo1.value + "," + hijo2.value;
+                        nodo.ambito = hijo1.value + "," + hijo2.ambito;
 
                         RESULT = nodo;
                     :}
@@ -855,6 +863,11 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                         parser.cont++;
 
                         nodo.AddHijo((Nodo) child1);
+                        Nodo hijo = (Nodo) child1;
+                        
+                        nodo.value = hijo.value;
+                        nodo.ambito = hijo.ambito;
+
 
                         RESULT = nodo;
                     :}
@@ -901,8 +914,11 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                 nodo.AddHijo((Nodo) child2);
                 nodo.AddHijo((Nodo) child3);
                 nodo.AddHijo(nodoId2);
-                    Nodo prueba = (Nodo) child2;
-                    System.out.println("Imprimimos el procedimiento " + prueba.value);
+                Nodo hijo2 = (Nodo) child2;
+                nodo.value = n2 + "/" + hijo2.value ;
+                nodo.ambito = n2 + "/" + hijo2.value;
+                nodo.tipo = "PROCEDURE";
+
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
                 :}
@@ -1118,7 +1134,7 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                         // Simbolo temporal = null;
                         // temporal = TablaSimbolos.buscar(n1);
                         if(TablaSimbolos.buscar(n1) == null){ //Significa que la variable No existe
-                            TablaSimbolos.crear(n1, type.getValue(), false, false); 
+                            TablaSimbolos.insertar2(n1, type.getTipo(), "", false, false, n1);
                         }else{
                             System.out.println("Error: Variable \""+n1+"\" ya existe.");
                             ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
@@ -1128,8 +1144,9 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                         System.out.println("Error al agregar la variable");            
                     }
 
-                    nodoDeclarar.value = n1;
-                    nodoDeclarar.tipo = type.getValue();
+                    nodoDeclarar.value = n1; //Al nodo se le asigna el id para poder subirlo en el árbol.
+                    nodoDeclarar.ambito = n1;
+                    nodoDeclarar.tipo = type.getValue(); //Esto se pone porque type es tipo_variable, y esas pueden ser Int, FLoat o Bool
                     
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodoDeclarar;
@@ -1165,32 +1182,35 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
 
-            /*Se añaden los hijos*/
-            nodo.AddHijo(nodoId);
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo((Nodo) child2);
-//---------------------------------------------------------Puede estar malo----------------------------------------
             // Tabla de Símbolos
             Nodo type = (Nodo) child1;
             Nodo exp = (Nodo) child2;
+
             try{
                 Simbolo temporal = null;
                 temporal = TablaSimbolos.buscar(n1);
                 if(temporal == null ){ //Significa que la variable NO existe
-                    TablaSimbolos.crear(n1, type.getValue(), false, false);
-                    TablaSimbolos.insertar(n1, exp.getValue(), false);
-                  
+                    if (type.getValue() == exp.getTipo()) {
+                        //TablaSimbolos.crear(n1, type.getValue(), false, false);
+                        /*Se añaden los hijos*/
+                        nodo.AddHijo(nodoId);
+                        nodo.AddHijo((Nodo) child1); // tipo variable
+                        nodo.AddHijo((Nodo) child2); // la expresion
+                        Nodo hijo2 = (Nodo) child2;
+                        nodo.value = n1;
+                        nodo.ambito = n1;
+                        TablaSimbolos.insertar2(n1, exp.getTipo(), exp.value, false, false, n1);
+                    } else {
+                        System.out.println("No se asigno el tipo de variable correctoo.");
+                    }
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
                     ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
                 }
-                           
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
-            }
-
-            
+            }    
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -1329,9 +1349,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
 
-            /*Se añaden los hijos*/
-            nodo.AddHijo(nodoId);
-            nodo.AddHijo((Nodo) child1);
 //--------------------------------Insertar a tabla de simbolos ---------------------------------------------------------------------
             // Tabla de Símbolos
             Nodo type = (Nodo) child1;
@@ -1383,6 +1400,14 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 System.out.println("Error al agregar la variable");            
             }
             
+            /*Se añaden los hijos*/
+            nodo.AddHijo(nodoId);
+            nodo.AddHijo((Nodo) child1);
+            Nodo hijo = (Nodo) child1;
+            nodo.ambito = n1 + "," + hijo.ambito;
+            nodo.value = n1 + "," + hijo.ambito;
+
+
 
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -2381,6 +2406,7 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                             | NUM:n1
                             {:
                                 Nodo nodo = new Nodo("NUM", n1.toString(), parser.cont,"INTEGER");
+                                nodo.ambito = "Probado ambito";
                                 parser.cont++;
                                 RESULT = nodo;
                             :}

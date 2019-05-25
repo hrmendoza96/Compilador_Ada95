@@ -1,8 +1,26 @@
-procedure Calc is
-   Op: Integer;               
-   Disp: Integer := 0;          
-   In_Val2: Integer := 10; 
-   Otra_tontera: Integer := 10;                 
+procedure ProcedimientoUno is      
+   var_P13: Integer;
+   var_P14: Integer;    
+
+   procedure ProcedimientoDos () is 
+      var_P21: Float;
+   begin 
+      put("Hola");
+   end Operacion; 
+
+   procedure ProcedimientoTres () is
+      var_P31: Integer;
+      
+      procedure ProcedimietoCuatro () is
+         var_P41: Float;
+      begin 
+         put("Hey");
+      end ProcedimietoCuatro;
+
+   begin
+      put("Adios");
+   end ProcedimientoTres; 
+
 begin
    loop
       -- Print the display.

@@ -7,6 +7,8 @@ public class Nodo {
     public String value;
     public String tipo;
     public String ambito;
+    public String auxValores;
+
     public ArrayList<Nodo> children = new ArrayList<>();
 
     public Nodo(){
@@ -98,7 +100,13 @@ public class Nodo {
         return ambito;
     }
 
+    public void setAuxValores(String auxValores) {
+        this.auxValores = auxValores;
+    }
 
+    public String getAuxValores() {
+        return auxValores;
+    }
 
     public ArrayList<Nodo> getChildren() {
         return children;
