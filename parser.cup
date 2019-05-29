@@ -139,14 +139,14 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     Nodo hijo = (Nodo) child1;
                     nodo.ambito = n2 + "/" + hijo.value;
                     nodo.value = "Valores guardados";
-
-                    System.out.println("Viendo el AMBITO: " + nodo.ambito);
-                 
+                              
                     // Tabla de Símbolos
                     try{
                         if(TablaSimbolos.buscar(n2) == null){ //Significa que la variable NO existe
                             //TablaSimbolos.crear(n2, "PROCEDURE", false, false);
                             TablaSimbolos.insertar2(n2, "PROCEDURE", "Valores Guardados", false, false, nodo.ambito);
+                            TablaSimbolos.imprimir();
+
                         }else{
                             System.out.println("Error: Procedure  \""+n2+"\" ya existe.");
                             ErroresSemanticos.add("Error: Procedure \""+n2+"\" ya existe.");
@@ -722,6 +722,9 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     Nodo hijo2 = (Nodo) child2;
                     nodo.value = hijo1.value + "," + hijo2.value;       
                     nodo.ambito = hijo1.value + "," + hijo2.ambito;    
+                    //System.out.println("Imprimiendo value en decval tipodecl:" + nodo.ambito);
+                    //TablaSimbolos.setAmbito(hijo1.value, nodo.ambito);
+                 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
                     :}
@@ -736,6 +739,7 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     
                     nodo.value = hijo.value;
                     nodo.ambito = hijo.ambito;
+                    //TablaSimbolos.setAmbito(hijo.value, nodo.ambito);
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
@@ -818,9 +822,7 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     Nodo hijo2 = (Nodo) child2;
                     nodo.value = hijo.value + "!" + hijo2.value;
                     nodo.ambito = hijo.ambito + hijo2.ambito;
-
-                    
-
+                  
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
                     :}
@@ -836,9 +838,10 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     nodo.value = hijo.value;
                     nodo.ambito = hijo.ambito;
                     nodo.tipo = "PROCEDURE";
-
-
-
+                    System.out.println("Veamos el ambito: " + hijo.ambito);
+                   
+                    // TablaSimbolos.setAmbito(hijo.value, nodo.ambito);
+                    
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
                     :}
@@ -918,6 +921,7 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                 nodo.value = n2 + "/" + hijo2.value ;
                 nodo.ambito = n2 + "/" + hijo2.value;
                 nodo.tipo = "PROCEDURE";
+                
 
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
@@ -1134,7 +1138,8 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                         // Simbolo temporal = null;
                         // temporal = TablaSimbolos.buscar(n1);
                         if(TablaSimbolos.buscar(n1) == null){ //Significa que la variable No existe
-                            TablaSimbolos.insertar2(n1, type.getTipo(), "", false, false, n1);
+                            TablaSimbolos.insertar2(n1, type.getValue(), "", false, false, n1);
+
                         }else{
                             System.out.println("Error: Variable \""+n1+"\" ya existe.");
                             ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
@@ -1147,7 +1152,8 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     nodoDeclarar.value = n1; //Al nodo se le asigna el id para poder subirlo en el árbol.
                     nodoDeclarar.ambito = n1;
                     nodoDeclarar.tipo = type.getValue(); //Esto se pone porque type es tipo_variable, y esas pueden ser Int, FLoat o Bool
-                    
+                    nodoDeclarar.auxValores = type.getValue();
+                    System.out.println("A ver: " + nodoDeclarar.auxValores);
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodoDeclarar;
                     :}

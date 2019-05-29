@@ -1,25 +1,30 @@
 procedure ProcedimientoUno is      
-   var_P13: Integer;
-   var_P14: Integer;    
+   varUno: Integer;
+   varDos: Integer;    
 
    procedure ProcedimientoDos () is 
-      var_P21: Float;
+      varTres: Float;
+      procedure ProcedimientoTres () is
+         varCuatro: Integer;
+      begin
+         put("Adios");
+      end ProcedimientoTres;
+      procedure Probemos() is
+         varX: Integer;
+      begin
+         Put("test");
+      end Probemos;
    begin 
       put("Hola");
-   end Operacion; 
+   end ProcedimientoDos; 
 
-   procedure ProcedimientoTres () is
-      var_P31: Integer;
-      
-      procedure ProcedimietoCuatro () is
-         var_P41: Float;
-      begin 
-         put("Hey");
-      end ProcedimietoCuatro;
-
+   procedure ProcedimientoNuevo () is
+      varNueva: Boolean;
    begin
-      put("Adios");
-   end ProcedimientoTres; 
+      put("Hola");
+   end ProcedimientoNuevo;
+
+  
 
 begin
    loop

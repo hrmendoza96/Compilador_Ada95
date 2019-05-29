@@ -95,7 +95,7 @@ public class TablaSimbolos {
             System.out.println("Agregando a tabla de simbolos con nombre: " + nombre);
             tablaSimbolos.add(simbolo);
             // System.out.println("Variable creada exitosamente!!!");
-            imprimir();
+            //imprimir();
             System.out.println("Termino de imprimir");
             return simbolo;
         } else {
