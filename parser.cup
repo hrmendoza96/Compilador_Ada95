@@ -137,7 +137,7 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     nodo.AddHijo(nodoId);
                     nodo.AddHijo((Nodo) child1);
                     Nodo hijo = (Nodo) child1;
-                    nodo.ambito = n2 + "/" + hijo.value;
+                    nodo.ambito = n2 + "/" + hijo.value + "@";
                     nodo.value = "Valores guardados";
                               
                     // Tabla de Símbolos
@@ -820,8 +820,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     nodo.AddHijo((Nodo) child2);
                     Nodo hijo = (Nodo) child1;
                     Nodo hijo2 = (Nodo) child2;
-                    nodo.value = hijo.value + "!" + hijo2.value;
-                    nodo.ambito = hijo.ambito + hijo2.ambito;
+                    nodo.value = hijo.value + "," +hijo2.value;
+                    nodo.ambito = hijo.ambito + "," + hijo2.ambito;
                   
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
@@ -837,8 +837,6 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     
                     nodo.value = hijo.value;
                     nodo.ambito = hijo.ambito;
-                    nodo.tipo = "PROCEDURE";
-                    System.out.println("Veamos el ambito: " + hijo.ambito);
                    
                     // TablaSimbolos.setAmbito(hijo.value, nodo.ambito);
                     
@@ -898,8 +896,8 @@ declarar_procedimiento  ::= PROCEDURE:n1 ID:n2 parametros:child1 SEMICOLON {:
                         | PROCEDURE:n1 ID:n2 parametros:child1 error
                         ;
 
-procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2 BEGIN codigo:child3 END ID:n6 SEMICOLON {:
-                /*Se crea el nodo prinicipal*/
+procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2 BEGIN {:
+                 /*Se crea el nodo prinicipal*/
                 Nodo nodo = new Nodo("procedimiento", parser.cont);
                 parser.cont++;
 
@@ -908,23 +906,30 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                 parser.cont++;
 
                 /*Nuevo Nodo: TERMINAL*/
-                Nodo nodoId2 = new Nodo("ID", n6.toString(), parser.cont);
-                parser.cont++;
+                //Nodo nodoId2 = new Nodo("ID", n6.toString(), parser.cont);
+                //parser.cont++;
 
                 /*Se añaden los hijos*/
                 nodo.AddHijo(nodoId);
                 nodo.AddHijo((Nodo) child1);
-                nodo.AddHijo((Nodo) child2);
-                nodo.AddHijo((Nodo) child3);
-                nodo.AddHijo(nodoId2);
+                
+                //nodo.AddHijo((Nodo) child3);
+                //nodo.AddHijo(nodoId2);
                 Nodo hijo2 = (Nodo) child2;
-                nodo.value = n2 + "/" + hijo2.value ;
-                nodo.ambito = n2 + "/" + hijo2.value;
+               
                 nodo.tipo = "PROCEDURE";
                 
 
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
+                :}codigo:child3 END ID:n6 SEMICOLON {:
+                    Nodo nodo = new Nodo("procedimiento", parser.cont);
+                    nodo.AddHijo((Nodo) child2);
+                    nodo.AddHijo((Nodo) child3);
+                    Nodo hijo2 = (Nodo) child2;
+                    nodo.value = n2 + "/" + hijo2.value + "@" ;
+                    nodo.ambito = n2 + "/" + hijo2.value + "@";
+                    RESULT = nodo;
                 :}
                 | PROCEDURE error parametros:child1 IS tipo_declaracion:child2 BEGIN codigo:child3 END ID:n6 SEMICOLON
                 | PROCEDURE ID:n2 parametros:child1 IS BEGIN codigo:child2 END ID:n6 SEMICOLON
@@ -1152,8 +1157,8 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     nodoDeclarar.value = n1; //Al nodo se le asigna el id para poder subirlo en el árbol.
                     nodoDeclarar.ambito = n1;
                     nodoDeclarar.tipo = type.getValue(); //Esto se pone porque type es tipo_variable, y esas pueden ser Int, FLoat o Bool
-                    nodoDeclarar.auxValores = type.getValue();
-                    System.out.println("A ver: " + nodoDeclarar.auxValores);
+                    //nodoDeclarar.auxValores = type.getValue();
+                    //System.out.println("AuxValores: " + nodoDeclarar.auxValores);
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodoDeclarar;
                     :}

@@ -1,48 +1,53 @@
 procedure ProcedimientoUno is      
-   varUno: Integer;
-   varDos: Integer;    
+   varUNO: Integer;  
 
    procedure ProcedimientoDos () is 
-      varTres: Float;
+      varDOS: Float;
+      
       procedure ProcedimientoTres () is
-         varCuatro: Integer;
+         varTRES: String;
+         
+         procedure ProcedimientoCuatro () is
+            varCUATRO: Boolean;
+         begin
+            put("Texto Procedimiento CUATRO");
+         end ProcedimientoCuatro;
+
       begin
-         put("Adios");
+         put("Texto Procedimiento TRES");
       end ProcedimientoTres;
-      procedure Probemos() is
-         varX: Integer;
-      begin
-         Put("test");
-      end Probemos;
+
    begin 
-      put("Hola");
+      put("Texto Procedimiento DOS");
    end ProcedimientoDos; 
 
-   procedure ProcedimientoNuevo () is
-      varNueva: Boolean;
-   begin
-      put("Hola");
-   end ProcedimientoNuevo;
+   varFueraUNO: Integer;
 
-  
+   procedure ProdDentroUno () is
+      varCINCO: Boolean;
+      
+      procedure ProdAnidado () is
+         varAnid: String;
+      begin
+         Put("Texto del ANIDADO");
+      end ProdAnidado;
+
+   begin
+      put("Texto Procedimiento DESPUES DE LOS ANIDADOS.");
+   end DentroUno;
 
 begin
    loop
       -- Print the display.
       Put(Disp);
-
       -- Promt the user.
       Put("> ");
-
       -- Skip leading blanks and read the operation.
       loop
          Get(Op);
          exit when Op /= 1;
       end loop;
-
       -- Stop when we're s'posed to.
-
-
       -- Read the integer value (skips leading blanks) and discard the
       -- remainder of the line.
       Get(In_Val);
