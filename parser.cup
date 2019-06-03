@@ -2,6 +2,7 @@ import java_cup.runtime.*;
 import java.util.ArrayList;
 
 
+
 parser code
 {:
     public static Nodo padre;
@@ -18,6 +19,48 @@ parser code
         System.out.println("Error No Recuperable de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
         ErroresSintacticos.add("Error No Recuperable de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
     }
+
+    public void gen(Object op, Object arg1, Object arg2, Object res){
+        try{
+            //Castear a Strings
+            String operador, argumento1, argumento2, resultado;
+            if(op == null){
+                operador = "";
+            }else{
+                operador = op.toString();
+            }
+
+            if(arg1 == null){
+                argumento1 = "";
+            }else{
+                argumento1 = arg1.toString();
+            }
+
+            if(arg2 == null){
+                argumento2 =  "";
+            }else{
+                argumento2 = arg2.toString();
+            }
+
+            if(res == null){
+                resultado = "";
+            }else{
+                resultado = res.toString();
+            }
+
+            //Crear Cuadruplo
+            Cuadruplo cuadruplo = new Cuadruplo(operador, argumento1, argumento2, resultado);
+
+            //Insertar Cuadruplo a Tabla de Cuadruplos
+            TablaCuadruplos.insertarCuadruplo(cuadruplo);
+        }catch(Exception e){
+            System.out.println("Error en el GEN para cuadruplos");
+        }
+        
+
+    }
+
+    
 :}
 
 // Terminales
