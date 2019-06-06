@@ -6,6 +6,7 @@ import java.util.ArrayList;
 parser code
 {:
     public static Nodo padre;
+    public static String cadenaAmbito = "";
     public static ArrayList<String> ErroresSintacticos = new ArrayList<String>();
     public static ArrayList<String> ErroresSemanticos = new ArrayList<String>();
     public static ArrayList<String> variablesEnFuncion = new ArrayList<String>();
@@ -115,7 +116,13 @@ inicio  ::= cuerpo_principal:child1 {:
         :}
         ;
 
-cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuerpo_principal:child2 {:
+cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {: 
+
+                        String nuevaCadena = cadenaAmbito;
+                        cadenaAmbito = nuevaCadena+"."+n2.toString();
+                        //System.out.println("Agregando a tabla de simbolos con nombre: " + nombre);
+
+                    :}comienza_cuerpo_principal:child2 {:
                     // /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo("cuerpo_principal", parser.cont);
                     parser.cont++;
@@ -150,6 +157,20 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                         System.out.println("Error al agregar el procedure");            
                     }
 
+                    //================================Buscar Ambito y Limpiar Cadena Ambito===================
+                    //Buscar Procedure en Tabla de Simbolos y Asignarle el ambito
+                    Simbolo simbolo = TablaSimbolos.buscar(n2.toString());
+                    if(simbolo != null){
+                        TablaSimbolos.setAmbito(n2.toString(), cadenaAmbito);
+                    }
+
+                    //Limpiar Cadena de Ambitos : Se borra el ultimo procedimiento porque ya termino
+                    String nuevaCadena = cadenaAmbito;
+                    int resta = nuevaCadena.length() - (n2.toString()).length();
+                    resta = resta -1;
+                    cadenaAmbito = nuevaCadena.substring(0, resta);
+                    //==========================Fin de Limpiar Cadena de Ambitos=================================
+
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodoId;
@@ -157,7 +178,13 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     | error ID:n2 parametros:child1 IS:n3 comienza_cuerpo_principal:child2
                     | PROCEDURE:n1 error parametros:child1 IS:n3 comienza_cuerpo_principal:child2
                     | PROCEDURE:n1 ID:n2 parametros:child1 error comienza_cuerpo_principal:child2
-                    | PROCEDURE:n1 ID:n2 IS:n3 comienza_cuerpo_principal:child1 {:
+                    | PROCEDURE:n1 ID:n2 IS:n3 {: 
+
+                        String nuevaCadena = cadenaAmbito;
+                        cadenaAmbito = nuevaCadena+"."+n2.toString();
+                        //System.out.println("Agregando a tabla de simbolos con nombre: " + nombre);
+
+                    :} comienza_cuerpo_principal:child1 {:
                     // /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo("cuerpo_principal",parser.cont);
                     parser.cont++;
@@ -183,12 +210,13 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                     nodo.ambito = n2 + "/" + hijo.value + "@";
                     nodo.value = "Valores guardados";
                               
+                    
                     // Tabla de Símbolos
                     try{
                         if(TablaSimbolos.buscar(n2) == null){ //Significa que la variable NO existe
                             //TablaSimbolos.crear(n2, "PROCEDURE", false, false);
                             TablaSimbolos.insertar2(n2, "PROCEDURE", "Valores Guardados", false, false, nodo.ambito);
-                            TablaSimbolos.imprimir();
+                            //TablaSimbolos.imprimir();
 
                         }else{
                             System.out.println("Error: Procedure  \""+n2+"\" ya existe.");
@@ -198,6 +226,21 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 comienza_cuer
                         e.printStackTrace();
                         System.out.println("Error al agregar el procedure");            
                     }
+
+                    //================================Buscar Ambito y Limpiar Cadena Ambito===================
+                    //Buscar Procedure en Tabla de Simbolos y Asignarle el ambito
+                    Simbolo simbolo = TablaSimbolos.buscar(n2.toString());
+                    if(simbolo != null){
+                        TablaSimbolos.setAmbito(n2.toString(), cadenaAmbito);
+                    }
+
+                    //Limpiar Cadena de Ambitos : Se borra el ultimo procedimiento porque ya termino
+                    String nuevaCadena = cadenaAmbito;
+                    int resta = nuevaCadena.length() - (n2.toString()).length();
+                    resta = resta -1;
+                    cadenaAmbito = nuevaCadena.substring(0, resta);
+                    //==========================Fin de Limpiar Cadena de Ambitos=================================
+
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
                     :}
@@ -276,6 +319,7 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 E
                             /*Se crea el nodo prinicipal*/
                             Nodo nodo = new Nodo("comienza_cuerpo_principal",parser.cont);
                             parser.cont++;
+                            
                             
                             /*Se añaden los hijos*/
                             nodo.AddHijo((Nodo) child1);
@@ -939,7 +983,13 @@ declarar_procedimiento  ::= PROCEDURE:n1 ID:n2 parametros:child1 SEMICOLON {:
                         | PROCEDURE:n1 ID:n2 parametros:child1 error
                         ;
 
-procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2 BEGIN {:
+procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS {: 
+
+                        String nuevaCadena = cadenaAmbito;
+                        cadenaAmbito = nuevaCadena+"."+n2.toString();
+                        //System.out.println("Agregando a tabla de simbolos con nombre: " + nombre);
+
+                    :}tipo_declaracion:child2 BEGIN {:
                  /*Se crea el nodo prinicipal*/
                 Nodo nodo = new Nodo("procedimiento", parser.cont);
                 parser.cont++;
@@ -961,7 +1011,6 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                 Nodo hijo2 = (Nodo) child2;
                
                 nodo.tipo = "PROCEDURE";
-                
 
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
@@ -972,10 +1021,32 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                     Nodo hijo2 = (Nodo) child2;
                     nodo.value = n2 + "/" + hijo2.value + "@" ;
                     nodo.ambito = n2 + "/" + hijo2.value + "@";
+
+                    //================================Buscar Ambito y Limpiar Cadena Ambito===================
+                    //Buscar Procedure en Tabla de Simbolos y Asignarle el ambito
+                    Simbolo simbolo = TablaSimbolos.buscar(n2.toString());
+                    if(simbolo != null){
+                        TablaSimbolos.setAmbito(n2.toString(), cadenaAmbito);
+                    }
+
+                    //Limpiar Cadena de Ambitos : Se borra el ultimo procedimiento porque ya termino
+                    String nuevaCadena = cadenaAmbito;
+                    int resta = nuevaCadena.length() - (n2.toString()).length();
+                    resta = resta-1;
+                    cadenaAmbito = nuevaCadena.substring(0, resta);
+                    //==========================Fin de Limpiar Cadena de Ambitos=================================
+
+
                     RESULT = nodo;
                 :}
                 | PROCEDURE error parametros:child1 IS tipo_declaracion:child2 BEGIN codigo:child3 END ID:n6 SEMICOLON
-                | PROCEDURE ID:n2 parametros:child1 IS BEGIN codigo:child2 END ID:n6 SEMICOLON
+                | PROCEDURE ID:n2 parametros:child1 IS {: 
+
+                        String nuevaCadena = cadenaAmbito;
+                        cadenaAmbito = nuevaCadena+"."+n2.toString();
+                        //System.out.println("Agregando a tabla de simbolos con nombre: " + nombre);
+
+                    :}BEGIN codigo:child2 END ID:n6 SEMICOLON
                 {:
                 /*Se crea el nodo prinicipal*/
                 Nodo nodo = new Nodo("procedimiento", parser.cont);
@@ -989,6 +1060,20 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS tipo_declaracion:child2
                 nodo.AddHijo(nodoId);
                 nodo.AddHijo((Nodo) child1);
                 nodo.AddHijo((Nodo) child2);
+
+                //================================Buscar Ambito y Limpiar Cadena Ambito===================
+                //Buscar Procedure en Tabla de Simbolos y Asignarle el ambito
+                Simbolo simbolo = TablaSimbolos.buscar(n2.toString());
+                if(simbolo != null){
+                    TablaSimbolos.setAmbito(n2.toString(), cadenaAmbito);
+                }
+
+                //Limpiar Cadena de Ambitos : Se borra el ultimo procedimiento porque ya termino
+                String nuevaCadena = cadenaAmbito;
+                int resta = nuevaCadena.length() - (n2.toString()).length();
+                resta = resta -1;
+                cadenaAmbito = nuevaCadena.substring(0, resta);
+                //==========================Fin de Limpiar Cadena de Ambitos=================================
 
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;                
@@ -1126,6 +1211,7 @@ funcion ::= ID:n1 parametros:child1 {:
 
 /*Aquí tenemos la opción de declarara una o más variables. Luego están las versiones
 con errores.*/
+/*TODO: Arreglo de IDs para luego asignar TIPO VARIABLE*/
 declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo("declarar_variable", parser.cont);
@@ -1160,8 +1246,6 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     }
 
 
-                  
-
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
                     :}
@@ -1175,6 +1259,7 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
                     parser.cont++;
                     
+                    
                     /*Se añaden los hijos*/
                     nodoDeclarar.AddHijo(nodoId);
                     nodoDeclarar.AddHijo((Nodo) child1);
@@ -1186,7 +1271,7 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                         // Simbolo temporal = null;
                         // temporal = TablaSimbolos.buscar(n1);
                         if(TablaSimbolos.buscar(n1) == null){ //Significa que la variable No existe
-                            TablaSimbolos.insertar2(n1, type.getValue(), "", false, false, n1);
+                            TablaSimbolos.insertar2(n1, type.getValue(), "", false, false, cadenaAmbito);
 
                         }else{
                             System.out.println("Error: Variable \""+n1+"\" ya existe.");
@@ -1253,7 +1338,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                         Nodo hijo2 = (Nodo) child2;
                         nodo.value = n1;
                         nodo.ambito = n1;
-                        TablaSimbolos.insertar2(n1, exp.getTipo(), exp.value, false, false, n1);
+                        TablaSimbolos.insertar2(n1, exp.getTipo(), exp.value, false, false, cadenaAmbito);
                     } else {
                         System.out.println("No se asigno el tipo de variable correctoo.");
                     }
@@ -1296,6 +1381,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 if(temporal == null ){ //Significa que la variable NO existe
                     TablaSimbolos.crear(n1, type.getValue(), false, false);
                     TablaSimbolos.insertar(n1, n4, false);
+                    TablaSimbolos.setAmbito(n1,cadenaAmbito);
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
                     ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
@@ -1339,6 +1425,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 if(temporal == null ){ //Significa que la variable NO existe
                     TablaSimbolos.crear(n1, type.getValue(), false, false);
                     TablaSimbolos.insertar(n1, n4, false);
+                    TablaSimbolos.setAmbito(n1,cadenaAmbito);
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
                     ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
@@ -1381,6 +1468,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 if(temporal == null ){ //Significa que la variable NO existe
                     TablaSimbolos.crear(n1, type.getValue(), false, false);
                     TablaSimbolos.insertar(n1, n4, false);
+                    TablaSimbolos.setAmbito(n1,cadenaAmbito);
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
                     ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
@@ -1422,6 +1510,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                             if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
                                 //Al NO ser constante entonces se asigna el valor en la tabla de simbolos
                                 TablaSimbolos.insertar(n1, type.getValue(), false);
+                                TablaSimbolos.setAmbito(n1,cadenaAmbito);
                             }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
                                 System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
                                 ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
@@ -1438,6 +1527,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                             if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
                                 //Al NO ser constante entonces se asigna el valor en la tabla de simbolos
                                 TablaSimbolos.insertar(n1, type.getValue(), false);
+                                TablaSimbolos.setAmbito(n1,cadenaAmbito);
                             }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
                                 System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
                                 ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
@@ -1495,6 +1585,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                     if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
                         //Al NO ser constante entonces se asigna el valor
                         TablaSimbolos.insertar(n1, String.valueOf(n3), false);
+                        TablaSimbolos.setAmbito(n1,cadenaAmbito);
                     }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
                         System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
                         ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
@@ -1541,6 +1632,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                     if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
                         //Al NO ser constante entonces se asigna el valor
                         TablaSimbolos.insertar(n1, String.valueOf(n3), false);
+                        TablaSimbolos.setAmbito(n1,cadenaAmbito);
                     }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
                         System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
                         ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
@@ -1587,6 +1679,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                     if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
                         //Al NO ser constante entonces se asigna el valor
                         TablaSimbolos.insertar(n1, n3, false);
+                        TablaSimbolos.setAmbito(n1,cadenaAmbito);
                     }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
                         System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
                         ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
@@ -1633,6 +1726,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 if(temporal == null ){ //Significa que la variable NO existe
                     TablaSimbolos.crear(n1, type.getValue(), true, false);
                     TablaSimbolos.insertar(n1, exp.getValue(), true);
+                    TablaSimbolos.setAmbito(n1,cadenaAmbito);
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
                     ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
@@ -1679,6 +1773,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 if(temporal == null ){ //Significa que la variable NO existe
                     TablaSimbolos.crear(n1, hijo.getValue(), true, false);
                     TablaSimbolos.insertar(n1, String.valueOf(n5), true); 
+                    TablaSimbolos.setAmbito(n1,cadenaAmbito);
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
                     ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
@@ -1727,6 +1822,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 if(temporal == null ){ //Significa que la variable NO existe
                     TablaSimbolos.crear(n1, hijo.getValue(), true, false);
                     TablaSimbolos.insertar(n1, String.valueOf(n5), true); 
+                    TablaSimbolos.setAmbito(n1,cadenaAmbito);
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
                     ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
@@ -1771,6 +1867,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 if(temporal == null ){ //Significa que la variable NO existe
                     TablaSimbolos.crear(n1, hijo.getValue(), true, false);
                     TablaSimbolos.insertar(n1, String.valueOf(n5), true);
+                    TablaSimbolos.setAmbito(n1,cadenaAmbito);
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
                     ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
@@ -2460,7 +2557,7 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                             | NUM:n1
                             {:
                                 Nodo nodo = new Nodo("NUM", n1.toString(), parser.cont,"INTEGER");
-                                nodo.ambito = "Probado ambito";
+                                //nodo.ambito = "Probado ambito";
                                 parser.cont++;
                                 RESULT = nodo;
                             :}

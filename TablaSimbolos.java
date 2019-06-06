@@ -96,7 +96,7 @@ public class TablaSimbolos {
             tablaSimbolos.add(simbolo);
             // System.out.println("Variable creada exitosamente!!!");
             //imprimir();
-            System.out.println("Termino de imprimir");
+            //System.out.println("Termino de imprimir");
             return simbolo;
         } else {
             System.out.println("NO se agrego a la tabla de simbolos.");
@@ -132,8 +132,8 @@ public class TablaSimbolos {
             System.out.println("Agregando a tabla de simbolos con nombre: " + nombre);
             tablaSimbolos.add(simbolo);
             // System.out.println("Variable creada exitosamente!!!");
-            imprimir();
-            System.out.println("Termino de imprimir");
+            //imprimir();
+            //System.out.println("Termino de imprimir");
             return simbolo;
         } else {
             System.out.println("NO se agrego a la tabla de simbolos.");
@@ -155,7 +155,7 @@ public class TablaSimbolos {
             //tablaSimbolos.put(nombre, simbolo);
             tablaSimbolos.set(pos, simbolo);
             System.out.println("Variable actualizada");
-            imprimir();
+            //imprimir();
             System.out.println("Saliendo de insertar de TablaSimbolos\n");
             return simbolo;
         } else
@@ -165,6 +165,7 @@ public class TablaSimbolos {
     static public Simbolo buscar(String nombre) {
         // Simbolo n = (Simbolo)tablaSimbolos.get(nombre);
         // Busca si existe la variable en tabla de simbolos
+        //System.out.println("buscando: "+nombre);
         Simbolo s = null;
         for (Simbolo simbolo : tablaSimbolos) {
             if (simbolo.nombre.equals(nombre)) {

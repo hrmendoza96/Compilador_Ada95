@@ -1,6 +1,6 @@
 procedure ProcedimientoUno is      
    varUNO: Integer;  
-
+   varUNO:=1;
    procedure ProcedimientoDos () is 
       varDOS: Float;
       
@@ -32,6 +32,7 @@ procedure ProcedimientoUno is
          Put("Texto del ANIDADO");
       end ProdAnidado;
 
+
    begin
       put("Texto Procedimiento DESPUES DE LOS ANIDADOS.");
    end DentroUno;
@@ -53,4 +54,5 @@ begin
       Get(In_Val);
       exit when Op = 1 or Op = 2;
    end loop;
-end Calc;
+end ProcedimientoUno;
+

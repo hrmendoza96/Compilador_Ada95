@@ -9,6 +9,8 @@ import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Main {
   static public void main(String argv[]) {
@@ -19,6 +21,7 @@ public class Main {
       if (Lexer.ErroresLexicos.isEmpty() && parser.ErroresSintacticos.isEmpty() && parser.ErroresSemanticos.isEmpty()) {
         Nodo root = parser.padre;
         Graficar(recorrido(root), "AST_Output");
+        TablaSimbolos.imprimir();
         System.out.println("Succesful Compile.");
       } else {
         System.out.println("AST no generado por causa de error.");
@@ -29,13 +32,17 @@ public class Main {
 
   }
 
+
   private static String recorrido(Nodo raiz) {
     String cuerpo = "";
+    Boolean entro = false;
     for (Nodo child : raiz.children) {
       if (!(child.tag.equals("VACIO"))) {
         cuerpo += "\"" + raiz.id + ". " + raiz.tag + " = " + raiz.value + "\"->\"" + child.id + ". " + child.tag + " = "
             + child.value + "\"";
-        // System.out.println("Cuerpo:"+cuerpo);
+        if (raiz.tag.equals("cuerpo_principal") && !entro) {
+          entro = true;
+        }
         cuerpo += recorrido(child);
       } else {
         // System.out.println(raiz.tag);

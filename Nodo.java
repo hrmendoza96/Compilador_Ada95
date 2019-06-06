@@ -55,6 +55,9 @@ public class Nodo {
         this.tag = tag;
         this.value = value;
     }
+    public Nodo(String tag){
+        this.tag = tag;
+    }
     
     public void AddHijo(Nodo child) {
         children.add(child);
