@@ -12,8 +12,10 @@
   --end Factorial;
 --end Nombre;
 
-function Factorial (N: Integer) return Integer is
+function Factorial () return Integer is
 begin
+  N: Integer := 5;
+  A: Integer := 5;
   if N = 1 then
     return 1;
   else

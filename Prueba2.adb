@@ -1,8 +1,8 @@
-procedure ProcedimientoUno is      
+procedure ProcedimientoUno  is      
    varUNO: Integer;  
    varUNO:=1;
    procedure ProcedimientoDos () is 
-      varDOS: Float;
+      varDOS, varDOSTest: Float;
       
       procedure ProcedimientoTres () is
          varTRES: String;
@@ -21,21 +21,44 @@ procedure ProcedimientoUno is
       put("Texto Procedimiento DOS");
    end ProcedimientoDos; 
 
-   varFueraUNO: Integer;
+   varFueraUNO, varPruebaFueraUno: Integer;
 
-   procedure ProdDentroUno () is
-      varCINCO: Boolean;
+   procedure ProdDentroUno (W: IN Integer) is
+      varCINCO, varPruebaBooleano: Boolean;
       
       procedure ProdAnidado () is
-         varAnid: String;
+         varAnid, varPruebaString: String;
+         procedure ProdAnidadoDOS () is
+         varAnidDOS, varPruebaStringDOS: String;
+         begin
+            Put("Texto del ANIDADO");
+         end ProdAnidadoDOS;
       begin
          Put("Texto del ANIDADO");
       end ProdAnidado;
+
+      function FactorialDOS (L: IN Integer) return Integer is
+      begin
+         if L = 1 then
+            return 1;
+         else
+            return L * FactorialDOS (L - 1);
+            end if;
+      end FactorialDOS;
 
 
    begin
       put("Texto Procedimiento DESPUES DE LOS ANIDADOS.");
    end DentroUno;
+
+   function Factorial (N: Integer) return Integer is
+   begin
+      if N = 1 then
+         return 1;
+      else
+         return N * Factorial (N - 1);
+       end if;
+   end Factorial;
 
 begin
    loop
