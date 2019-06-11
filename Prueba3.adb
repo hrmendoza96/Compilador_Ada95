@@ -12,7 +12,21 @@
   --end Factorial;
 --end Nombre;
 
-function Factorial () return Integer is
+function Factorial (W, L, J, K: IN Integer; M: IN Boolean; X: IN String) return Integer is
+  varPruebaFunction: Integer;
+  function FactorialDOS () return Integer is
+    procedure ProdAnidadoDOSCUATRO (T: IN Integer) is
+      varPruebaFunctionPROCED: Integer;
+      function FactorialTRES () return Integer is
+      begin
+          return 1;
+      end FactorialTRES;
+    begin
+      Put("Texto del ANIDADO");
+    end ProdAnidadoDOSCUATRO;
+  begin
+    NDOS: Integer := 5;
+  end FactorialDOS;
 begin
   N: Integer := 5;
   A: Integer := 5;

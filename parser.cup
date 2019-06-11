@@ -10,6 +10,7 @@ parser code
     public static ArrayList<String> ErroresSintacticos = new ArrayList<String>();
     public static ArrayList<String> ErroresSemanticos = new ArrayList<String>();
     public static ArrayList<String> variablesEnParametros = new ArrayList<String>();
+    public static ArrayList<String> variablesDentroFunction = new ArrayList<String>();
     public int cont = 0;
     public void syntax_error (Symbol s) {
         System.out.println("Error de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
@@ -120,7 +121,14 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {:
 
                         String nuevaCadena = cadenaAmbito;
                         cadenaAmbito = nuevaCadena+"."+n2.toString();
-                        //System.out.println("Agregando a tabla de simbolos con nombre: " + nombre);
+                        ///Asignar a los parametros el ambito de Procedure
+                        for(String temporal : variablesEnParametros){
+                            if(TablaSimbolos.buscar(temporal) != null){ //Significa que la variable YA existe
+                                TablaSimbolos.setAmbito(temporal, cadenaAmbito);
+                            }
+                        }
+
+                        variablesEnParametros = new ArrayList<String>();
 
                     :}comienza_cuerpo_principal:child2 {:
                     // /*Se crea el nodo prinicipal*/
@@ -171,12 +179,7 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {:
                     cadenaAmbito = nuevaCadena.substring(0, resta);
                     //==========================Fin de Limpiar Cadena de Ambitos=================================
 
-                    //Asignar a los parametros el ambito de Procedure
-                    for(String temporal : variablesEnParametros){
-                        if(TablaSimbolos.buscar(temporal) != null){ //Significa que la variable YA existe
-                            TablaSimbolos.setAmbito(temporal, cadenaAmbito);
-                        }
-                    }
+                    
 
 
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -189,7 +192,7 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {:
 
                         String nuevaCadena = cadenaAmbito;
                         cadenaAmbito = nuevaCadena+"."+n2.toString();
-                        //System.out.println("Agregando a tabla de simbolos con nombre: " + nombre);
+                        
 
                     :} comienza_cuerpo_principal:child1 {:
                     // /*Se crea el nodo prinicipal*/
@@ -258,6 +261,15 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {:
 
                         String nuevaCadena = cadenaAmbito;
                         cadenaAmbito = nuevaCadena+"."+n2.toString();
+                        //Asignar a los parametros el ambito de Procedure
+                        for(String temporal : variablesEnParametros){
+                            if(TablaSimbolos.buscar(temporal) != null){ //Significa que la variable YA existe
+                                TablaSimbolos.setAmbito(temporal, cadenaAmbito);
+                                System.out.println("Asignandole Ambito:"+cadenaAmbito+ " a: "+temporal);
+                            }
+                        }
+
+                        variablesEnParametros = new ArrayList<String>();
                         
 
                     :}comienza_cuerpo_principal:child3 {:
@@ -297,15 +309,7 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {:
                         e.printStackTrace();
                         System.out.println("Error al agregar la función");            
                     }
-                    
-                    //Asignar a los parametros el ambito de Function
-                    for(String temporal : variablesEnParametros){
-                        if(TablaSimbolos.buscar(temporal) != null){ //Significa que la variable YA existe
-                            TablaSimbolos.setAmbito(temporal, cadenaAmbito);
-                        }
-                    }
-
-                        
+                             
 
                     //================================Buscar Ambito y Limpiar Cadena Ambito===================
                     //Buscar Function en Tabla de Simbolos y Asignarle el ambito
@@ -639,7 +643,27 @@ parametros  ::=  PARIZQ datos_parametros:child1 PARDER {:
             ;
 
 /*Estos son los datos de los paáametros.*/
-datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo_variable:child3 SEMICOLON datos_parametros:child4 {:
+datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo_variable:child3 SEMICOLON {:
+                        Nodo type = (Nodo) child3;
+                        try{
+                            //Validar si la variable existe
+                            for(String temporal : variablesEnParametros){
+                                if(TablaSimbolos.buscar(temporal) != null){ //Significa que la variable Si existe
+                                    if(TablaSimbolos.buscar(temporal).tipoVariable == ""){
+                                        TablaSimbolos.setTipoVariable(temporal, type.getValue());
+                                    }
+                                    TablaSimbolos.setAmbito(temporal, cadenaAmbito);
+                                }else{
+                                    System.out.println("Error: Variable \""+temporal+"\" no existe.");
+                                    ErroresSemanticos.add("Error: Variable \""+temporal+"\" no existe.");
+                                }
+                            }
+                        } catch(Exception e) {
+                            e.printStackTrace();
+                            System.out.println("Error al agregar la variable");            
+                        }
+    
+                    :}datos_parametros:child4 {:
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo("datos_parametros", parser.cont);
                     parser.cont++;
@@ -650,23 +674,7 @@ datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo
                     nodo.AddHijo((Nodo) child3);
                     nodo.AddHijo((Nodo) child4);
 
-                    Nodo type = (Nodo) child3;
-                    try{
-                        //Validar si la variable existe
-                        for(String temporal : variablesEnParametros){
-                            if(TablaSimbolos.buscar(temporal) == null){ //Significa que la variable No existe
-                                TablaSimbolos.crear(temporal, type.getValue(),false, false);
-                                TablaSimbolos.insertar(temporal, null, false); 
-                                TablaSimbolos.setAmbito(temporal, cadenaAmbito);
-                            }else{
-                                System.out.println("Error: Variable \""+temporal+"\" ya existe.");
-                                ErroresSemanticos.add("Error: Variable \""+temporal+"\" ya existe.");
-                            }
-                        }
-                    } catch(Exception e) {
-                        e.printStackTrace();
-                        System.out.println("Error al agregar la variable");            
-                    }
+                   
 
 
 
@@ -689,13 +697,14 @@ datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo
                     try{
                         //Validar si la variable existe
                         for(String temporal : variablesEnParametros){
-                            if(TablaSimbolos.buscar(temporal) == null){ //Significa que la variable No existe
-                                TablaSimbolos.crear(temporal, type.getValue(),false, false);
-                                TablaSimbolos.insertar(temporal, null, false); 
+                            if(TablaSimbolos.buscar(temporal) != null){ //Significa que la variable Si existe
+                                if(TablaSimbolos.buscar(temporal).tipoVariable == ""){
+                                    TablaSimbolos.setTipoVariable(temporal, type.getValue());
+                                }
                                 TablaSimbolos.setAmbito(temporal, cadenaAmbito);
                             }else{
-                                System.out.println("Error: Variable \""+temporal+"\" ya existe.");
-                                ErroresSemanticos.add("Error: Variable \""+temporal+"\" ya existe.");
+                                System.out.println("Error: Variable \""+temporal+"\" no existe.");
+                                ErroresSemanticos.add("Error: Variable \""+temporal+"\" no existe.");
                             }
                         }    
                                  
@@ -800,8 +809,20 @@ listar_ids  ::= ID:n1 COMA:n2 listar_ids:child1 {:
             nodo.AddHijo((Nodo) child1);
 
             //Obtener lista de los nombres de variables
-            variablesEnParametros = new ArrayList<String>();
             variablesEnParametros.add(n1);
+            String temporal = n1.toString();
+            try{
+                //Validar si la variable existe
+                if(TablaSimbolos.buscar(temporal) == null){ //Significa que la variable No existe
+                    TablaSimbolos.crear(temporal, "", false, false);
+                }else{
+                    System.out.println("Error: Variable \""+temporal+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+temporal+"\" ya existe.");
+                }                  
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
 
 
 
@@ -822,8 +843,20 @@ listar_ids  ::= ID:n1 COMA:n2 listar_ids:child1 {:
             nodo.AddHijo(nodoId);
            
             //Obtener lista de los nombres de variables
-            variablesEnParametros = new ArrayList<String>();
             variablesEnParametros.add(n1);
+            String temporal = n1.toString();
+            try{
+                //Validar si la variable existe
+                if(TablaSimbolos.buscar(temporal) == null){ //Significa que la variable No existe
+                    TablaSimbolos.crear(temporal, "", false, false);
+                }else{
+                    System.out.println("Error: Variable \""+temporal+"\" ya existe.");
+                    ErroresSemanticos.add("Error: Variable \""+temporal+"\" ya existe.");
+                }                  
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al agregar la variable");            
+            }
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -1026,7 +1059,15 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS {:
 
                         String nuevaCadena = cadenaAmbito;
                         cadenaAmbito = nuevaCadena+"."+n2.toString();
-                        //System.out.println("Agregando a tabla de simbolos con nombre: " + nombre);
+                        //Asignar a los parametros el ambito de Procedure
+                        for(String temporal : variablesEnParametros){
+                            if(TablaSimbolos.buscar(temporal) != null){ //Significa que la variable YA existe
+                                TablaSimbolos.setAmbito(temporal, cadenaAmbito);
+                                System.out.println("Asignandole Ambito:"+cadenaAmbito+ " a: "+temporal);
+                            }
+                        }
+
+                        variablesEnParametros = new ArrayList<String>();
 
                     :}tipo_declaracion:child2 BEGIN {:
                  /*Se crea el nodo prinicipal*/
@@ -1086,6 +1127,7 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS {:
                         TablaSimbolos.setAmbito(n2.toString(), cadenaAmbito);
                     }
 
+
                     //Limpiar Cadena de Ambitos : Se borra el ultimo procedimiento porque ya termino
                     String nuevaCadena = cadenaAmbito;
                     int resta = nuevaCadena.length() - (n2.toString()).length();
@@ -1093,12 +1135,7 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS {:
                     cadenaAmbito = nuevaCadena.substring(0, resta);
                     //==========================Fin de Limpiar Cadena de Ambitos=================================
 
-                    //Asignar a los parametros el ambito de Procedure
-                    for(String temporal : variablesEnParametros){
-                        if(TablaSimbolos.buscar(temporal) != null){ //Significa que la variable YA existe
-                            TablaSimbolos.setAmbito(temporal, cadenaAmbito);
-                        }
-                    }
+                    
 
 
                     RESULT = nodo;
@@ -1108,7 +1145,15 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS {:
 
                         String nuevaCadena = cadenaAmbito;
                         cadenaAmbito = nuevaCadena+"."+n2.toString();
-                        //System.out.println("Agregando a tabla de simbolos con nombre: " + nombre);
+                        //Asignar a los parametros el ambito de Procedure
+                        for(String temporal : variablesEnParametros){
+                            if(TablaSimbolos.buscar(temporal) != null){ //Significa que la variable YA existe
+                                TablaSimbolos.setAmbito(temporal, cadenaAmbito);
+                                System.out.println("Asignandole Ambito:"+cadenaAmbito+ " a: "+temporal);
+                            }
+                        }
+
+                        variablesEnParametros = new ArrayList<String>();
 
                     :}BEGIN codigo:child2 END ID:n6 SEMICOLON
                 {:
@@ -1155,13 +1200,6 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS {:
                 cadenaAmbito = nuevaCadena.substring(0, resta);
                 //==========================Fin de Limpiar Cadena de Ambitos=================================
 
-                 //Asignar a los parametros el ambito de Procedure
-                for(String temporal : variablesEnParametros){
-                    if(TablaSimbolos.buscar(temporal) != null){ //Significa que la variable YA existe
-                        TablaSimbolos.setAmbito(temporal, cadenaAmbito);
-                    }
-                }
-
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;                
                 :}
@@ -1172,7 +1210,6 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo("declarar_funcion", parser.cont);
                     parser.cont++;
-                    System.out.println("entraaaa");
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
                     parser.cont++;
@@ -1203,6 +1240,36 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                         System.out.println("Error al agregar la función");            
                     }
 
+
+                //     //Set Function en Ambito
+                //     String nuevaCadena = cadenaAmbito;
+                //     cadenaAmbito = nuevaCadena+"."+n1.toString();
+
+                //     //Asignar a los parametros el ambito de Procedure
+                //     for(String temporal : variablesEnParametros){
+                //         if(TablaSimbolos.buscar(temporal) != null){ //Significa que la variable YA existe
+                //             TablaSimbolos.setAmbito(temporal, cadenaAmbito);
+                //         }
+                //     }
+
+                //     //Limpiar ArrayList
+                //     variablesDentroFunction = new ArrayList<String>();
+
+                //     //================================Buscar Ambito y Limpiar Cadena Ambito===================
+                //     //Buscar Procedure en Tabla de Simbolos y Asignarle el ambito
+                //     Simbolo simbolo = TablaSimbolos.buscar(n1.toString());
+                //     if(simbolo != null){
+                //         TablaSimbolos.setAmbito(n2.toString(), cadenaAmbito);
+                //     }
+
+                //     //Limpiar Cadena de Ambitos : Se borra el ultimo procedimiento porque ya termino
+                //    // String nuevaCadena = cadenaAmbito;
+                //     int resta = nuevaCadena.length() - (n2.toString()).length();
+                //     resta = resta -1;
+                //     cadenaAmbito = nuevaCadena.substring(0, resta);
+                //     //==========================Fin de Limpiar Cadena de Ambitos=================================
+
+
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
                     :}
@@ -1221,6 +1288,8 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     /*Nuevo Nodo: TERMINAL*/
                     Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
                     parser.cont++;
+
+                    System.out.println("Entra");
 
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoId);

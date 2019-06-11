@@ -79,6 +79,13 @@ public class TablaSimbolos {
         int pos = tablaSimbolos.indexOf(s);
         tablaSimbolos.set(pos, s);
     }
+    static public void setTipoVariable(String nombre, String tipoVariable){
+        Simbolo s = buscar(nombre);
+        s.tipoVariable  =  tipoVariable;
+        int pos = tablaSimbolos.indexOf(s);
+        tablaSimbolos.set(pos, s);
+    }
+    
 
     static public Simbolo insertar2(String nombre, String tipoVariable, Object valor, Boolean tipoConstante, Boolean tipoFuncion, String ambito) {
         Simbolo simbolo = null;

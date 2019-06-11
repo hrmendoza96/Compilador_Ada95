@@ -23,12 +23,12 @@ procedure ProcedimientoUno  is
 
    varFueraUNO, varPruebaFueraUno: Integer;
 
-   procedure ProdDentroUno (W: IN Integer) is
+   procedure ProdDentroUno (W, X, M, D: IN Integer; P: IN String; Z: IN Boolean) is
       varCINCO, varPruebaBooleano: Boolean;
       
       procedure ProdAnidado () is
          varAnid, varPruebaString: String;
-         procedure ProdAnidadoDOS () is
+         procedure ProdAnidadoDOS (S: IN Integer) is
          varAnidDOS, varPruebaStringDOS: String;
          begin
             Put("Texto del ANIDADO");
@@ -38,6 +38,12 @@ procedure ProcedimientoUno  is
       end ProdAnidado;
 
       function FactorialDOS (L: IN Integer) return Integer is
+         varPruebaFunction: Integer;
+         procedure ProdAnidadoDOSCUATRO (T: IN Integer) is
+         varPruebaFunctionPROCED: Integer;
+         begin
+            Put("Texto del ANIDADO");
+         end ProdAnidadoDOSCUATRO;
       begin
          if L = 1 then
             return 1;
