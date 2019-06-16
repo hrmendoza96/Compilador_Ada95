@@ -13,6 +13,7 @@ parser code
     public static ArrayList<String> variablesDentroFunction = new ArrayList<String>();
     public int cont = 0;
     public int tempNum = 0;
+    public int contEtiq = 0;
     public void syntax_error (Symbol s) {
         System.out.println("Error de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
         ErroresSintacticos.add("Error de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
@@ -3031,7 +3032,11 @@ condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
 
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
-            
+            Nodo hijo = (Nodo) child1;
+            nodo.auxValores = hijo.auxValores;
+            nodo.arg1 = hijo.arg1;
+            nodo.arg2 = hijo.arg2;
+
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -3051,7 +3056,11 @@ expresion_booleana  ::= operando:child1 OPREL:n1 operando:child2 {:
                     nodo.AddHijo((Nodo) child1);
                     nodo.AddHijo(nodoOPREL);
                     nodo.AddHijo((Nodo) child2);
-                    
+                    Nodo hijo1 = (Nodo) child1;
+                    Nodo hijo2 = (Nodo) child2;
+                    nodo.arg1 = hijo1.value;
+                    nodo.arg2 = hijo2.value;
+                    nodo.auxValores = n1.toString();
                     
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
@@ -3174,7 +3183,21 @@ ciclo_while ::= WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEM
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo((Nodo) child2);
             nodo.AddHijo((Nodo) child3);
+
+            Nodo hijo = (Nodo) child1;
+            String tempEtiq = "_etiq"+contEtiq;
+
+            gen("ETIQ","","",tempEtiq);
+            contEtiq++;
+            tempEtiq = "_etiq";
+            tempEtiq = tempEtiq + contEtiq;
+            gen("IF"+hijo.auxValores,hijo.arg1,hijo.arg2,tempEtiq);
+            contEtiq++;
+            tempEtiq = "_etiq";
+            tempEtiq = tempEtiq + contEtiq;
+            gen("GOTO","","",tempEtiq);
             
+
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
 

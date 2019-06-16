@@ -4,8 +4,11 @@ procedure Hello is
    varDos: String := "Hola";
    varTres: Boolean := TRUE;
    varCuatro: Boolean := FALSE;
-
 begin
    Put("Hello, World!");  
+   while VarP <= 0 loop
+      Put("Hola");
+   exit when i = 0;
+   end loop;
 end Hello;
 

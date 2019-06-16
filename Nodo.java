@@ -9,6 +9,8 @@ public class Nodo {
     public String ambito;
     public String auxValores;
     public String temporal;
+    public String arg1;
+    public String arg2;
 
 
     public ArrayList<Nodo> children = new ArrayList<>();
