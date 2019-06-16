@@ -22,6 +22,7 @@ public class Main {
         Nodo root = parser.padre;
         Graficar(recorrido(root), "AST_Output");
         TablaSimbolos.imprimir();
+        TablaCuadruplos.imprimir();
         System.out.println("Succesful Compile.");
       } else {
         System.out.println("AST no generado por causa de error.");

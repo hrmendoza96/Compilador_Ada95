@@ -12,6 +12,7 @@ parser code
     public static ArrayList<String> variablesEnParametros = new ArrayList<String>();
     public static ArrayList<String> variablesDentroFunction = new ArrayList<String>();
     public int cont = 0;
+    public int tempNum = 0;
     public void syntax_error (Symbol s) {
         System.out.println("Error de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
         ErroresSintacticos.add("Error de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
@@ -66,7 +67,7 @@ parser code
 :}
 
 // Terminales
-terminal PROCEDURE, FUNCTION, RETURN, CONSTANT, IS, BEGIN, END, IF, THEN, ELSE, ELSIF, FOR, IN, OUT, WHILE, LOOP;
+terminal PROCEDURE, FUNCTION, RETURN, IS, BEGIN, END, IF, THEN, ELSE, ELSIF, FOR, IN, OUT, WHILE, LOOP;
 terminal AND,OR,XOR,FALSE,TRUE,EXIT,WHEN,NULL,GET,PUT;
 terminal INTEGER,FLOAT,BOOLEAN,STRINGTYPE;
 terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,SEMICOLON,COMA, DOSPUNTOS, PUNTO;
@@ -1499,7 +1500,8 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                         nodo.ambito = n1;
                         TablaSimbolos.insertar2(n1, exp.getTipo(), exp.value, false, false, cadenaAmbito);
                     } else {
-                        System.out.println("No se asigno el tipo de variable correctoo.");
+                        System.out.println("Error: No se asigno el tipo de variable correcto.");
+                        ErroresSemanticos.add("Error: No se asigno el tipo de variable correcto.");
                     }
                 }else{
                     System.out.println("Error: Variable \""+n1+"\" ya existe.");
@@ -1510,6 +1512,15 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 System.out.println("Error al agregar la variable");            
             }    
             /*Asignar el nodo al RESULT para continuar el recorrido*/
+
+            try {
+                Nodo hijo2 = (Nodo) child2;
+                gen(n3, hijo2.temporal, "", n1);  
+                tempNum = 0;  
+            } catch (Exception e) {
+                System.out.println("No se genera cuadruplo en asignacion.");
+            }
+
             RESULT = nodo;
             :}
             | ID:n1 error tipo_variable:child1 ASIGNACION:n3 expresion_aritmetica:child2 SEMICOLON:n4
@@ -1551,8 +1562,13 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 System.out.println("Error al agregar la variable");            
             }
 
+            try {
+                gen(n3,n4,"", n1);    
+                System.out.println("Se genero el cuádruplo.");            
+            } catch (Exception e) {
+                System.out.println("No se genera cuadruplo en asignacion.");
+            }
 
-            
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -1593,6 +1609,13 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
+            }
+
+            try {
+                gen(n3,n4,"", n1);    
+                System.out.println("Se genero el cuádruplo.");            
+            } catch (Exception e) {
+                System.out.println("No se genera cuadruplo en asignacion.");
             }
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -1638,6 +1661,13 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 System.out.println("Error al agregar la variable");            
             }
 
+            try {
+                gen(n3,n4,"", n1);    
+                System.out.println("Se genero el cuádruplo.");            
+            } catch (Exception e) {
+                System.out.println("No se genera cuadruplo en asignacion.");
+            }
+
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -1649,7 +1679,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             /*Nuevo Nodo: TERMINAL*/
             Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
             parser.cont++;
-
 //--------------------------------Insertar a tabla de simbolos ---------------------------------------------------------------------
             // Tabla de Símbolos
             Nodo type = (Nodo) child1;
@@ -1658,22 +1687,15 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 temporal = TablaSimbolos.buscar(n1);
                 if(temporal != null ){ //Significa que la variable ya existe
                     //Verificar el tipo de la variable
-                    if(temporal.tipoVariable.equals("INTEGER")){ //Verificar si es float
+                    if(temporal.tipoVariable.equals("INTEGER")){ //Verificar si es int
                         String temp2 = type.getValue();
                         System.out.println("expresion_aritmetica:"+temp2);
                         if(temp2.contains(".")){//Verifica si se trata de asignar un float a un int
                             System.out.println("Error: Tipos Incompatibles. No se puede asignar un Float a Entero.");
                             ErroresSemanticos.add("Error:  Tipos Incompatibles. No se puede asignar un Float a Entero.");
                         }else{
-                            //Verificar si es constante o no
-                            if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
-                                //Al NO ser constante entonces se asigna el valor en la tabla de simbolos
-                                TablaSimbolos.insertar(n1, type.getValue(), false);
-                                TablaSimbolos.setAmbito(n1,cadenaAmbito);
-                            }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
-                                System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
-                                ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
-                            }   
+                            TablaSimbolos.insertar(n1, type.getValue(), false);
+                            TablaSimbolos.setAmbito(n1,cadenaAmbito); 
                         }
                     }else if (temporal.tipoVariable.equals("FLOAT")){
                         String temp2 = type.getValue();
@@ -1682,15 +1704,8 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                             System.out.println("Error: Tipos Incompatibles. No se puede asignar un Entero a Float.");
                             ErroresSemanticos.add("Error:  Tipos Incompatibles. No se puede asignar un Entero a Float.");
                         }else{
-                            //Verificar si es constante o no
-                            if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
-                                //Al NO ser constante entonces se asigna el valor en la tabla de simbolos
-                                TablaSimbolos.insertar(n1, type.getValue(), false);
-                                TablaSimbolos.setAmbito(n1,cadenaAmbito);
-                            }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
-                                System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
-                                ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
-                            }    
+                            TablaSimbolos.insertar(n1, type.getValue(), false);
+                            TablaSimbolos.setAmbito(n1,cadenaAmbito);    
                         }
                     }
                 }else{
@@ -1710,8 +1725,12 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.ambito = n1 + "," + hijo.ambito;
             nodo.value = n1 + "," + hijo.ambito;
 
-
-
+            try {
+                gen(n2,hijo.value,"", n1);    
+                System.out.println("Se genero el cuádruplo.");            
+            } catch (Exception e) {
+                System.out.println("No se genera cuadruplo en asignacion.");
+            }
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -1740,16 +1759,8 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 Simbolo temporal = null;
                 temporal = TablaSimbolos.buscar(n1);
                 if(temporal != null ){ //Significa que la variable ya existe
-                    /*Los analizadores lexicos y sintacticos ya validan que este tipo de dato es booleano.*/
-                    if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
-                        //Al NO ser constante entonces se asigna el valor
-                        TablaSimbolos.insertar(n1, String.valueOf(n3), false);
-                        TablaSimbolos.setAmbito(n1,cadenaAmbito);
-                    }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
-                        System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
-                        ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
-                    }
-                    
+                    TablaSimbolos.insertar(n1, String.valueOf(n3), false);
+                    TablaSimbolos.setAmbito(n1,cadenaAmbito);
                 }else{
                     System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
                     ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
@@ -1757,6 +1768,13 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
+            }
+
+            try {
+                gen(n2,n3,"", n1);    
+                System.out.println("Se genero el cuádruplo.");            
+            } catch (Exception e) {
+                System.out.println("No se genera cuadruplo en asignacion.");
             }
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -1787,16 +1805,8 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 Simbolo temporal = null;
                 temporal = TablaSimbolos.buscar(n1);
                 if(temporal != null ){ //Significa que la variable ya existe
-                    /*Los analizadores lexicos y sintacticos ya validan que este tipo de dato es booleano.*/
-                    if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
-                        //Al NO ser constante entonces se asigna el valor
-                        TablaSimbolos.insertar(n1, String.valueOf(n3), false);
-                        TablaSimbolos.setAmbito(n1,cadenaAmbito);
-                    }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
-                        System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
-                        ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
-                    }
-                    
+                    TablaSimbolos.insertar(n1, String.valueOf(n3), false);
+                    TablaSimbolos.setAmbito(n1,cadenaAmbito);
                 }else{
                     System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
                     ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
@@ -1804,6 +1814,13 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al agregar la variable");            
+            }
+
+            try {
+                gen(n2,n3,"", n1);    
+                System.out.println("Se genero el cuádruplo.");            
+            } catch (Exception e) {
+                System.out.println("No se genera cuadruplo en asignacion.");
             }
 
             
@@ -1834,16 +1851,8 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 Simbolo temporal = null;
                 temporal = TablaSimbolos.buscar(n1);
                 if(temporal != null ){ //Significa que la variable ya existe
-                    /*Los analizadores lexicos y sintacticos ya validan que este tipo de dato es String.*/
-                    if(!temporal.tipoConstante){//Verifica si el tipo de dato es constante o no
-                        //Al NO ser constante entonces se asigna el valor
-                        TablaSimbolos.insertar(n1, n3, false);
-                        TablaSimbolos.setAmbito(n1,cadenaAmbito);
-                    }else{ //Mensaje de error porque se quiere modificar un tipo de variable constante
-                        System.out.println("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
-                        ErroresSemanticos.add("Error: La variable \""+temporal.nombre+"\" es constante por lo tanto no puede ser modificada.");
-                    }
-                    
+                    TablaSimbolos.insertar(n1, n3, false);
+                    TablaSimbolos.setAmbito(n1,cadenaAmbito);
                 }else{
                     System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
                     ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
@@ -1853,189 +1862,12 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 System.out.println("Error al agregar la variable");            
             }
 
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
-            RESULT = nodo;
-            :}
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 expresion_aritmetica:child2 SEMICOLON {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoConstant = new Nodo("CONSTANT", n3.toString(), parser.cont);
-            parser.cont++;
-
-            /*Se añaden los hijos*/
-            nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoConstant);
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo((Nodo) child2);
-
-            // Tabla de Símbolos
-            Nodo type = (Nodo) child1;
-            Nodo exp = (Nodo) child2;
-            try{
-                //System.out.println(exp.getValue() + " exp value");
-                Simbolo temporal = null;
-                temporal = TablaSimbolos.buscar(n1);
-                if(temporal == null ){ //Significa que la variable NO existe
-                    TablaSimbolos.crear(n1, type.getValue(), true, false);
-                    TablaSimbolos.insertar(n1, exp.getValue(), true);
-                    TablaSimbolos.setAmbito(n1,cadenaAmbito);
-                }else{
-                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
-                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
-                }           
-            } catch(Exception e) {
-                e.printStackTrace();
-                System.out.println("Error al agregar la variable");            
+            try {
+                gen(n2,n3,"", n1);    
+                System.out.println("Se genero el cuádruplo.");            
+            } catch (Exception e) {
+                System.out.println("No se genera cuadruplo en asignacion.");
             }
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
-            RESULT = nodo;
-            :}
-            | ID:n1 error CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 expresion_aritmetica:child2 SEMICOLON
-            | ID:n1 DECLARACION:n2 error tipo_variable:child1 ASIGNACION:n4 expresion_aritmetica:child2 SEMICOLON
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 error expresion_aritmetica:child2 SEMICOLON
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 expresion_aritmetica:child2 error
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 TRUE:n5 SEMICOLON {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoConstant = new Nodo("CONSTANT", n3.toString(), parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoTrue = new Nodo("TRUE", n5.toString(), parser.cont);
-            parser.cont++;
-
-            /*Se añaden los hijos*/
-            nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoConstant);
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoTrue);
-
-            // Tabla de Símbolos
-            Nodo hijo = (Nodo) child1;
-            try{
-                Simbolo temporal = null;
-                temporal = TablaSimbolos.buscar(n1);
-                if(temporal == null ){ //Significa que la variable NO existe
-                    TablaSimbolos.crear(n1, hijo.getValue(), true, false);
-                    TablaSimbolos.insertar(n1, String.valueOf(n5), true); 
-                    TablaSimbolos.setAmbito(n1,cadenaAmbito);
-                }else{
-                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
-                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
-                }             
-            } catch(Exception e) {
-                e.printStackTrace();
-                System.out.println("Error al agregar la variable");            
-            }
-            
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
-            RESULT = nodo;
-            :}
-            | ID:n1 error CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 TRUE:n5 SEMICOLON
-            | ID:n1 DECLARACION:n2 error tipo_variable:child1 ASIGNACION:n4 TRUE:n5 SEMICOLON
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 error TRUE:n5 SEMICOLON
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 error SEMICOLON
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 TRUE:n5 error
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 FALSE:n5 SEMICOLON {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoConstant = new Nodo("CONSTANT", n3.toString(), parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoFalse = new Nodo("FALSE", n5.toString(), parser.cont);
-            parser.cont++;
-
-            /*Se añaden los hijos*/
-            nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoConstant);
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoFalse);
-            
-            // Tabla de Símbolos
-            Nodo hijo = (Nodo) child1;
-            try{
-                Simbolo temporal = null;
-                temporal = TablaSimbolos.buscar(n1);
-                if(temporal == null ){ //Significa que la variable NO existe
-                    TablaSimbolos.crear(n1, hijo.getValue(), true, false);
-                    TablaSimbolos.insertar(n1, String.valueOf(n5), true); 
-                    TablaSimbolos.setAmbito(n1,cadenaAmbito);
-                }else{
-                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
-                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
-                }            
-            } catch(Exception e) {
-                e.printStackTrace();
-                System.out.println("Error al agregar la variable");            
-            }
-
-            
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
-            RESULT = nodo;
-            :}
-            | ID:n1 error CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 FALSE:n5 SEMICOLON
-            | ID:n1 DECLARACION:n2 error tipo_variable:child1 ASIGNACION:n4 FALSE:n5 SEMICOLON
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 error FALSE:n5 SEMICOLON
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 FALSE:n5 error
-            | ID:n1 DECLARACION:n2 CONSTANT:n3 tipo_variable:child1 ASIGNACION:n4 STRING:n5 SEMICOLON {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoConstant = new Nodo("CONSTANT", n3.toString(), parser.cont);
-            parser.cont++;
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoString = new Nodo("STRING", n5.toString().replaceAll("\"", ""), parser.cont);
-            parser.cont++;
-            /*Se añaden los hijos*/
-            nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoConstant);
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoString);
-
-            // Tabla de Símbolos
-            Nodo hijo = (Nodo) child1;
-            try{     
-                Simbolo temporal = null;
-                temporal = TablaSimbolos.buscar(n1);
-                if(temporal == null ){ //Significa que la variable NO existe
-                    TablaSimbolos.crear(n1, hijo.getValue(), true, false);
-                    TablaSimbolos.insertar(n1, String.valueOf(n5), true);
-                    TablaSimbolos.setAmbito(n1,cadenaAmbito);
-                }else{
-                    System.out.println("Error: Variable \""+n1+"\" ya existe.");
-                    ErroresSemanticos.add("Error: Variable \""+n1+"\" ya existe.");
-                }       
-            } catch(Exception e) {
-                e.printStackTrace();
-                System.out.println("Error al agregar la variable");            
-            }
-
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -2049,6 +1881,7 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                 String operacion = "";
                                 String resultado = "";
                                 String tipo = "";
+                                String tempVar = "t";
                                 if(aux.getValue() != null && aux2.getValue() != null){
                                     if (n2.equals("+")) {
                                         if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
@@ -2090,6 +1923,25 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "SUMA";
                                             tipo = "INTEGER";
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("+", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("+",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("+", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("+",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("+",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
                                             // Debemos averiguar si el valor es un id, función o simplemente un número
                                             String valor1 = aux.getValue();
@@ -2129,6 +1981,25 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "SUMA";
                                             tipo = "FLOAT";
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("+", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("+",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("+", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("+",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("+",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
                                             String valor1 = aux.getValue();
                                             String valor2 = aux2.getValue();
@@ -2162,6 +2033,25 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "SUMA";
                                             tipo = "FLOAT";
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("+", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("+",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("+", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("+",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("+",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
                                             // Debemos averiguar si el valor es un id, función o simplemente un número
                                             String valor1 = aux.getValue();
@@ -2201,6 +2091,25 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "SUMA";
                                             tipo = "FLOAT";
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("+", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("+",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("+", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("+",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("+",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         }           
                                     } else if (n2.equals("-")) {
                                         if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
@@ -2246,6 +2155,7 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                                     ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
                                                 }
                                             }
+                                            
                                             if (cant1 != 0 && cant2 != 0) {
                                                 int auxi = cant1 - cant2;
                                                 resultado = auxi + "";
@@ -2253,6 +2163,26 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                                 tipo = "INTEGER";
                                             } else {
                                                 System.out.println("Hay algun valor nulo en la resta.");
+                                            }
+
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("-", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("-",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("-", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("-",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("-",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
                                             }
                                         
                                         } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
@@ -2294,6 +2224,25 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "RESTA";
                                             tipo = "FLOAT";
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("-", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("-",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("-", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("-",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("-",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
                                             String valor1 = aux.getValue();
                                             String valor2 = aux2.getValue();
@@ -2327,6 +2276,26 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "RESTA";
                                             tipo = "FLOAT";
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("-", cant1+"", cant2+"",tempVar);
+                                                System.out.println("Agregando temporal: " + tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("-",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("-", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("-",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("-",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
                                             // Debemos averiguar si el valor es un id, función o simplemente un número
                                             String valor1 = aux.getValue();
@@ -2366,6 +2335,25 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "RESTA";
                                             tipo = "FLOAT";
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("-", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("-",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("-", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("-",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("-",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         }          
                                     }
 
@@ -2375,6 +2363,7 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                 }
                                 
                                 Nodo nodo = new Nodo(operacion,resultado, parser.cont, tipo);
+                                nodo.temporal = tempVar;
                                 nodo.AddHijo(aux);
                                 nodo.AddHijo(aux2);
                                 parser.cont++;
@@ -2387,6 +2376,7 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                 String operacion = "";
                                 String resultado = "";
                                 String tipo = "";
+                                String tempVar = "t";
                                 if(aux.getValue() != null && aux2.getValue() != null){
                                 
                                     if (n2.equals("*")) {
@@ -2433,6 +2423,26 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "MULTIPLICACION";
                                             tipo = "INTEGER";
+                                                  
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("*", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("*",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("*", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("*",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("*",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
                                             // Debemos averiguar si el valor es un id, función o simplemente un número
                                             String valor1 = aux.getValue();
@@ -2472,6 +2482,25 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "MULTIPLICACION";
                                             tipo = "FLOAT";
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("*", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("*",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("*", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("*",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("*",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
                                             String valor1 = aux.getValue();
                                             String valor2 = aux2.getValue();
@@ -2506,6 +2535,25 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "MULTIPLICACION";
                                             tipo = "FLOAT";
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("*", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("*",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("*", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("*",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("*",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
                                             // Debemos averiguar si el valor es un id, función o simplemente un número
                                             String valor1 = aux.getValue();
@@ -2546,6 +2594,25 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "MULTIPLICACION";
                                             tipo = "FLOAT";
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("*", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("*",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("*", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("*",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("*",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         }           
                                     } else if (n2.equals("/")) {
                                         if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
@@ -2587,6 +2654,26 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "DIVISION";
                                             tipo = "INTEGER";
+
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("/", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("/",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("/", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("/",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("/",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
                                             // Debemos averiguar si el valor es un id, función o simplemente un número
                                             String valor1 = aux.getValue();
@@ -2627,6 +2714,25 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "DIVISION";
                                             tipo = "FLOAT";
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("/", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("/",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("/", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("/",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("/",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
                                             String valor1 = aux.getValue();
                                             String valor2 = aux2.getValue();
@@ -2661,6 +2767,25 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "DIVISION";
                                             tipo = "FLOAT";
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("/", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("/",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("/", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("/",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("/",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
                                             // Debemos averiguar si el valor es un id, función o simplemente un número
                                             String valor1 = aux.getValue();
@@ -2701,6 +2826,25 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             resultado = auxi + "";
                                             operacion = "DIVISION";
                                             tipo = "FLOAT";
+                                            if (tempNum == 0) {
+                                                tempVar = tempVar + tempNum + "";
+                                                tempNum++;
+                                                gen("/", cant1+"", cant2+"",tempVar);
+                                            } else {
+                                                Nodo hijo = (Nodo) n1;
+                                                Nodo hijo3 = (Nodo) n3;
+                                                tempVar = tempVar + tempNum + "";
+                                                if (hijo.temporal != null && hijo3.temporal != null) {
+                                                    gen("/",hijo.temporal,hijo3.temporal,tempVar);
+                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
+                                                    gen("/", hijo.temporal, cant2+"",tempVar);
+                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
+                                                    gen("/",cant1+"",hijo3.temporal,tempVar);
+                                                } else {
+                                                    gen("/",cant1+"",cant2+"",tempVar);
+                                                }
+                                                tempNum++;
+                                            }
                                         }          
                                     }
                                 }else{
@@ -2708,6 +2852,7 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                     //ErroresSemanticos.add("Error: Valor de funcion aun retorna nulo.");
                                 }
                                 Nodo nodo = new Nodo(operacion,resultado, parser.cont, tipo);
+                                nodo.temporal = tempVar;
                                 nodo.AddHijo(aux);
                                 nodo.AddHijo(aux2);
                                 parser.cont++;
@@ -2716,7 +2861,6 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                             | NUM:n1
                             {:
                                 Nodo nodo = new Nodo("NUM", n1.toString(), parser.cont,"INTEGER");
-                                //nodo.ambito = "Probado ambito";
                                 parser.cont++;
                                 RESULT = nodo;
                             :}
@@ -2757,6 +2901,7 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                             {:
                                 Nodo aux = (Nodo) n1;
                                 Nodo nodo = new Nodo(aux.tag,aux.value,parser.cont,aux.tipo);
+
                                 parser.cont++;
                                 RESULT = nodo;
                             :}
@@ -2814,7 +2959,7 @@ bloque_if   ::= IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloqu
             nodo.AddHijo((Nodo) child1);
             nodo.AddHijo((Nodo) child2);
             nodo.AddHijo((Nodo) child3);
-            nodo.AddHijo((Nodo) child4);
+            nodo.AddHijo((Nodo) child4); 
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;

@@ -21,9 +21,8 @@ import java.util.ArrayList;
 letras = [a-zA-Z] 
 numeros = [0-9]
 espacios = \t|" "|\f|\r|\n
-signosEspeciales = ","|";"|"."|":"|"'"|"!"|"?"|"¡"|"¿"|"_"|"-"|"{"|"}"|"["|"]"|"@"|"#"|"$"|"%"|"^"|"&"|"*" 
+signosEspeciales = ","|";"|"."|":"|"'"|"!"|"?"|"¡"|"¿"|"_"|"{"|"}"|"["|"]"|"@"|"#"|"$"|"%"|"^"|"&"|"*" 
 guionBajo = "_"
-signoNegativo = "-"
 guionesComentario = "--"
 punto = "."
 
@@ -43,8 +42,8 @@ DOSPUNTOS = ".."
 ID = {letras}+({guionBajo}({letras}|{numeros})+)*
 
 // Para los numeros
-NUM= ({signoNegativo}|""){numeros}+
-NUMFLOAT = ({signoNegativo}|""){numeros}+{punto}{numeros}+
+NUM = {numeros}+
+NUMFLOAT = {numeros}+{punto}{numeros}+
 
 // Para los comentarios
 COMENTARIO = {guionesComentario}({letras}|{numeros}|" "|{signosEspeciales}|{OPREL}|{PARDER}|{PARIZQ})*
@@ -72,7 +71,6 @@ THEN = ("then")
 ELSIF = ("elsif")
 
 // Palabras Reservadas
-CONSTANT = ("constant")
 EXIT = ("exit")
 FUNCTION = ("function")
 GET = ("Get")
@@ -99,7 +97,6 @@ LOOP = ("loop")
     {PROCEDURE} { return new Symbol(sym.PROCEDURE, yycolumn, yyline, yytext()); }  
     {FUNCTION} { return new Symbol(sym.FUNCTION, yycolumn, yyline, yytext()); } 
     {RETURN} { return new Symbol(sym.RETURN, yycolumn, yyline, yytext()); }
-    {CONSTANT} { return new Symbol(sym.CONSTANT, yycolumn, yyline, yytext()); }
     {IS} { return new Symbol(sym.IS, yycolumn, yyline, yytext()); }
     {BEGIN} { return new Symbol(sym.BEGIN, yycolumn, yyline, yytext()); }
     {END} { return new Symbol(sym.END, yycolumn, yyline, yytext()); }

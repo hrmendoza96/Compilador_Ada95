@@ -8,12 +8,15 @@ public class Nodo {
     public String tipo;
     public String ambito;
     public String auxValores;
+    public String temporal;
+
 
     public ArrayList<Nodo> children = new ArrayList<>();
 
     public Nodo(){
         /* Empty Constructor */
     }
+
 
     public Nodo(String tag, String value, int id, String tipo, String ambito){
         /* Empty Constructor */
