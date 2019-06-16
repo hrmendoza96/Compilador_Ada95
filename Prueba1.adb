@@ -6,9 +6,8 @@ procedure Hello is
    varCuatro: Boolean := FALSE;
 begin
    Put("Hello, World!");  
-   while VarP <= 0 loop
+   for i in 1 .. 10 loop
       Put("Hola");
-   exit when i = 0;
    end loop;
 end Hello;
 

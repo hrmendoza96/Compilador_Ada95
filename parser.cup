@@ -8,9 +8,6 @@ parser code
     public static ArrayList<String> ErroresSintacticos = new ArrayList<String>();
     public static ArrayList<String> variablesEnParametros = new ArrayList<String>();
     public static ArrayList<String> variablesDentroFunction = new ArrayList<String>();
-    public int cont = 0;
-    public int tempNum = 0;
-    public int contEtiq = 0;
     public void syntax_error (Symbol s) {
         System.out.println("Error de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
         ErroresSintacticos.add("Error de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
@@ -61,8 +58,8 @@ start with inicio;
 Declaramos primero un procedure y una function en su forma principal.*/
 inicio  ::= cuerpo_principal:child1 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("Inicio", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("Inicio", Temporales.cont);
+        Temporales.cont++;
 
         /*Se añaden el hijo*/
         nodo.AddHijo((Nodo) child1);
@@ -90,16 +87,16 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {:
 
                     :}comienza_cuerpo_principal:child2 {:
                     // /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("cuerpo_principal", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("cuerpo_principal", Temporales.cont);
+                    Temporales.cont++;
                     
                     // /*Nuevo Nodo: TERMINAL*/
-                    // Nodo nodoProcedure = new Nodo("PROCEDURE", n1.toString(), parser.cont );
-                    // parser.cont++;
+                    // Nodo nodoProcedure = new Nodo("PROCEDURE", n1.toString(), Temporales.cont );
+                    // Temporales.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoId = new Nodo("ID",n2.toString(),parser.cont);
-                    parser.cont++;
+                    Nodo nodoId = new Nodo("ID",n2.toString(),Temporales.cont);
+                    Temporales.cont++;
 
                     /*Se añaden los hijos*/
                     //nodo.AddHijo(nodoProcedure);
@@ -154,12 +151,12 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {:
 
                     :} comienza_cuerpo_principal:child1 {:
                     // /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("cuerpo_principal",parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("cuerpo_principal",Temporales.cont);
+                    Temporales.cont++;
                     
                     // /*Nuevo Nodo: TERMINAL*/
-                    // Nodo nodoProcedure = new Nodo("PROCEDURE", n1.toString(),parser.cont );
-                    // parser.cont++;
+                    // Nodo nodoProcedure = new Nodo("PROCEDURE", n1.toString(),Temporales.cont );
+                    // Temporales.cont++;
                     
                     // /*Se añaden los hijos*/
                     // nodo.AddHijo(nodoProcedure);
@@ -168,8 +165,8 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {:
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     //RESULT = nodo;
                     /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoId = new Nodo("ID",n2.toString(),parser.cont);
-                    parser.cont++;
+                    Nodo nodoId = new Nodo("ID",n2.toString(),Temporales.cont);
+                    Temporales.cont++;
                                         
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoId);
@@ -232,16 +229,16 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {:
 
                     :}comienza_cuerpo_principal:child3 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("cuerpo_principal",parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("cuerpo_principal",Temporales.cont);
+                    Temporales.cont++;
                     
                     /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoFunction = new Nodo("FUNCTION", n1.toString(),parser.cont );
-                    parser.cont++;
+                    Nodo nodoFunction = new Nodo("FUNCTION", n1.toString(),Temporales.cont );
+                    Temporales.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoIs = new Nodo("IS", n4.toString(), parser.cont);
-                    parser.cont++;
+                    Nodo nodoIs = new Nodo("IS", n4.toString(), Temporales.cont);
+                    Temporales.cont++;
 
                     
                     
@@ -295,8 +292,8 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {:
 /*Este es el área donde comenzará el codigo del programa.*/
 comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 END:n2 ID:n3 SEMICOLON:n4 {:
                             /*Se crea el nodo prinicipal*/
-                            Nodo nodo = new Nodo("comienza_cuerpo_principal",parser.cont);
-                            parser.cont++;
+                            Nodo nodo = new Nodo("comienza_cuerpo_principal",Temporales.cont);
+                            Temporales.cont++;
                             
                             Nodo hijo = (Nodo) child1;
                             /*Se añaden los hijos*/
@@ -316,8 +313,8 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 E
 
                             | BEGIN:n1 codigo:child1 END:n2 ID:n3 SEMICOLON:n4 {:
                             /*Se crea el nodo prinicipal*/
-                            Nodo nodo = new Nodo("comienza_cuerpo_principal",parser.cont);
-                            parser.cont++;
+                            Nodo nodo = new Nodo("comienza_cuerpo_principal",Temporales.cont);
+                            Temporales.cont++;
                             
                             
                             /*Se añaden los hijos*/
@@ -337,8 +334,8 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 E
 para comenzar a declarar código.*/
 codigo  ::= ciclo_for:child1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo", Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -349,8 +346,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | ciclo_for:child1 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo", Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -360,8 +357,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | ciclo_while:child1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo",parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo",Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -372,8 +369,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | ciclo_while:child1 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo",parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo",Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -384,8 +381,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | ciclo_loop:child1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo",parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo",Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -397,8 +394,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | ciclo_loop:child1 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo",parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo",Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -410,8 +407,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | bloque_if:child1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo",parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo",Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -423,8 +420,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | bloque_if:child1 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo", Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -435,8 +432,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | get:child1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo", Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -448,8 +445,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | get:child1 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo", Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -461,8 +458,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | put:child1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo", Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -474,8 +471,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | put:child1 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo", Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -486,8 +483,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | asignacion:child1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo", Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -499,8 +496,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | asignacion:child1 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo", Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -511,8 +508,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | llamar_funcion:child1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo", Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -524,8 +521,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         :}
         | llamar_funcion:child1 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("codigo", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("codigo", Temporales.cont);
+        Temporales.cont++;
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
@@ -541,8 +538,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
             Nodo nodo = null;
             try {
                 if (type.getValue() != null) {
-                    nodo = new Nodo("EXPRESION",type.getValue(), parser.cont, type.getTipo());
-                    parser.cont++;
+                    nodo = new Nodo("EXPRESION",type.getValue(), Temporales.cont, type.getTipo());
+                    Temporales.cont++;
                     System.out.println(type.getValue());
                     RESULT = nodo;
                 } else {
@@ -551,7 +548,7 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
             } catch (Exception e) {
                 System.out.println("No sé cuál es el error.");
             }
-            parser.cont++;
+            Temporales.cont++;
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -562,8 +559,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
             Nodo nodo = null;
             try {
                 if (type.getValue() != null) {
-                    nodo = new Nodo("EXPRESION",type.getValue(), parser.cont, type.getTipo());
-                    parser.cont++;
+                    nodo = new Nodo("EXPRESION",type.getValue(), Temporales.cont, type.getTipo());
+                    Temporales.cont++;
                     //System.out.println(type.getValue() + "Esta parte es la de abajo");
                     RESULT = nodo;
                 } else {
@@ -572,7 +569,7 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
             } catch (Exception e) {
                 System.out.println("No sé cuál es el error.");
             }
-            parser.cont++;
+            Temporales.cont++;
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
         :}
@@ -581,8 +578,8 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
 /*Estos son los parámetros para procedimientos.*/
 parametros  ::=  PARIZQ datos_parametros:child1 PARDER {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("parametros", parser.cont );
-            parser.cont++;
+            Nodo nodo = new Nodo("parametros", Temporales.cont );
+            Temporales.cont++;
     
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
@@ -592,8 +589,8 @@ parametros  ::=  PARIZQ datos_parametros:child1 PARDER {:
             :}
             | PARIZQ PARDER:n2 {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("parametros", parser.cont );
-            parser.cont++;
+            Nodo nodo = new Nodo("parametros", Temporales.cont );
+            Temporales.cont++;
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -623,8 +620,8 @@ datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo
     
                     :}datos_parametros:child4 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("datos_parametros", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("datos_parametros", Temporales.cont);
+                    Temporales.cont++;
 
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
@@ -643,8 +640,8 @@ datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo
                     | listar_ids:child1 DECLARACION tipo_parametro:child2 tipo_variable:child3 error datos_parametros:child4
                     | listar_ids:child1 DECLARACION tipo_parametro:child2 tipo_variable:child3 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("datos_parametros", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("datos_parametros", Temporales.cont);
+                    Temporales.cont++;
                 
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
@@ -678,8 +675,8 @@ datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo
                     | expresion_aritmetica:child1 
                     {:
                         
-                        Nodo nodo = new Nodo("datos_parametros", parser.cont);
-                        parser.cont++;
+                        Nodo nodo = new Nodo("datos_parametros", Temporales.cont);
+                        Temporales.cont++;
                         /*Se añaden los hijos*/
                         nodo.AddHijo((Nodo) child1);
                         Nodo type = (Nodo) child1;
@@ -700,31 +697,31 @@ datos_parametros    ::= listar_ids:child1 DECLARACION tipo_parametro:child2 tipo
 // Aquí se definen los tipos de parámetros que pueden ser IN, OUT, IN OUT o ninguno.
 tipo_parametro  ::= IN:n1 {:
                 /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("tipo_parametro", n1.toString(), parser.cont);
-                parser.cont++;
+                Nodo nodo = new Nodo("tipo_parametro", n1.toString(), Temporales.cont);
+                Temporales.cont++;
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
                 :}
                 | OUT:n2 {:
                 /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("tipo_parametro", n2.toString(), parser.cont);
-                parser.cont++;
+                Nodo nodo = new Nodo("tipo_parametro", n2.toString(), Temporales.cont);
+                Temporales.cont++;
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
                 :}
                 | error
                 | IN:n1 OUT:n2 {:
                 /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("tipo_parametro", parser.cont);
-                parser.cont++;
+                Nodo nodo = new Nodo("tipo_parametro", Temporales.cont);
+                Temporales.cont++;
 
                 /*Nuevo Nodo: TERMINAL*/
-                Nodo nodoIn = new Nodo("IN",n1.toString(), parser.cont);
-                parser.cont++;
+                Nodo nodoIn = new Nodo("IN",n1.toString(), Temporales.cont);
+                Temporales.cont++;
 
                 /*Nuevo Nodo: TERMINAL*/
-                Nodo nodoOut = new Nodo("OUT",n2.toString(), parser.cont);
-                parser.cont++;
+                Nodo nodoOut = new Nodo("OUT",n2.toString(), Temporales.cont);
+                Temporales.cont++;
 
                 /*Se añaden los hijos*/
                 nodo.AddHijo(nodoIn);
@@ -735,8 +732,8 @@ tipo_parametro  ::= IN:n1 {:
                 :}
                 | {:
                 /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("VACIO", parser.cont );
-                parser.cont++;
+                Nodo nodo = new Nodo("VACIO", Temporales.cont );
+                Temporales.cont++;
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
 
@@ -750,16 +747,16 @@ y declaracion_variables es porque en declarar_variable se puede, valga la redund
 declarar variables.*/
 listar_ids  ::= ID:n1 COMA:n2 listar_ids:child1 {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("listar_ids", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("listar_ids", Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(),parser.cont );
-            parser.cont++;
+            Nodo nodoId = new Nodo("ID", n1.toString(),Temporales.cont );
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoComa = new Nodo("COMA",n2.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoComa = new Nodo("COMA",n2.toString(), Temporales.cont);
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -790,12 +787,12 @@ listar_ids  ::= ID:n1 COMA:n2 listar_ids:child1 {:
             | error COMA:n2 listar_ids:child1
             | ID:n1 {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("listar_ids", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("listar_ids", Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont );
-            parser.cont++;
+            Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont );
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -828,8 +825,8 @@ procedimiento y declaracion procedimiento como dos diferentes porque la declarac
 de un procedimiento es mas corta que un procedimiento en si, igual que la funcion.*/
 tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("tipo_declaracion", Temporales.cont);
+                    Temporales.cont++;
             
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
@@ -847,8 +844,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     :}
                     | declarar_variable:child1 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("tipo_declaracion", Temporales.cont);
+                    Temporales.cont++;
 
                     Nodo hijo = (Nodo) child1;
                     /*Se añaden los hijos*/
@@ -863,8 +860,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     :}
                     | declarar_funcion:child1 tipo_declaracion:child2 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("tipo_declaracion", Temporales.cont);
+                    Temporales.cont++;
             
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
@@ -875,8 +872,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     :}
                     | declarar_funcion:child1 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("tipo_declaracion", Temporales.cont);
+                    Temporales.cont++;
             
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
@@ -885,8 +882,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     :}
                     | declarar_procedimiento:child1 tipo_declaracion:child2 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("tipo_declaracion", Temporales.cont);
+                    Temporales.cont++;
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
                     nodo.AddHijo((Nodo) child2);
@@ -896,8 +893,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     :}
                     | declarar_procedimiento:child1 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("tipo_declaracion", Temporales.cont);
+                    Temporales.cont++;
             
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
@@ -907,8 +904,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     :}
                     | llamar_funcion:child1 tipo_declaracion:child2 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("tipo_declaracion", Temporales.cont);
+                    Temporales.cont++;
             
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
@@ -918,8 +915,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     :}
                     | llamar_funcion:child1 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("tipo_declaracion", Temporales.cont);
+                    Temporales.cont++;
             
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
@@ -929,8 +926,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     :}
                     | procedimiento:child1 tipo_declaracion:child2 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("tipo_declaracion", Temporales.cont);
+                    Temporales.cont++;
             
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
@@ -945,8 +942,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     :}
                     | procedimiento:child1 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("tipo_declaracion", Temporales.cont);
+                    Temporales.cont++;
             
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
@@ -962,8 +959,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     :}
                     | asignacion:child1 tipo_declaracion:child2
                     {:
-                        Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
-                        parser.cont++;
+                        Nodo nodo = new Nodo("tipo_declaracion", Temporales.cont);
+                        Temporales.cont++;
 
                         nodo.AddHijo((Nodo) child1);
                         nodo.AddHijo((Nodo) child2);
@@ -977,8 +974,8 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
                     :}
                     | asignacion:child1
                     {:
-                        Nodo nodo = new Nodo("tipo_declaracion", parser.cont);
-                        parser.cont++;
+                        Nodo nodo = new Nodo("tipo_declaracion", Temporales.cont);
+                        Temporales.cont++;
 
                         nodo.AddHijo((Nodo) child1);
                         Nodo hijo = (Nodo) child1;
@@ -994,12 +991,12 @@ tipo_declaracion    ::= declarar_variable:child1 tipo_declaracion:child2 {:
 /*Aquí declaramos un procedimiento y luego están las versiones con error.*/
 declarar_procedimiento  ::= PROCEDURE:n1 ID:n2 parametros:child1 SEMICOLON {:
                         /*Se crea el nodo prinicipal*/
-                        Nodo nodo = new Nodo("declarar_procedimiento", parser.cont);
-                        parser.cont++;
+                        Nodo nodo = new Nodo("declarar_procedimiento", Temporales.cont);
+                        Temporales.cont++;
 
                         /*Nuevo Nodo: TERMINAL*/
-                        Nodo nodoId = new Nodo("ID", n2.toString(), parser.cont );
-                        parser.cont++;
+                        Nodo nodoId = new Nodo("ID", n2.toString(), Temporales.cont );
+                        Temporales.cont++;
 
                         /*Se añaden los hijos*/
                         nodo.AddHijo(nodoId);
@@ -1029,16 +1026,16 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS {:
 
                     :}tipo_declaracion:child2 BEGIN {:
                  /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("procedimiento", parser.cont);
-                parser.cont++;
+                Nodo nodo = new Nodo("procedimiento", Temporales.cont);
+                Temporales.cont++;
 
                 /*Nuevo Nodo: TERMINAL*/
-                Nodo nodoId = new Nodo("ID", n2.toString(), parser.cont);
-                parser.cont++;
+                Nodo nodoId = new Nodo("ID", n2.toString(), Temporales.cont);
+                Temporales.cont++;
 
                 /*Nuevo Nodo: TERMINAL*/
-                //Nodo nodoId2 = new Nodo("ID", n6.toString(), parser.cont);
-                //parser.cont++;
+                //Nodo nodoId2 = new Nodo("ID", n6.toString(), Temporales.cont);
+                //Temporales.cont++;
 
                 /*Se añaden los hijos*/
                 nodo.AddHijo(nodoId);
@@ -1053,7 +1050,7 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS {:
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
                 :}codigo:child3 END ID:n6 SEMICOLON {:
-                    Nodo nodo = new Nodo("procedimiento", parser.cont);
+                    Nodo nodo = new Nodo("procedimiento", Temporales.cont);
                     nodo.AddHijo((Nodo) child2);
                     nodo.AddHijo((Nodo) child3);
                     Nodo hijo2 = (Nodo) child2;
@@ -1116,12 +1113,12 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS {:
                     :}BEGIN codigo:child2 END ID:n6 SEMICOLON
                 {:
                 /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("procedimiento", parser.cont);
-                parser.cont++;
+                Nodo nodo = new Nodo("procedimiento", Temporales.cont);
+                Temporales.cont++;
 
                 /*Nuevo Nodo: TERMINAL*/
-                Nodo nodoId = new Nodo("ID", n2.toString(), parser.cont);
-                parser.cont++;
+                Nodo nodoId = new Nodo("ID", n2.toString(), Temporales.cont);
+                Temporales.cont++;
 
                 /*Se añaden los hijos*/
                 nodo.AddHijo(nodoId);
@@ -1166,11 +1163,11 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS {:
 
 declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 IS tipo_declaracion:child3 BEGIN codigo:child4 END ID:n2 SEMICOLON {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("declarar_funcion", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("declarar_funcion", Temporales.cont);
+                    Temporales.cont++;
                     /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-                    parser.cont++;
+                    Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont);
+                    Temporales.cont++;
 
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoId);
@@ -1240,12 +1237,12 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     | FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 IS tipo_declaracion:child3 BEGIN codigo:child4 END ID:n2 error
                     | FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:child2 IS BEGIN codigo:child3 END ID:n2 SEMICOLON {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("declarar_funcion", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("declarar_funcion", Temporales.cont);
+                    Temporales.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-                    parser.cont++;
+                    Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont);
+                    Temporales.cont++;
 
                     System.out.println("Entra");
 
@@ -1292,8 +1289,8 @@ Funcion: El ID (Nombre de la funcion) y la non terminal parametros
 (La cual incluye: PARIZQ datos_parametros PARDER).*/
 llamar_funcion  ::= funcion:child1 SEMICOLON {:
                 /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("llamar_funcion", parser.cont);
-                parser.cont++;
+                Nodo nodo = new Nodo("llamar_funcion", Temporales.cont);
+                Temporales.cont++;
                
                 /*Se añaden los hijos*/
                 nodo.AddHijo((Nodo) child1);
@@ -1306,12 +1303,12 @@ llamar_funcion  ::= funcion:child1 SEMICOLON {:
 
 funcion ::= ID:n1 parametros:child1 {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("funcion", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("funcion", Temporales.cont);
+        Temporales.cont++;
 
         /*Nuevo Nodo: TERMINAL*/
-        Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-        parser.cont++;
+        Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont);
+        Temporales.cont++;
 
         /*Se añaden los hijos*/
         nodo.AddHijo(nodoId);
@@ -1330,12 +1327,12 @@ con errores.*/
 /*TODO: Arreglo de IDs para luego asignar TIPO VARIABLE*/
 declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("declarar_variable", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("declarar_variable", Temporales.cont);
+                    Temporales.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-                    parser.cont++;
+                    Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont);
+                    Temporales.cont++;
 
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoId);
@@ -1369,12 +1366,12 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     | ID:n1 error declarar_variable:child1
                     | ID:n1 DECLARACION:n2 tipo_variable:child1 SEMICOLON {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodoDeclarar = new Nodo("declarar_variable", parser.cont);
-                    parser.cont++;
+                    Nodo nodoDeclarar = new Nodo("declarar_variable", Temporales.cont);
+                    Temporales.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-                    parser.cont++;
+                    Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont);
+                    Temporales.cont++;
                     
                     
                     /*Se añaden los hijos*/
@@ -1414,12 +1411,12 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
 /*Asignación de un valor a una variable*/
 asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("asignacion", Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont);
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -1431,12 +1428,12 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             | ID:n1 error asignacion:child1
             | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 expresion_aritmetica:child2 SEMICOLON:n4 {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("asignacion", Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont);
+            Temporales.cont++;
 
             // Tabla de Símbolos
             Nodo type = (Nodo) child1;
@@ -1473,7 +1470,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             try {
                 Nodo hijo2 = (Nodo) child2;
                 TablaCuadruplos.gen(n3, hijo2.temporal, "", n1);  
-                tempNum = 0;  
+                Temporales.tempNum = 0;  
             } catch (Exception e) {
                 System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
@@ -1484,16 +1481,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 expresion_aritmetica:child2 error
             | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 TRUE:n4 SEMICOLON {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("asignacion", Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoTrue = new Nodo("TRUE", n4.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoTrue = new Nodo("TRUE", n4.toString(), Temporales.cont);
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -1535,14 +1532,14 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 TRUE:n4 error
             | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 FALSE:n4 SEMICOLON {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("asignacion", Temporales.cont);
+            Temporales.cont++;
 
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont);
+            Temporales.cont++;
             
-            Nodo nodoFalse = new Nodo("FALSE", n4.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoFalse = new Nodo("FALSE", n4.toString(), Temporales.cont);
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -1583,16 +1580,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 FALSE:n4 error
             | ID:n1 DECLARACION:n2 tipo_variable:child1 ASIGNACION:n3 STRING:n4 SEMICOLON {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("asignacion", Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID",n1.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoId = new Nodo("ID",n1.toString(), Temporales.cont);
+            Temporales.cont++;
        
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoString = new Nodo("STRING", n4.toString().replaceAll("\"", ""), parser.cont);
-            parser.cont++;
+            Nodo nodoString = new Nodo("STRING", n4.toString().replaceAll("\"", ""), Temporales.cont);
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -1630,12 +1627,12 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             :}
             | ID:n1 ASIGNACION:n2 expresion_aritmetica:child1 SEMICOLON {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("asignacion", Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont);
+            Temporales.cont++;
 //--------------------------------Insertar a tabla de simbolos ---------------------------------------------------------------------
             // Tabla de Símbolos
             Nodo type = (Nodo) child1;
@@ -1696,16 +1693,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             | ID:n1 ASIGNACION:n2 expresion_aritmetica:child1 error
             | ID:n1 ASIGNACION:n2 TRUE:n3 SEMICOLON {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("asignacion", Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoTrue = new Nodo("TRUE", n3.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoTrue = new Nodo("TRUE", n3.toString(), Temporales.cont);
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -1742,16 +1739,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             | ID:n1 ASIGNACION:n2 TRUE:n3 error
             | ID:n1 ASIGNACION:n2 FALSE:n3 SEMICOLON {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("asignacion", Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoFalse = new Nodo("FALSE", n3.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoFalse = new Nodo("FALSE", n3.toString(), Temporales.cont);
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -1788,16 +1785,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             | ID:n1 ASIGNACION:n2 FALSE:n3 error
             | ID:n1 ASIGNACION:n2 STRING:n3 SEMICOLON {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("asignacion", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("asignacion", Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoString = new Nodo("STRING",n3.toString().replaceAll("\"", ""), parser.cont);
-            parser.cont++;
+            Nodo nodoString = new Nodo("STRING",n3.toString().replaceAll("\"", ""), Temporales.cont);
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
@@ -1835,503 +1832,22 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                             {:
                                 Nodo aux = (Nodo) n1;
                                 Nodo aux2 = (Nodo) n3;
-                                Nodo nodo = ExpresionAritmetica.MetodoSuma(aux, n2.toString(), aux2, tempNum, parser.cont);
-                                parser.cont++;
+                                Nodo nodo = ExpresionAritmetica.MetodoSuma(aux, n2.toString(), aux2, Temporales.cont);
+                                Temporales.cont++;
                                 RESULT = nodo;
                             :}
                             | expresion_aritmetica:n1 OPMULTIPLICACION:n2 expresion_aritmetica:n3
                             {:
                                 Nodo aux = (Nodo) n1;
                                 Nodo aux2 = (Nodo) n3;
-                                String operacion = "";
-                                String resultado = "";
-                                String tipo = "";
-                                String tempVar = "t";
-                                if(aux.getValue() != null && aux2.getValue() != null){
-                                
-                                    if (n2.equals("*")) {
-                                        if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
-                                        // Debemos averiguar si el valor es un id, función o simplemente un número
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            // Nuestros dos valores a operar
-                                            int cant1 = 0;
-                                            int cant2 = 0;
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant1 = Integer.parseInt(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    if (identificador.valor != null) {
-                                                        cant1 = Integer.valueOf((String)identificador.valor);
-                                                    } else {
-                                                        System.out.println("El valor de la variable es nulo.");
-                                                    }                                              
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant2 = Integer.parseInt(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Integer.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            int auxi = cant1 * cant2;
-                                            resultado = auxi + "";
-                                            operacion = "MULTIPLICACION";
-                                            tipo = "INTEGER";
-                                                  
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                TablaCuadruplos.gen("*", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("*",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    TablaCuadruplos.gen("*", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("*",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    TablaCuadruplos.gen("*",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
-                                            // Debemos averiguar si el valor es un id, función o simplemente un número
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            // Nuestros dos valores a operar
-                                            int cant1 = 0;
-                                            float cant2 = 0;
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant1 = Integer.parseInt(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant1 = Integer.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            /* Se asigna el texto a un float. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant2 = Float.parseFloat(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            float auxi = (float) cant1 * cant2;
-                                            resultado = auxi + "";
-                                            operacion = "MULTIPLICACION";
-                                            tipo = "FLOAT";
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                TablaCuadruplos.gen("*", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("*",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    TablaCuadruplos.gen("*", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("*",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    TablaCuadruplos.gen("*",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            float cant1 = 0;
-                                            int cant2 = 0;
-                                            try {
-                                                cant1 = Float.parseFloat(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant1 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            try {
-                                                cant2 = Integer.parseInt(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                            System.out.println("ENtra");
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Integer.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            float auxi = (float) cant1 * cant2;
-                                            resultado = auxi + "";
-                                            operacion = "MULTIPLICACION";
-                                            tipo = "FLOAT";
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                TablaCuadruplos.gen("*", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("*",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    TablaCuadruplos.gen("*", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("*",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    TablaCuadruplos.gen("*",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
-                                            // Debemos averiguar si el valor es un id, función o simplemente un número
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            // Nuestros dos valores a operar
-                                            float cant1 = 0;
-                                            float cant2 = 0;
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant1 = Float.parseFloat(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant1 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            /* Se asigna el texto a un float. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant2 = Float.parseFloat(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                            System.out.println("ENtra");
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            float auxi = (float) cant1 * cant2;
-                                            resultado = auxi + "";
-                                            operacion = "MULTIPLICACION";
-                                            tipo = "FLOAT";
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                TablaCuadruplos.gen("*", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("*",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    TablaCuadruplos.gen("*", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("*",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    TablaCuadruplos.gen("*",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        }           
-                                    } else if (n2.equals("/")) {
-                                        if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
-                                        // Debemos averiguar si el valor es un id, función o simplemente un número
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            // Nuestros dos valores a operar
-                                            int cant1 = 0;
-                                            int cant2 = 0;
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant1 = Integer.parseInt(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant1 = Integer.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant2 = Integer.parseInt(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Integer.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            int auxi = cant1 / cant2;
-                                            resultado = auxi + "";
-                                            operacion = "DIVISION";
-                                            tipo = "INTEGER";
-
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                TablaCuadruplos.gen("/", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("/",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    TablaCuadruplos.gen("/", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("/",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    TablaCuadruplos.gen("/",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
-                                            // Debemos averiguar si el valor es un id, función o simplemente un número
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            // Nuestros dos valores a operar
-                                            int cant1 = 0;
-                                            float cant2 = 0;
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant1 = Integer.parseInt(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant1 = Integer.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            /* Se asigna el texto a un float. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant2 = Float.parseFloat(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                            System.out.println("ENtra");
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            float auxi = (float) cant1 / cant2;
-                                            resultado = auxi + "";
-                                            operacion = "DIVISION";
-                                            tipo = "FLOAT";
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                TablaCuadruplos.gen("/", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("/",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    TablaCuadruplos.gen("/", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("/",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    TablaCuadruplos.gen("/",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            float cant1 = 0;
-                                            int cant2 = 0;
-                                            try {
-                                                cant1 = Float.parseFloat(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant1 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            try {
-                                                cant2 = Integer.parseInt(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                            System.out.println("ENtra");
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Integer.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            float auxi = (float) cant1 / cant2;
-                                            resultado = auxi + "";
-                                            operacion = "DIVISION";
-                                            tipo = "FLOAT";
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                TablaCuadruplos.gen("/", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("/",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    TablaCuadruplos.gen("/", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("/",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    TablaCuadruplos.gen("/",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
-                                            // Debemos averiguar si el valor es un id, función o simplemente un número
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            // Nuestros dos valores a operar
-                                            float cant1 = 0;
-                                            float cant2 = 0;
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant1 = Float.parseFloat(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant1 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            /* Se asigna el texto a un float. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant2 = Float.parseFloat(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                            System.out.println("ENtra");
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            float auxi = (float) cant1 / cant2;
-                                            resultado = auxi + "";
-                                            operacion = "DIVISION";
-                                            tipo = "FLOAT";
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                TablaCuadruplos.gen("/", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("/",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    TablaCuadruplos.gen("/", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    TablaCuadruplos.gen("/",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    TablaCuadruplos.gen("/",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        }          
-                                    }
-                                }else{
-                                    //System.out.println("Error: Valor de funcion aun retorna nulo.");
-                                    //ErroresSemanticos.add("Error: Valor de funcion aun retorna nulo.");
-                                }
-                                Nodo nodo = new Nodo(operacion,resultado, parser.cont, tipo);
-                                nodo.temporal = tempVar;
-                                nodo.AddHijo(aux);
-                                nodo.AddHijo(aux2);
-                                parser.cont++;
+                                Nodo nodo = ExpresionAritmetica.MetodoMultiplicacion(aux, n2.toString(), aux2, Temporales.cont);
+                                Temporales.cont++;
                                 RESULT = nodo;
                             :}
                             | NUM:n1
                             {:
-                                Nodo nodo = new Nodo("NUM", n1.toString(), parser.cont,"INTEGER");
-                                parser.cont++;
+                                Nodo nodo = new Nodo("NUM", n1.toString(), Temporales.cont,"INTEGER");
+                                Temporales.cont++;
                                 RESULT = nodo;
                             :}
                             | ID:n1
@@ -2350,29 +1866,29 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                     e.printStackTrace();
                                     System.out.println("Error al agregar la variable");            
                                 }
-                                Nodo nodo = new Nodo("ID", n1, parser.cont,tipo);
-                                parser.cont++;
+                                Nodo nodo = new Nodo("ID", n1, Temporales.cont,tipo);
+                                Temporales.cont++;
                                 RESULT = nodo;                  
                             :}
                             | NUMFLOAT:n1
                             {:
-                                Nodo nodo = new Nodo("NUMFLOAT", n1, parser.cont,"FLOAT");
-                                parser.cont++;
+                                Nodo nodo = new Nodo("NUMFLOAT", n1, Temporales.cont,"FLOAT");
+                                Temporales.cont++;
                                 RESULT = nodo;
                             :}
                             | llamar_funcion:n1
                             {:
                                 Nodo aux = (Nodo) n1;
-                                Nodo nodo = new Nodo(aux.tag, aux.value, parser.cont, aux.tipo );
-                                parser.cont++;
+                                Nodo nodo = new Nodo(aux.tag, aux.value, Temporales.cont, aux.tipo );
+                                Temporales.cont++;
                                 RESULT = nodo;
                             :}
                             | PARIZQ expresion_aritmetica:n1 PARDER
                             {:
                                 Nodo aux = (Nodo) n1;
-                                Nodo nodo = new Nodo(aux.tag,aux.value,parser.cont,aux.tipo);
+                                Nodo nodo = new Nodo(aux.tag,aux.value,Temporales.cont,aux.tipo);
 
-                                parser.cont++;
+                                Temporales.cont++;
                                 RESULT = nodo;
                             :}
                             ;
@@ -2383,16 +1899,16 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
 // Estos son los tipos de variable que se permiten en el programa.
 tipo_variable   ::= INTEGER  {: 
                 /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("tipo_variable", "INTEGER", parser.cont);
-                parser.cont++;
+                Nodo nodo = new Nodo("tipo_variable", "INTEGER", Temporales.cont);
+                Temporales.cont++;
                 
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
                 :}
                 | FLOAT {:
                 /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("tipo_variable", "FLOAT", parser.cont);
-                parser.cont++;
+                Nodo nodo = new Nodo("tipo_variable", "FLOAT", Temporales.cont);
+                Temporales.cont++;
                 
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
@@ -2400,8 +1916,8 @@ tipo_variable   ::= INTEGER  {:
                 :}
                 | BOOLEAN {:
                 /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("tipo_variable", "BOOLEAN", parser.cont);
-                parser.cont++;
+                Nodo nodo = new Nodo("tipo_variable", "BOOLEAN", Temporales.cont);
+                Temporales.cont++;
                 
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
@@ -2409,8 +1925,8 @@ tipo_variable   ::= INTEGER  {:
                 :}
                 | STRINGTYPE {:
                 /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("tipo_variable", "STRINGTYPE", parser.cont);
-                parser.cont++;
+                Nodo nodo = new Nodo("tipo_variable", "STRINGTYPE", Temporales.cont);
+                Temporales.cont++;
                 
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
@@ -2422,8 +1938,8 @@ tipo_variable   ::= INTEGER  {:
 bloque elseif y del bloque else.*/
 bloque_if   ::= IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloque_else:child4 END IF SEMICOLON {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("bloque_if", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("bloque_if", Temporales.cont);
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
@@ -2443,12 +1959,12 @@ bloque_if   ::= IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloqu
 //CONDICION = Condicion interna para los ifs y los ciclos loop y while.
 condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("condicion", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("condicion", Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoOr = new Nodo("OR", n1.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoOr = new Nodo("OR", n1.toString(), Temporales.cont);
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
@@ -2460,12 +1976,12 @@ condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
             :}
             | expresion_booleana:child1 AND:n1 condicion:child2 {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("condicion", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("condicion", Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoAnd = new Nodo("AND", n1.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoAnd = new Nodo("AND", n1.toString(), Temporales.cont);
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
@@ -2478,12 +1994,12 @@ condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
             :}
             | expresion_booleana:child1 XOR:n1 condicion:child2 {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("condicion", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("condicion", Temporales.cont);
+            Temporales.cont++;
 
             /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoXor = new Nodo("XOR", n1.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodoXor = new Nodo("XOR", n1.toString(), Temporales.cont);
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
@@ -2496,12 +2012,13 @@ condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
             :}
             | expresion_booleana:child1 {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("expresion_booleana", parser.cont);
-            parser.cont++;     
+            Nodo nodo = new Nodo("expresion_booleana", Temporales.cont);
+            Temporales.cont++;     
 
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
             Nodo hijo = (Nodo) child1;
+
             nodo.auxValores = hijo.auxValores;
             nodo.arg1 = hijo.arg1;
             nodo.arg2 = hijo.arg2;
@@ -2514,19 +2031,21 @@ condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
 //EXPRESION BOOLEANA: Expresion booleana en el que se comparan dos operandos con un operador relacional.
 expresion_booleana  ::= operando:child1 OPREL:n1 operando:child2 {:
                     /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("expresion_booleana", parser.cont);
-                    parser.cont++;
+                    Nodo nodo = new Nodo("expresion_booleana", Temporales.cont);
+                    Temporales.cont++;
 
                     /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoOPREL = new Nodo("OPREL", n1.toString(), parser.cont);
-                    parser.cont++;
+                    Nodo nodoOPREL = new Nodo("OPREL", n1.toString(), Temporales.cont);
+                    Temporales.cont++;
 
                     /*Se añaden los hijos*/
                     nodo.AddHijo((Nodo) child1);
                     nodo.AddHijo(nodoOPREL);
                     nodo.AddHijo((Nodo) child2);
+
                     Nodo hijo1 = (Nodo) child1;
                     Nodo hijo2 = (Nodo) child2;
+
                     nodo.arg1 = hijo1.value;
                     nodo.arg2 = hijo2.value;
                     nodo.auxValores = n1.toString();
@@ -2540,16 +2059,16 @@ expresion_booleana  ::= operando:child1 OPREL:n1 operando:child2 {:
 //OPERANDO: Operandos Relacionales utilizados en la expresion booleana.
 operando    ::= NUM:n1 {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("NUM", n1.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("NUM", n1.toString(), Temporales.cont);
+            Temporales.cont++;
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
             | ID:n1 {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("ID", n1.toString(), Temporales.cont);
+            Temporales.cont++;
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -2557,8 +2076,8 @@ operando    ::= NUM:n1 {:
             | error
             | funcion:child1 {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("operando", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("operando", Temporales.cont);
+            Temporales.cont++;
             
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
@@ -2568,8 +2087,8 @@ operando    ::= NUM:n1 {:
             :}
             | NULL {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("operando", "NULL", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("operando", "NULL", Temporales.cont);
+            Temporales.cont++;
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -2580,8 +2099,8 @@ operando    ::= NUM:n1 {:
 no en todos los ifs se requiere un bloque else if.*/
 bloque_elsif    ::= ELSIF condicion:child1 THEN codigo:child2 bloque_elsif:child3 {:
                 /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("bloque_elsif", parser.cont);
-                parser.cont++;
+                Nodo nodo = new Nodo("bloque_elsif", Temporales.cont);
+                Temporales.cont++;
                 
                 /*Se añaden los hijos*/
                 nodo.AddHijo((Nodo) child1);
@@ -2593,8 +2112,8 @@ bloque_elsif    ::= ELSIF condicion:child1 THEN codigo:child2 bloque_elsif:child
                 :}
                 | {:
                 /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("VACIO", parser.cont);
-                parser.cont++;
+                Nodo nodo = new Nodo("VACIO", Temporales.cont);
+                Temporales.cont++;
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
                 :}
@@ -2603,8 +2122,8 @@ bloque_elsif    ::= ELSIF condicion:child1 THEN codigo:child2 bloque_elsif:child
 
 bloque_else ::= ELSE codigo:child1 {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("bloque_else", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("bloque_else", Temporales.cont);
+            Temporales.cont++;
             
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
@@ -2614,8 +2133,8 @@ bloque_else ::= ELSE codigo:child1 {:
             :}
             | {:
                 /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("VACIO", parser.cont);
-                parser.cont++;
+                Nodo nodo = new Nodo("VACIO", Temporales.cont);
+                Temporales.cont++;
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
 
@@ -2627,8 +2146,8 @@ bloque_else ::= ELSE codigo:child1 {:
 /* Ciclos LOOP, While, y For */
 ciclo_loop  ::= LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("ciclo_loop", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("ciclo_loop", Temporales.cont);
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
@@ -2644,32 +2163,13 @@ ciclo_loop  ::= LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOL
             ;
 
 ciclo_while ::= WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEMICOLON END LOOP SEMICOLON {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("ciclo_while", parser.cont);
-            parser.cont++;
-
-            /*Se añaden los hijos*/
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo((Nodo) child2);
-            nodo.AddHijo((Nodo) child3);
-
-            Nodo hijo = (Nodo) child1;
-            String tempEtiq = "_etiq"+contEtiq;
-
-            TablaCuadruplos.gen("ETIQ","","",tempEtiq);
-            contEtiq++;
-            tempEtiq = "_etiq";
-            tempEtiq = tempEtiq + contEtiq;
-            TablaCuadruplos.gen("IF"+hijo.auxValores,hijo.arg1,hijo.arg2,tempEtiq);
-            contEtiq++;
-            tempEtiq = "_etiq";
-            tempEtiq = tempEtiq + contEtiq;
-            TablaCuadruplos.gen("GOTO","","",tempEtiq);
-            
-
+            Nodo hijo1 = (Nodo) child1;
+            Nodo hijo2 = (Nodo) child2;
+            Nodo hijo3 = (Nodo) child3;
+            Nodo nodo = While.MetodoWhile(hijo1, hijo2, hijo3, Temporales.cont);
+            Temporales.cont++;
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
-
             :}
             | WHILE condicion:child1 error codigo:child2 salir_ciclo:child3 SEMICOLON END LOOP SEMICOLON
             | WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 error END LOOP SEMICOLON
@@ -2678,49 +2178,26 @@ ciclo_while ::= WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEM
             | WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEMICOLON END LOOP error
             ;
 
-ciclo_for   ::= FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON{:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("ciclo_for", parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoId = new Nodo("ID", n1.toString(), parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoNum = new Nodo("NUM", n3.toString(), parser.cont);
-            parser.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoNum2 = new Nodo("NUM",n5.toString(), parser.cont);
-            parser.cont++;
-            
-            /*Se añaden los hijos*/
-            nodo.AddHijo(nodoId);
-            nodo.AddHijo(nodoNum);
-            nodo.AddHijo(nodoNum2);
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo((Nodo) child2);
-    
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
-            RESULT = nodo;
+ciclo_for   ::= FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 END LOOP SEMICOLON{:
+                Nodo hijo1 = (Nodo) child1;
+                Nodo nodo = For.MetodoFor(hijo1, n1.toString(), n3.toString(), n5.toString());
+                RESULT = nodo;
             :}
-            | FOR error IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON
-            | FOR ID:n1 error NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON
-            | FOR ID:n1 IN:n2 error DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON
-            | FOR ID:n1 IN:n2 NUM:n3 error NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON
-            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 error LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON
-            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 error codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON
-            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 error END LOOP SEMICOLON
-            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON error LOOP SEMICOLON
-            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END error SEMICOLON
-            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP error
+            | FOR error IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 END LOOP SEMICOLON
+            | FOR ID:n1 error NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 END LOOP SEMICOLON
+            | FOR ID:n1 IN:n2 error DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 END LOOP SEMICOLON
+            | FOR ID:n1 IN:n2 NUM:n3 error NUM:n5 LOOP codigo:child1 END LOOP SEMICOLON
+            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 error LOOP codigo:child1 END LOOP SEMICOLON
+            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 error codigo:child1 END LOOP SEMICOLON
+            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 error LOOP SEMICOLON
+            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 END error SEMICOLON
+            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 END LOOP error
             ;
 
 salir_ciclo ::= EXIT WHEN condicion:child1 {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("salir_ciclo", parser.cont);
-            parser.cont++;
+            Nodo nodo = new Nodo("salir_ciclo", Temporales.cont);
+            Temporales.cont++;
 
             /*Se añaden los hijos*/
             nodo.AddHijo((Nodo) child1);
@@ -2735,12 +2212,12 @@ salir_ciclo ::= EXIT WHEN condicion:child1 {:
 /*==========================================PUT y GET===========================================*/
 put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("PUT", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("PUT", Temporales.cont);
+        Temporales.cont++;
 
         /*Nuevo Nodo: TERMINAL*/
-        Nodo nodoNum = new Nodo("NUM", n2.toString(), parser.cont);
-        parser.cont++;
+        Nodo nodoNum = new Nodo("NUM", n2.toString(), Temporales.cont);
+        Temporales.cont++;
 
         /*Se añaden los hijos*/
         nodo.AddHijo(nodoNum);
@@ -2754,12 +2231,12 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
 
 	    | PUT PARIZQ:n1 STRING:n2 PARDER:n3 SEMICOLON {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("PUT", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("PUT", Temporales.cont);
+        Temporales.cont++;
         
         /*Nuevo Nodo: TERMINAL*/
-        Nodo nodoString = new Nodo("STRING", n2.toString().replaceAll("\"", ""), parser.cont);
-        parser.cont++;
+        Nodo nodoString = new Nodo("STRING", n2.toString().replaceAll("\"", ""), Temporales.cont);
+        Temporales.cont++;
 
         /*Se añaden los hijos*/
         nodo.AddHijo(nodoString);
@@ -2772,12 +2249,12 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         | PUT PARIZQ:n1 STRING:n2 PARDER:n3 error
         | PUT PARIZQ:n1 TRUE:n2 PARDER:n3 SEMICOLON {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("PUT", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("PUT", Temporales.cont);
+        Temporales.cont++;
 
         /*Nuevo Nodo: TERMINAL*/
-        Nodo nodoTrue = new Nodo("TRUE", n2.toString(), parser.cont);
-        parser.cont++;
+        Nodo nodoTrue = new Nodo("TRUE", n2.toString(), Temporales.cont);
+        Temporales.cont++;
 
         /*Se añaden los hijos*/
         nodo.AddHijo(nodoTrue);
@@ -2791,12 +2268,12 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
 
         | PUT PARIZQ:n1 FALSE:n2 PARDER:n3 SEMICOLON {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("PUT", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("PUT", Temporales.cont);
+        Temporales.cont++;
 
         /*Nuevo Nodo: TERMINAL*/
-        Nodo nodoFalse = new Nodo("FALSE", n2.toString(), parser.cont);
-        parser.cont++;
+        Nodo nodoFalse = new Nodo("FALSE", n2.toString(), Temporales.cont);
+        Temporales.cont++;
 
         /*Se añaden los hijos*/
         nodo.AddHijo(nodoFalse);
@@ -2810,12 +2287,12 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
 
         | PUT PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
         /*Se crea el nodo prinicipal*/
-        Nodo nodo = new Nodo("PUT", parser.cont);
-        parser.cont++;
+        Nodo nodo = new Nodo("PUT", Temporales.cont);
+        Temporales.cont++;
 
         /*Nuevo Nodo: TERMINAL*/
-        Nodo nodoID = new Nodo("ID", n2.toString(), parser.cont);
-        parser.cont++;
+        Nodo nodoID = new Nodo("ID", n2.toString(), Temporales.cont);
+        Temporales.cont++;
 
         /*Se añaden los hijos*/
         nodo.AddHijo(nodoID);
@@ -2830,12 +2307,12 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
 
 get ::= GET PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
     /*Se crea el nodo prinicipal*/
-    Nodo nodo = new Nodo("get", parser.cont);
-    parser.cont++;
+    Nodo nodo = new Nodo("get", Temporales.cont);
+    Temporales.cont++;
 
     /*Nuevo Nodo: TERMINAL*/
-    Nodo nodoId = new Nodo("ID", n2.toString(), parser.cont,"STRING");
-    parser.cont++;
+    Nodo nodoId = new Nodo("ID", n2.toString(), Temporales.cont,"STRING");
+    Temporales.cont++;
 
     /*Se añaden los hijos*/
     nodo.AddHijo(nodoId);
