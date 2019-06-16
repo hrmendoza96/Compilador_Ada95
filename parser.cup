@@ -1,14 +1,11 @@
 import java_cup.runtime.*;
 import java.util.ArrayList;
 
-
-
 parser code
 {:
     public static Nodo padre;
     public static String cadenaAmbito = "";
     public static ArrayList<String> ErroresSintacticos = new ArrayList<String>();
-    public static ArrayList<String> ErroresSemanticos = new ArrayList<String>();
     public static ArrayList<String> variablesEnParametros = new ArrayList<String>();
     public static ArrayList<String> variablesDentroFunction = new ArrayList<String>();
     public int cont = 0;
@@ -24,47 +21,6 @@ parser code
         ErroresSintacticos.add("Error No Recuperable de sintaxis: \""+ s.value + "\" Linea: " + (s.right+1) + " Columna: " + (s.left+1));
     }
 
-    public void gen(Object op, Object arg1, Object arg2, Object res){
-        try{
-            //Castear a Strings
-            String operador, argumento1, argumento2, resultado;
-            if(op == null){
-                operador = "";
-            }else{
-                operador = op.toString();
-            }
-
-            if(arg1 == null){
-                argumento1 = "";
-            }else{
-                argumento1 = arg1.toString();
-            }
-
-            if(arg2 == null){
-                argumento2 =  "";
-            }else{
-                argumento2 = arg2.toString();
-            }
-
-            if(res == null){
-                resultado = "";
-            }else{
-                resultado = res.toString();
-            }
-
-            //Crear Cuadruplo
-            Cuadruplo cuadruplo = new Cuadruplo(operador, argumento1, argumento2, resultado);
-
-            //Insertar Cuadruplo a Tabla de Cuadruplos
-            TablaCuadruplos.insertarCuadruplo(cuadruplo);
-        }catch(Exception e){
-            System.out.println("Error en el GEN para cuadruplos");
-        }
-        
-
-    }
-
-    
 :}
 
 // Terminales
@@ -1516,10 +1472,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
 
             try {
                 Nodo hijo2 = (Nodo) child2;
-                gen(n3, hijo2.temporal, "", n1);  
+                TablaCuadruplos.gen(n3, hijo2.temporal, "", n1);  
                 tempNum = 0;  
             } catch (Exception e) {
-                System.out.println("No se genera cuadruplo en asignacion.");
+                System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
 
             RESULT = nodo;
@@ -1564,10 +1520,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             }
 
             try {
-                gen(n3,n4,"", n1);    
-                System.out.println("Se genero el cuádruplo.");            
+                TablaCuadruplos.gen(n3,n4,"", n1);    
+                System.out.println("Se TablaCuadruplos.genero el cuádruplo.");            
             } catch (Exception e) {
-                System.out.println("No se genera cuadruplo en asignacion.");
+                System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -1613,10 +1569,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             }
 
             try {
-                gen(n3,n4,"", n1);    
-                System.out.println("Se genero el cuádruplo.");            
+                TablaCuadruplos.gen(n3,n4,"", n1);    
+                System.out.println("Se TablaCuadruplos.genero el cuádruplo.");            
             } catch (Exception e) {
-                System.out.println("No se genera cuadruplo en asignacion.");
+                System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -1663,10 +1619,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             }
 
             try {
-                gen(n3,n4,"", n1);    
-                System.out.println("Se genero el cuádruplo.");            
+                TablaCuadruplos.gen(n3,n4,"", n1);    
+                System.out.println("Se TablaCuadruplos.genero el cuádruplo.");            
             } catch (Exception e) {
-                System.out.println("No se genera cuadruplo en asignacion.");
+                System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -1727,10 +1683,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.value = n1 + "," + hijo.ambito;
 
             try {
-                gen(n2,hijo.value,"", n1);    
-                System.out.println("Se genero el cuádruplo.");            
+                TablaCuadruplos.gen(n2,hijo.value,"", n1);    
+                System.out.println("Se TablaCuadruplos.genero el cuádruplo.");            
             } catch (Exception e) {
-                System.out.println("No se genera cuadruplo en asignacion.");
+                System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -1772,10 +1728,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             }
 
             try {
-                gen(n2,n3,"", n1);    
-                System.out.println("Se genero el cuádruplo.");            
+                TablaCuadruplos.gen(n2,n3,"", n1);    
+                System.out.println("Se TablaCuadruplos.genero el cuádruplo.");            
             } catch (Exception e) {
-                System.out.println("No se genera cuadruplo en asignacion.");
+                System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -1818,10 +1774,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             }
 
             try {
-                gen(n2,n3,"", n1);    
-                System.out.println("Se genero el cuádruplo.");            
+                TablaCuadruplos.gen(n2,n3,"", n1);    
+                System.out.println("Se TablaCuadruplos.genero el cuádruplo.");            
             } catch (Exception e) {
-                System.out.println("No se genera cuadruplo en asignacion.");
+                System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
 
             
@@ -1864,10 +1820,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             }
 
             try {
-                gen(n2,n3,"", n1);    
-                System.out.println("Se genero el cuádruplo.");            
+                TablaCuadruplos.gen(n2,n3,"", n1);    
+                System.out.println("Se TablaCuadruplos.genero el cuádruplo.");            
             } catch (Exception e) {
-                System.out.println("No se genera cuadruplo en asignacion.");
+                System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -1879,494 +1835,7 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                             {:
                                 Nodo aux = (Nodo) n1;
                                 Nodo aux2 = (Nodo) n3;
-                                String operacion = "";
-                                String resultado = "";
-                                String tipo = "";
-                                String tempVar = "t";
-                                if(aux.getValue() != null && aux2.getValue() != null){
-                                    if (n2.equals("+")) {
-                                        if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
-                                        // Debemos averiguar si el valor es un id, función o simplemente un número
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            // Nuestros dos valores a operar
-                                            int cant1 = 0;
-                                            int cant2 = 0;
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant1 = Integer.parseInt(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant1 = Integer.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant2 = Integer.parseInt(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Integer.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            int auxi = cant1 + cant2;
-                                            resultado = auxi + "";
-                                            operacion = "SUMA";
-                                            tipo = "INTEGER";
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                gen("+", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("+",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("+", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("+",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    gen("+",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
-                                            // Debemos averiguar si el valor es un id, función o simplemente un número
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            // Nuestros dos valores a operar
-                                            int cant1 = 0;
-                                            float cant2 = 0;
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant1 = Integer.parseInt(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant1 = Integer.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            /* Se asigna el texto a un float. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant2 = Float.parseFloat(aux2.getValue());
-                                            } catch (NumberFormatException e) {                                           
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            float auxi = (float) cant1 + cant2;
-                                            resultado = auxi + "";
-                                            operacion = "SUMA";
-                                            tipo = "FLOAT";
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                gen("+", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("+",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("+", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("+",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    gen("+",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            float cant1 = 0;
-                                            int cant2 = 0;
-                                            try {
-                                                cant1 = Float.parseFloat(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant1 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            try {
-                                                cant2 = Integer.parseInt(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Integer.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            float auxi = (float) cant1 + cant2;
-                                            resultado = auxi + "";
-                                            operacion = "SUMA";
-                                            tipo = "FLOAT";
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                gen("+", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("+",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("+", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("+",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    gen("+",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
-                                            // Debemos averiguar si el valor es un id, función o simplemente un número
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            // Nuestros dos valores a operar
-                                            float cant1 = 0;
-                                            float cant2 = 0;
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant1 = Float.parseFloat(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant1 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            /* Se asigna el texto a un float. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant2 = Float.parseFloat(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            float auxi = (float) cant1 + cant2;
-                                            resultado = auxi + "";
-                                            operacion = "SUMA";
-                                            tipo = "FLOAT";
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                gen("+", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("+",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("+", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("+",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    gen("+",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        }           
-                                    } else if (n2.equals("-")) {
-                                        if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("INTEGER")) {
-                                        // Debemos averiguar si el valor es un id, función o simplemente un número
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            // Nuestros dos valores a operar
-                                            int cant1 = 0;
-                                            int cant2 = 0;
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant1 = Integer.parseInt(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    if (identificador.valor != null) {
-                                                        cant1 = Integer.valueOf((String)identificador.valor);
-                                                    } else {
-                                                        //System.out.println("El valor 1 es nulo en la resta.");
-                                                    }
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant2 = Integer.parseInt(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    if (identificador.valor != null) {
-                                                        cant2 = Integer.valueOf((String)identificador.valor);
-                                                    } else {
-                                                        System.out.println("El valor 2 es nulo en la resta 2.");
-                                                    }
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            
-                                            if (cant1 != 0 && cant2 != 0) {
-                                                int auxi = cant1 - cant2;
-                                                resultado = auxi + "";
-                                                operacion = "RESTA";
-                                                tipo = "INTEGER";
-                                            } else {
-                                                System.out.println("Hay algun valor nulo en la resta.");
-                                            }
-
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                gen("-", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("-",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("-", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("-",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    gen("-",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        
-                                        } else if (aux.getTipo().equals("INTEGER") && aux2.getTipo().equals("FLOAT")) {
-                                            // Debemos averiguar si el valor es un id, función o simplemente un número
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            // Nuestros dos valores a operar
-                                            int cant1 = 0;
-                                            float cant2 = 0;
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant1 = Integer.parseInt(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant1 = Integer.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            /* Se asigna el texto a un float. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant2 = Float.parseFloat(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            float auxi = (float) cant1 - cant2;
-                                            resultado = auxi + "";
-                                            operacion = "RESTA";
-                                            tipo = "FLOAT";
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                gen("-", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("-",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("-", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("-",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    gen("-",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("INTEGER")) {
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            float cant1 = 0;
-                                            int cant2 = 0;
-                                            try {
-                                                cant1 = Float.parseFloat(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant1 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            try {
-                                                cant2 = Integer.parseInt(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Integer.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            float auxi = (float) cant1 - cant2;
-                                            resultado = auxi + "";
-                                            operacion = "RESTA";
-                                            tipo = "FLOAT";
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                gen("-", cant1+"", cant2+"",tempVar);
-                                                System.out.println("Agregando temporal: " + tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("-",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("-", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("-",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    gen("-",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        } else if (aux.getTipo().equals("FLOAT") && aux2.getTipo().equals("FLOAT")) {
-                                            // Debemos averiguar si el valor es un id, función o simplemente un número
-                                            String valor1 = aux.getValue();
-                                            String valor2 = aux2.getValue();
-                                            // Nuestros dos valores a operar
-                                            float cant1 = 0;
-                                            float cant2 = 0;
-                                            /* Se asigna el texto a un entero. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant1 = Float.parseFloat(valor1);
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant1 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            /* Se asigna el texto a un float. Si esto falla, significa
-                                            que estamos lidiando con un identificador.*/
-                                            try {
-                                                cant2 = Float.parseFloat(aux2.getValue());
-                                            } catch (NumberFormatException e) {
-                                                Simbolo identificador = null;
-                                                identificador = TablaSimbolos.buscar(aux2.getValue());
-                                                if(identificador != null ){ //Significa que la variable ya existe
-                                                    cant2 = Float.valueOf((String)identificador.valor);
-                                                }else{
-                                                    System.out.println("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                    ErroresSemanticos.add("Error: Variable \""+ n1 +"\" no ha sido declarada.");
-                                                }
-                                            }
-                                            float auxi = (float) cant1 - cant2;
-                                            resultado = auxi + "";
-                                            operacion = "RESTA";
-                                            tipo = "FLOAT";
-                                            if (tempNum == 0) {
-                                                tempVar = tempVar + tempNum + "";
-                                                tempNum++;
-                                                gen("-", cant1+"", cant2+"",tempVar);
-                                            } else {
-                                                Nodo hijo = (Nodo) n1;
-                                                Nodo hijo3 = (Nodo) n3;
-                                                tempVar = tempVar + tempNum + "";
-                                                if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("-",hijo.temporal,hijo3.temporal,tempVar);
-                                                } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("-", hijo.temporal, cant2+"",tempVar);
-                                                } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("-",cant1+"",hijo3.temporal,tempVar);
-                                                } else {
-                                                    gen("-",cant1+"",cant2+"",tempVar);
-                                                }
-                                                tempNum++;
-                                            }
-                                        }          
-                                    }
-
-                                }else{
-                                    //System.out.println("Error: Valor de funcion aun retorna nulo.");
-                                    //ErroresSemanticos.add("Error: Valor de funcion aun retorna nulo.");
-                                }
-                                
-                                Nodo nodo = new Nodo(operacion,resultado, parser.cont, tipo);
-                                nodo.temporal = tempVar;
-                                nodo.AddHijo(aux);
-                                nodo.AddHijo(aux2);
+                                Nodo nodo = ExpresionAritmetica.MetodoSuma(aux, n2.toString(), aux2, tempNum, parser.cont);
                                 parser.cont++;
                                 RESULT = nodo;
                             :}
@@ -2428,19 +1897,19 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             if (tempNum == 0) {
                                                 tempVar = tempVar + tempNum + "";
                                                 tempNum++;
-                                                gen("*", cant1+"", cant2+"",tempVar);
+                                                TablaCuadruplos.gen("*", cant1+"", cant2+"",tempVar);
                                             } else {
                                                 Nodo hijo = (Nodo) n1;
                                                 Nodo hijo3 = (Nodo) n3;
                                                 tempVar = tempVar + tempNum + "";
                                                 if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("*",hijo.temporal,hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("*",hijo.temporal,hijo3.temporal,tempVar);
                                                 } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("*", hijo.temporal, cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("*", hijo.temporal, cant2+"",tempVar);
                                                 } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("*",cant1+"",hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("*",cant1+"",hijo3.temporal,tempVar);
                                                 } else {
-                                                    gen("*",cant1+"",cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("*",cant1+"",cant2+"",tempVar);
                                                 }
                                                 tempNum++;
                                             }
@@ -2486,19 +1955,19 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             if (tempNum == 0) {
                                                 tempVar = tempVar + tempNum + "";
                                                 tempNum++;
-                                                gen("*", cant1+"", cant2+"",tempVar);
+                                                TablaCuadruplos.gen("*", cant1+"", cant2+"",tempVar);
                                             } else {
                                                 Nodo hijo = (Nodo) n1;
                                                 Nodo hijo3 = (Nodo) n3;
                                                 tempVar = tempVar + tempNum + "";
                                                 if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("*",hijo.temporal,hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("*",hijo.temporal,hijo3.temporal,tempVar);
                                                 } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("*", hijo.temporal, cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("*", hijo.temporal, cant2+"",tempVar);
                                                 } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("*",cant1+"",hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("*",cant1+"",hijo3.temporal,tempVar);
                                                 } else {
-                                                    gen("*",cant1+"",cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("*",cant1+"",cant2+"",tempVar);
                                                 }
                                                 tempNum++;
                                             }
@@ -2539,19 +2008,19 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             if (tempNum == 0) {
                                                 tempVar = tempVar + tempNum + "";
                                                 tempNum++;
-                                                gen("*", cant1+"", cant2+"",tempVar);
+                                                TablaCuadruplos.gen("*", cant1+"", cant2+"",tempVar);
                                             } else {
                                                 Nodo hijo = (Nodo) n1;
                                                 Nodo hijo3 = (Nodo) n3;
                                                 tempVar = tempVar + tempNum + "";
                                                 if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("*",hijo.temporal,hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("*",hijo.temporal,hijo3.temporal,tempVar);
                                                 } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("*", hijo.temporal, cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("*", hijo.temporal, cant2+"",tempVar);
                                                 } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("*",cant1+"",hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("*",cant1+"",hijo3.temporal,tempVar);
                                                 } else {
-                                                    gen("*",cant1+"",cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("*",cant1+"",cant2+"",tempVar);
                                                 }
                                                 tempNum++;
                                             }
@@ -2598,19 +2067,19 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             if (tempNum == 0) {
                                                 tempVar = tempVar + tempNum + "";
                                                 tempNum++;
-                                                gen("*", cant1+"", cant2+"",tempVar);
+                                                TablaCuadruplos.gen("*", cant1+"", cant2+"",tempVar);
                                             } else {
                                                 Nodo hijo = (Nodo) n1;
                                                 Nodo hijo3 = (Nodo) n3;
                                                 tempVar = tempVar + tempNum + "";
                                                 if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("*",hijo.temporal,hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("*",hijo.temporal,hijo3.temporal,tempVar);
                                                 } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("*", hijo.temporal, cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("*", hijo.temporal, cant2+"",tempVar);
                                                 } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("*",cant1+"",hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("*",cant1+"",hijo3.temporal,tempVar);
                                                 } else {
-                                                    gen("*",cant1+"",cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("*",cant1+"",cant2+"",tempVar);
                                                 }
                                                 tempNum++;
                                             }
@@ -2659,19 +2128,19 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             if (tempNum == 0) {
                                                 tempVar = tempVar + tempNum + "";
                                                 tempNum++;
-                                                gen("/", cant1+"", cant2+"",tempVar);
+                                                TablaCuadruplos.gen("/", cant1+"", cant2+"",tempVar);
                                             } else {
                                                 Nodo hijo = (Nodo) n1;
                                                 Nodo hijo3 = (Nodo) n3;
                                                 tempVar = tempVar + tempNum + "";
                                                 if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("/",hijo.temporal,hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("/",hijo.temporal,hijo3.temporal,tempVar);
                                                 } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("/", hijo.temporal, cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("/", hijo.temporal, cant2+"",tempVar);
                                                 } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("/",cant1+"",hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("/",cant1+"",hijo3.temporal,tempVar);
                                                 } else {
-                                                    gen("/",cant1+"",cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("/",cant1+"",cant2+"",tempVar);
                                                 }
                                                 tempNum++;
                                             }
@@ -2718,19 +2187,19 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             if (tempNum == 0) {
                                                 tempVar = tempVar + tempNum + "";
                                                 tempNum++;
-                                                gen("/", cant1+"", cant2+"",tempVar);
+                                                TablaCuadruplos.gen("/", cant1+"", cant2+"",tempVar);
                                             } else {
                                                 Nodo hijo = (Nodo) n1;
                                                 Nodo hijo3 = (Nodo) n3;
                                                 tempVar = tempVar + tempNum + "";
                                                 if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("/",hijo.temporal,hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("/",hijo.temporal,hijo3.temporal,tempVar);
                                                 } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("/", hijo.temporal, cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("/", hijo.temporal, cant2+"",tempVar);
                                                 } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("/",cant1+"",hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("/",cant1+"",hijo3.temporal,tempVar);
                                                 } else {
-                                                    gen("/",cant1+"",cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("/",cant1+"",cant2+"",tempVar);
                                                 }
                                                 tempNum++;
                                             }
@@ -2771,19 +2240,19 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             if (tempNum == 0) {
                                                 tempVar = tempVar + tempNum + "";
                                                 tempNum++;
-                                                gen("/", cant1+"", cant2+"",tempVar);
+                                                TablaCuadruplos.gen("/", cant1+"", cant2+"",tempVar);
                                             } else {
                                                 Nodo hijo = (Nodo) n1;
                                                 Nodo hijo3 = (Nodo) n3;
                                                 tempVar = tempVar + tempNum + "";
                                                 if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("/",hijo.temporal,hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("/",hijo.temporal,hijo3.temporal,tempVar);
                                                 } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("/", hijo.temporal, cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("/", hijo.temporal, cant2+"",tempVar);
                                                 } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("/",cant1+"",hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("/",cant1+"",hijo3.temporal,tempVar);
                                                 } else {
-                                                    gen("/",cant1+"",cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("/",cant1+"",cant2+"",tempVar);
                                                 }
                                                 tempNum++;
                                             }
@@ -2830,19 +2299,19 @@ expresion_aritmetica    ::=  expresion_aritmetica:n1 OPSUMA:n2 expresion_aritmet
                                             if (tempNum == 0) {
                                                 tempVar = tempVar + tempNum + "";
                                                 tempNum++;
-                                                gen("/", cant1+"", cant2+"",tempVar);
+                                                TablaCuadruplos.gen("/", cant1+"", cant2+"",tempVar);
                                             } else {
                                                 Nodo hijo = (Nodo) n1;
                                                 Nodo hijo3 = (Nodo) n3;
                                                 tempVar = tempVar + tempNum + "";
                                                 if (hijo.temporal != null && hijo3.temporal != null) {
-                                                    gen("/",hijo.temporal,hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("/",hijo.temporal,hijo3.temporal,tempVar);
                                                 } else if (hijo.temporal != null && hijo3.temporal == null) {
-                                                    gen("/", hijo.temporal, cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("/", hijo.temporal, cant2+"",tempVar);
                                                 } else if (hijo.temporal == null && hijo3.temporal != null) {
-                                                    gen("/",cant1+"",hijo3.temporal,tempVar);
+                                                    TablaCuadruplos.gen("/",cant1+"",hijo3.temporal,tempVar);
                                                 } else {
-                                                    gen("/",cant1+"",cant2+"",tempVar);
+                                                    TablaCuadruplos.gen("/",cant1+"",cant2+"",tempVar);
                                                 }
                                                 tempNum++;
                                             }
@@ -3187,15 +2656,15 @@ ciclo_while ::= WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEM
             Nodo hijo = (Nodo) child1;
             String tempEtiq = "_etiq"+contEtiq;
 
-            gen("ETIQ","","",tempEtiq);
+            TablaCuadruplos.gen("ETIQ","","",tempEtiq);
             contEtiq++;
             tempEtiq = "_etiq";
             tempEtiq = tempEtiq + contEtiq;
-            gen("IF"+hijo.auxValores,hijo.arg1,hijo.arg2,tempEtiq);
+            TablaCuadruplos.gen("IF"+hijo.auxValores,hijo.arg1,hijo.arg2,tempEtiq);
             contEtiq++;
             tempEtiq = "_etiq";
             tempEtiq = tempEtiq + contEtiq;
-            gen("GOTO","","",tempEtiq);
+            TablaCuadruplos.gen("GOTO","","",tempEtiq);
             
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
