@@ -21,12 +21,15 @@ class ExpresionBooleana {
        nodo.arg2 = hijo2.value;
        nodo.auxValores = oprel;
 
-       nodo.listaVerdadera = Backpatching.crearLista(TablaCuadruplos.tablaCuadruplos.size()+1);
-       nodo.listaFalsa = Backpatching.crearLista(TablaCuadruplos.tablaCuadruplos.size() + 2);
+       nodo.listaVerdadera = Backpatching.crearLista(TablaCuadruplos.tablaCuadruplos.size());
+       System.out.println("Lista Verdadera Exp Bool: " + nodo.listaVerdadera);
+
+       nodo.listaFalsa = Backpatching.crearLista(TablaCuadruplos.tablaCuadruplos.size()+1);
+       System.out.println("Lista Falsa Exp Bool: " + nodo.listaFalsa);
 
        TablaCuadruplos.gen("if"+oprel,nodo.arg1,nodo.arg2,"");
        TablaCuadruplos.gen("GOTO","","","");
-
+        
         return nodo;
     }
 

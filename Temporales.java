@@ -11,5 +11,4 @@ class Temporales {
     public static int cont = 0; //Contador para el indice del arbol
 
 
-
 }

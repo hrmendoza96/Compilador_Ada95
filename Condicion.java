@@ -22,7 +22,7 @@ class Condicion {
         Backpatching.completa(hijo1.listaVerdadera, M.lineaCuadruplo);
         nodo.listaVerdadera = hijo2.listaVerdadera;
         nodo.listaFalsa = Backpatching.fusion(hijo1.listaFalsa, hijo2.listaFalsa);
-
+        
         return nodo;
 
 

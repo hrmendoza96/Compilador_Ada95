@@ -15,8 +15,8 @@ public class TablaCuadruplos{
         tablaCuadruplos.remove(cuadruplo);
     }
 
-    static public void asignarEtiqueta(Integer etiqueta, Integer indice) {
-        tablaCuadruplos.get(etiqueta).setResultado("_etiq"+indice);
+    static public void asignarLinea(Integer etiqueta, Integer indice) {
+        tablaCuadruplos.get(etiqueta).setResultado("line "+indice);
     }
 
     static public void imprimir() {
@@ -24,8 +24,9 @@ public class TablaCuadruplos{
         System.out.println("============================================================:");
         for (Cuadruplo cuadruplo : tablaCuadruplos)
             System.out.println(String.format(
-                    "      " + "| Operador: %s | Argumento1: %s | Argumento2: %s | Resultado: %s |",
-                    cuadruplo.operador, cuadruplo.argumento1, cuadruplo.argumento2, cuadruplo.resultado));
+                    "      " + "| Indice: %d | Operador: %s | Argumento1: %s | Argumento2: %s | Resultado: %s |",
+                    tablaCuadruplos.indexOf(cuadruplo), cuadruplo.operador, cuadruplo.argumento1, cuadruplo.argumento2,
+                    cuadruplo.resultado));
         System.out.println("============================================================:");
     }
 

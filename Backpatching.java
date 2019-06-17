@@ -28,8 +28,11 @@ class Backpatching {
 
     public static void completa(ArrayList<Integer> lista, int etiqueta){
         for (Integer indice : lista) {
-            TablaCuadruplos.asignarEtiqueta(indice, etiqueta);
+            TablaCuadruplos.asignarLinea(indice, etiqueta);
         }
+
+
+        
     }
     
 
