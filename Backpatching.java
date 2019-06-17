@@ -2,7 +2,6 @@ import java.util.*;
 
 class Backpatching {
 
-    int lineaCuadruplos;
 
     public Backpatching() {
 
@@ -14,7 +13,7 @@ class Backpatching {
         return nuevaLista;
     } 
 
-    public static ArrayList<Integer> fusiona(ArrayList<Integer> lista1, ArrayList<Integer> lista2){
+    public static ArrayList<Integer> fusion(ArrayList<Integer> lista1, ArrayList<Integer> lista2){
         ArrayList<Integer> nuevaLista = new ArrayList<Integer>();
         for (int i = 0; i < lista1.size(); i++) {
             nuevaLista.add(lista1.get(i));

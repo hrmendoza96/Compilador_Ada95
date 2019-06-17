@@ -21,8 +21,8 @@ class ExpresionBooleana {
        nodo.arg2 = hijo2.value;
        nodo.auxValores = oprel;
 
-       nodo.listaVerdadera = Backpatching.crearLista(TablaCuadruplos.tablaCuadruplos.size());
-       nodo.listaFalsa = Backpatching.crearLista(TablaCuadruplos.tablaCuadruplos.size() + 1);
+       nodo.listaVerdadera = Backpatching.crearLista(TablaCuadruplos.tablaCuadruplos.size()+1);
+       nodo.listaFalsa = Backpatching.crearLista(TablaCuadruplos.tablaCuadruplos.size() + 2);
 
        TablaCuadruplos.gen("if"+oprel,nodo.arg1,nodo.arg2,"");
        TablaCuadruplos.gen("GOTO","","","");

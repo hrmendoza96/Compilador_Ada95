@@ -30,7 +30,7 @@ terminal String NUM;
 terminal String STRING;
 
 // No Terminales
-non terminal inicio, cuerpo_principal, comienza_cuerpo_principal;
+non terminal inicio, cuerpo_principal, comienza_cuerpo_principal, M;
 non terminal parametros, datos_parametros, tipo_parametro, tipo_declaracion, declarar_procedimiento, declarar_funcion, llamar_funcion, funcion, declarar_variable;
 non terminal tipo_variable, listar_ids;
 non terminal codigo;
@@ -1974,9 +1974,12 @@ condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
-            | expresion_booleana:child1 AND:n1 M:m condicion:child2 {:
+            | expresion_booleana:child1 AND:n1 M:childM condicion:child2 {:
             
-            
+            Nodo hijo1 = (Nodo) child1;
+            Nodo hijo2 = (Nodo) child2;
+            Nodo m = (Nodo) childM;
+            Nodo nodo = Condicion.MetodoAnd(hijo1, n1.toString(), m, hijo2);
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -2001,10 +2004,7 @@ condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
 
 M ::= {: 
         Nodo nodo = new Nodo();
-        nodo.lineaCuadruplo = TablaCuadruplos.tablaCuadruplos.size();
-
-        
-
+        nodo.lineaCuadruplo = TablaCuadruplos.tablaCuadruplos.size() ;
         RESULT = nodo;
       :}
 ; 
