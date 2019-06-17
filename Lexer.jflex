@@ -60,7 +60,6 @@ STRINGTYPE = ("String")
 // Operaciones
 AND = ("and")
 OR = ("OR")
-XOR = ("XOR")
 
 // Decisiones
 BEGIN = ("begin")
@@ -111,7 +110,6 @@ LOOP = ("loop")
     {LOOP} { return new Symbol(sym.LOOP, yycolumn, yyline, yytext()); }
     {AND} { return new Symbol(sym.AND, yycolumn, yyline, yytext()); }
     {OR} { return new Symbol(sym.OR, yycolumn, yyline, yytext()); }
-    {XOR} { return new Symbol(sym.XOR, yycolumn, yyline, yytext()); }
     {FALSE} { return new Symbol(sym.FALSE, yycolumn, yyline, yytext()); }
     {TRUE} { return new Symbol(sym.TRUE, yycolumn, yyline, yytext()); }
     {EXIT} { return new Symbol(sym.EXIT, yycolumn, yyline, yytext()); }

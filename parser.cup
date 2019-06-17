@@ -1974,37 +1974,8 @@ condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
-            | expresion_booleana:child1 AND:n1 condicion:child2 {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("condicion", Temporales.cont);
-            Temporales.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoAnd = new Nodo("AND", n1.toString(), Temporales.cont);
-            Temporales.cont++;
-
-            /*Se añaden los hijos*/
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoAnd);
-            nodo.AddHijo((Nodo) child2);
+            | expresion_booleana:child1 AND:n1 M:m condicion:child2 {:
             
-            
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
-            RESULT = nodo;
-            :}
-            | expresion_booleana:child1 XOR:n1 condicion:child2 {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("condicion", Temporales.cont);
-            Temporales.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoXor = new Nodo("XOR", n1.toString(), Temporales.cont);
-            Temporales.cont++;
-
-            /*Se añaden los hijos*/
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoXor);
-            nodo.AddHijo((Nodo) child2);
             
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -2028,28 +1999,21 @@ condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
             :}
             ;
 
+M ::= {: 
+        Nodo nodo = new Nodo();
+        nodo.lineaCuadruplo = TablaCuadruplos.tablaCuadruplos.size();
+
+        
+
+        RESULT = nodo;
+      :}
+; 
+
 //EXPRESION BOOLEANA: Expresion booleana en el que se comparan dos operandos con un operador relacional.
 expresion_booleana  ::= operando:child1 OPREL:n1 operando:child2 {:
-                    /*Se crea el nodo prinicipal*/
-                    Nodo nodo = new Nodo("expresion_booleana", Temporales.cont);
-                    Temporales.cont++;
-
-                    /*Nuevo Nodo: TERMINAL*/
-                    Nodo nodoOPREL = new Nodo("OPREL", n1.toString(), Temporales.cont);
-                    Temporales.cont++;
-
-                    /*Se añaden los hijos*/
-                    nodo.AddHijo((Nodo) child1);
-                    nodo.AddHijo(nodoOPREL);
-                    nodo.AddHijo((Nodo) child2);
-
                     Nodo hijo1 = (Nodo) child1;
                     Nodo hijo2 = (Nodo) child2;
-
-                    nodo.arg1 = hijo1.value;
-                    nodo.arg2 = hijo2.value;
-                    nodo.auxValores = n1.toString();
-                    
+                    Nodo nodo = ExpresionBooleana.MetodoExpresionBooleana(hijo1, n1.toString(), hijo2);
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
                     :}

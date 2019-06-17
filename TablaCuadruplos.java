@@ -7,12 +7,16 @@ public class TablaCuadruplos{
     static ArrayList<Cuadruplo> tablaCuadruplos = new ArrayList<Cuadruplo>();
     public static Logger log = Logger.getLogger(TablaCuadruplos.class.getName()); //
 
-    static public void insertarCuadruplo(Cuadruplo cuadruplo){
+    public static void insertarCuadruplo(Cuadruplo cuadruplo){
         tablaCuadruplos.add(cuadruplo);
     }
     
-    static public void borrarCuadruplo(Cuadruplo cuadruplo){
+    public static void borrarCuadruplo(Cuadruplo cuadruplo){
         tablaCuadruplos.remove(cuadruplo);
+    }
+
+    static public void asignarEtiqueta(Integer etiqueta, Integer indice) {
+        tablaCuadruplos.get(etiqueta).setResultado("_etiq"+indice);
     }
 
     static public void imprimir() {

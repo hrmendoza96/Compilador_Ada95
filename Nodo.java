@@ -11,6 +11,15 @@ public class Nodo {
     public String temporal;
     public String arg1;
     public String arg2;
+    
+
+    int lineaCuadruplo;
+
+    //Listas Para Cuadruplos
+    public ArrayList<Integer> listaVerdadera = new ArrayList<>();
+    public ArrayList<Integer> listaFalsa = new ArrayList<>();
+    public ArrayList<Integer> listaSiguiente = new ArrayList<>();
+    
 
 
     public ArrayList<Nodo> children = new ArrayList<>();
