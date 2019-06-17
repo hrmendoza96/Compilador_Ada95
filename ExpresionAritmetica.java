@@ -475,7 +475,7 @@ class ExpresionAritmetica {
             }
         } else{
             System.out.println("Error: Valor de funcion aun retorna nulo.");
-            ErroresSemanticos.add("Error: Valor de funcion aun retorna nulo.");
+            //ErroresSemanticos.add("Error: Valor de funcion aun retorna nulo.");
         }
 
         Nodo nodo = new Nodo(operacion,resultado,cont,tipo);
@@ -948,7 +948,7 @@ class ExpresionAritmetica {
             }
         }else{
             System.out.println("Error: Valor de funcion aun retorna nulo.");
-            ErroresSemanticos.add("Error: Valor de funcion aun retorna nulo.");
+            //ErroresSemanticos.add("Error: Valor de funcion aun retorna nulo.");
         }
         Nodo nodo = new Nodo(operacion,resultado, cont, tipo);
         nodo.temporal = tempVar;

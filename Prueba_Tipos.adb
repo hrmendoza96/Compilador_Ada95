@@ -17,20 +17,17 @@ procedure Calc is
       m : Integer := 7;
       b := "cambio";
 
-      --g : Integer := 4;
-      --f : Integer := true;
-
       L : String;
       d := d * k;   
       d := d * i;   
-      k := ( (3*2) + (5/3) )* 5;
+      
 
 
       z : Float := 5/3;
       d := 10.0; 
 
       
-      --g := true; 
+
      
 begin
   loop
