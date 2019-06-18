@@ -28,6 +28,12 @@ class Condicion {
 
     }
 
+    public static Nodo MetodoExpBool () {
+        Nodo nodo =  null;
+        return nodo;
+    }
+
+
     public static Nodo MetodoOr(){
         Nodo nodo = new Nodo();
         return nodo;

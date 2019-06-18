@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 parser code
 {:
+    public String auxiliar ="";
     public static Nodo padre;
     public static String cadenaAmbito = "";
     public static ArrayList<String> ErroresSintacticos = new ArrayList<String>();
@@ -1942,14 +1943,28 @@ bloque_if   ::= IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloqu
             Temporales.cont++;
 
             /*Se añaden los hijos*/
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo((Nodo) child2);
-            nodo.AddHijo((Nodo) child3);
-            nodo.AddHijo((Nodo) child4); 
+            Nodo hijo1 = (Nodo) child1;
+            Nodo hijo2 = (Nodo) child2;
+            Nodo hijo3 = (Nodo) child3;
+            Nodo hijo4 = (Nodo) child4;
 
+            nodo.AddHijo(hijo1);
+            nodo.AddHijo(hijo2);
+            nodo.AddHijo(hijo3);
+            nodo.AddHijo(hijo4); 
 
+            String tempEtiq = "_etiq"+Temporales.contEtiq;
+            TablaCuadruplos.gen("IF"+hijo1.auxValores,hijo1.arg1,hijo1.arg2,tempEtiq);
+            Temporales.contEtiq++;
+            tempEtiq = "_etiq";
+            tempEtiq = tempEtiq + Temporales.contEtiq;
 
+            TablaCuadruplos.gen("GOTO","","",tempEtiq);
 
+            tempEtiq = "_etiq";
+            tempEtiq = tempEtiq +(Temporales.contEtiq-=1);
+            TablaCuadruplos.gen("ETIQ","","",tempEtiq);
+            Temporales.contEtiq++;
 
 
             
@@ -2019,7 +2034,26 @@ M ::= {:
 expresion_booleana  ::= operando:child1 OPREL:n1 operando:child2 {:
                     Nodo hijo1 = (Nodo) child1;
                     Nodo hijo2 = (Nodo) child2;
-                    Nodo nodo = ExpresionBooleana.MetodoExpresionBooleana(hijo1, n1.toString(), hijo2);
+                    Nodo nodo = null;
+                    if (auxiliar == "") {
+                        nodo = ExpresionBooleana.MetodoExpresionBooleana(hijo1, n1.toString(), hijo2);
+                    } else {
+                        /*Se crea el nodo prinicipal*/
+                        nodo = new Nodo("expresion_booleana", Temporales.cont);
+                        Temporales.cont++;
+
+                        /*Nuevo Nodo: TERMINAL*/
+                        Nodo nodoOPREL = new Nodo("OPREL", n1.toString(), Temporales.cont);
+                        Temporales.cont++;
+
+                        /*Se añaden los hijos*/
+                        nodo.AddHijo(hijo1);
+                        nodo.AddHijo(nodoOPREL);
+                        nodo.AddHijo(hijo2);
+                        nodo.arg1 = hijo1.value;
+                        nodo.arg2 = hijo2.value;
+                        nodo.auxValores = n1.toString();
+                    }
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
                     RESULT = nodo;
                     :}
@@ -2115,15 +2149,9 @@ bloque_else ::= ELSE codigo:child1 {:
 /*==========================================CICLOS=====================================*/
 /* Ciclos LOOP, While, y For */
 ciclo_loop  ::= LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("ciclo_loop", Temporales.cont);
-            Temporales.cont++;
-
-            /*Se añaden los hijos*/
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo((Nodo) child2);
-            
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
+            Nodo hijo1 = (Nodo) child1;
+            Nodo hijo2 = (Nodo) child2;
+            Nodo nodo = Loop.MetodoLoop(hijo1, hijo2);
             RESULT = nodo;
             :}
             | LOOP codigo:child1 salir_ciclo:child2 error END LOOP SEMICOLON
@@ -2132,20 +2160,22 @@ ciclo_loop  ::= LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOL
             | LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP error
             ;
 
-ciclo_while ::= WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEMICOLON END LOOP SEMICOLON {:
-            Nodo hijo1 = (Nodo) child1;
-            Nodo hijo2 = (Nodo) child2;
-            Nodo hijo3 = (Nodo) child3;
-            Nodo nodo = While.MetodoWhile(hijo1, hijo2, hijo3, Temporales.cont);
-            Temporales.cont++;
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
-            RESULT = nodo;
+ciclo_while ::= WHILE {:
+                    String tempEtiq = "_etiq"+Temporales.contEtiq;
+                    TablaCuadruplos.gen("ETIQ","","",tempEtiq);
+                    Temporales.contEtiq++;
+                    auxiliar = "...";
+            :} condicion:child1 LOOP {:
+                Nodo hijo1 = (Nodo) child1;
+                Nodo nodo = While.MetodoWhile(hijo1);
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+            :}codigo:child2 END LOOP SEMICOLON {:
+                Nodo nodo = new Nodo("ciclo_while", Temporales.cont);
+                Nodo hijo2 = (Nodo) child2;
+                nodo.AddHijo(hijo2);
             :}
-            | WHILE condicion:child1 error codigo:child2 salir_ciclo:child3 SEMICOLON END LOOP SEMICOLON
-            | WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 error END LOOP SEMICOLON
-            | WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEMICOLON error LOOP SEMICOLON
-            | WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEMICOLON END error SEMICOLON
-            | WHILE condicion:child1 LOOP codigo:child2 salir_ciclo:child3 SEMICOLON END LOOP error
+
             ;
 
 ciclo_for   ::= FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 END LOOP SEMICOLON{:

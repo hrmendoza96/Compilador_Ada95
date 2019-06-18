@@ -6,8 +6,7 @@ class Cuadruplo {
     String operador;
     String argumento1;
     String argumento2;
-    String resultado;
-    
+    String resultado;    
 
     /**
      * Constructores/Getters/Setters

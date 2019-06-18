@@ -10,5 +10,4 @@ class Temporales {
     public static int contEtiq = 0; //Etiquetas
     public static int cont = 0; //Contador para el indice del arbol
 
-
 }
