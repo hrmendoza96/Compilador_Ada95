@@ -6,6 +6,14 @@ parser code
     public String auxiliar ="";
     public static Nodo padre;
     public static String cadenaAmbito = "";
+    public static String valEtiqWhile = "";
+    public static int valEtiqWhileFin = 0;
+    public static int valEtiqIf = 0;
+    public static int contadorFinal = 0;
+    public static int contadorFinalFloats = 0;
+    public static int contadorMensajes = 0;
+    public static int posicionFinal = 0;
+    public static String cadenaStore = "";
     public static ArrayList<String> ErroresSintacticos = new ArrayList<String>();
     public static ArrayList<String> variablesEnParametros = new ArrayList<String>();
     public static ArrayList<String> variablesDentroFunction = new ArrayList<String>();
@@ -70,6 +78,10 @@ inicio  ::= cuerpo_principal:child1 {:
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
+
+        for (String cadena : Temporales.finalCode) {// Aquí se realiza la impresión del código final, con todo arriba.
+            System.out.println(cadena);
+        }
         :}
         ;
 
@@ -148,8 +160,9 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {:
 
                         String nuevaCadena = cadenaAmbito;
                         cadenaAmbito = nuevaCadena+"."+n2.toString();
+                        Temporales.finalCode.add(".data"); // Se agrega el .data del código final
+                        posicionFinal++;
                         
-
                     :} comienza_cuerpo_principal:child1 {:
                     // /*Se crea el nodo prinicipal*/
                     Nodo nodo = new Nodo("cuerpo_principal",Temporales.cont);
@@ -291,7 +304,12 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {:
                     ; 
 
 /*Este es el área donde comenzará el codigo del programa.*/
-comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 END:n2 ID:n3 SEMICOLON:n4 {:
+comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 {:
+                                // Agregamos más contenido básico al código final.
+                                Temporales.finalCode.add("  .text");
+                                Temporales.finalCode.add("  .globl main");
+                                Temporales.finalCode.add("main:");
+                            :}codigo:child2 END:n2 ID:n3 SEMICOLON:n4 {:
                             /*Se crea el nodo prinicipal*/
                             Nodo nodo = new Nodo("comienza_cuerpo_principal",Temporales.cont);
                             Temporales.cont++;
@@ -307,16 +325,10 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 E
                             /*Asignar el nodo al RESULT para continuar el recorrido*/
                             RESULT = nodo;
                             :}
-                            | tipo_declaracion:child1 error codigo:child2 END:n2 ID:n3 SEMICOLON:n4
-                            | tipo_declaracion:child1 BEGIN:n1 codigo:child2 error ID:n3 SEMICOLON:n4
-                            | tipo_declaracion:child1 BEGIN:n1 codigo:child2 END:n2 error SEMICOLON:n4
-                            | tipo_declaracion:child1 BEGIN:n1 codigo:child2 END:n2 ID:n3 error
-
                             | BEGIN:n1 codigo:child1 END:n2 ID:n3 SEMICOLON:n4 {:
                             /*Se crea el nodo prinicipal*/
                             Nodo nodo = new Nodo("comienza_cuerpo_principal",Temporales.cont);
                             Temporales.cont++;
-                            
                             
                             /*Se añaden los hijos*/
                             nodo.AddHijo((Nodo) child1);
@@ -338,7 +350,6 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         Nodo nodo = new Nodo("codigo", Temporales.cont);
         Temporales.cont++;
 
-        
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
@@ -1477,6 +1488,18 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     //nodoDeclarar.auxValores = type.getValue();
                     //System.out.println("AuxValores: " + nodoDeclarar.auxValores);
                     /*Asignar el nodo al RESULT para continuar el recorrido*/
+
+                     //Generacion de CODIGO FINAL
+                    if (type.value == "FLOAT") {
+                        Temporales.finalCode.add("  _" + n1 + ": .float 0.0");
+                    } else if (type.value == "INTEGER"){
+                        Temporales.finalCode.add("  _" + n1 + ": .word 0");
+                    } else if (type.value == "STRINGTYPE") {
+                        Temporales.finalCode.add("  _" + n1 + ": .asciiz " + "\"\""); // Solo vamos a dejar cadenas de 20 chars
+                    } else if (type.value == "BOOLEAN") {
+                        Temporales.finalCode.add("  _" + n1 + ": .word 1");
+                    }
+
                     RESULT = nodoDeclarar;
                     :}
                     | ID:n1 error tipo_variable:child1 SEMICOLON
@@ -1550,6 +1573,16 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
 
+             //CODIGO FINAL
+            String numero = exp.value;
+            if (type.value.equals("FLOAT") || type.value.equals("INTEGER")) {
+                if (numero.contains(".")) {
+                    Temporales.finalCode.add("  _" + n1 + ": .float " + numero);
+                } else {
+                    Temporales.finalCode.add("  _" + n1 + ": .word " + numero);
+                }
+            }
+
             RESULT = nodo;
             :}
             | ID:n1 error tipo_variable:child1 ASIGNACION:n3 expresion_aritmetica:child2 SEMICOLON:n4
@@ -1598,7 +1631,11 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
 
+            
+            // CODIGO FINAL
+            Temporales.finalCode.add("  _" + n1 + ": .word 1");
             /*Asignar el nodo al RESULT para continuar el recorrido*/
+
             RESULT = nodo;
             :}
             | ID:n1 error tipo_variable:child1 ASIGNACION:n3 TRUE:n4 SEMICOLON
@@ -1646,6 +1683,9 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             } catch (Exception e) {
                 System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
+            
+            // CODIGO FINAL
+            Temporales.finalCode.add("  _" + n1 + ": .word 0");
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -1696,6 +1736,9 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             } catch (Exception e) {
                 System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
+            //CODIGO FINAL PENDIENTE DE TRABAJARLO
+            Temporales.finalCode.add("  _" + n1 + ": .asciiz " + n4.toString());
+            cadenaStore =  n4.toString().replaceAll("\"", "");
 
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
@@ -1760,7 +1803,21 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             } catch (Exception e) {
                 System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
+            
+            //CODIGO FINAL
+            String numero = hijo.value;
+            if (numero.contains(".")) {
+                float valor = Float.parseFloat(numero);
+                Temporales.finalCode.add("  l.s $f" + contadorFinalFloats + ", " + valor ); // Load Word para floats
+                Temporales.finalCode.add("  s.s $f" + contadorFinalFloats + ", _" + n1); // Store Word para floats
+                contadorFinalFloats++;
+            } else {
+                int valor =Integer.parseInt(numero);
+                Temporales.finalCode.add("  li $t" + contadorFinal + ", " + valor ); // Load Word para int
+                Temporales.finalCode.add("  sw $t" + contadorFinal + ", _" + n1); // Store Word para int
+                contadorFinal++;
 
+            }
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -1805,7 +1862,11 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             } catch (Exception e) {
                 System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
-
+            
+            // CODIGO FINAL
+            Temporales.finalCode.add("  li $t" + contadorFinal + ", 1"); // Booleans se guardna como words
+            Temporales.finalCode.add("  sw $t" + contadorFinal + ", _" + n1); 
+            contadorFinal++;
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -1828,7 +1889,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             /*Se añaden los hijos*/
             nodo.AddHijo(nodoId);
             nodo.AddHijo(nodoFalse);
-
             // Tabla de Símbolos
             try{
                 Simbolo temporal = null;
@@ -1852,7 +1912,10 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
 
-            
+            // CODIGO FINAL
+            Temporales.finalCode.add("  li $t" + contadorFinal + ", 0"); // Booleans se guardna como words
+            Temporales.finalCode.add("  sw $t" + contadorFinal + ", _" + n1); 
+            contadorFinal++;
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -1897,6 +1960,11 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             } catch (Exception e) {
                 System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
+
+            //CODIGO FINAL
+            Temporales.finalCode.add("  li $v0, hola" ); // read string
+            Temporales.finalCode.add("  sw $t" + contadorFinal + ", _" + n1); 
+            contadorFinal++;
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -2322,6 +2390,14 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         nodo.AddHijo(nodoString);
 
         TablaCuadruplos.gen("PUT", "", "", n2.toString());
+
+        //AQUI HACEMOS LOS DE ADD INDEX
+        Temporales.finalCode.add(posicionFinal, "   _msg"+contadorMensajes+": .asciiz " + n2);
+        Temporales.finalCode.add("  li $v0, 4");
+        Temporales.finalCode.add("  lw $a0, _msg" + contadorMensajes);
+        Temporales.finalCode.add("  syscall");
+        contadorMensajes++;
+        posicionFinal++;
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -2384,6 +2460,27 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         nodo.AddHijo(nodoID);
 
         TablaCuadruplos.gen("PUT", "", "", n2.toString());
+
+        if (TablaSimbolos.buscar(nodoID.value) != null) {
+            Simbolo simbolo = TablaSimbolos.buscar(nodoID.value);
+            if (simbolo.tipoVariable.equals("STRINGTYPE")) {
+                Temporales.finalCode.add("  li $v0, 4");
+                Temporales.finalCode.add("  lw $a0, _" + n2);
+                Temporales.finalCode.add("  syscall");
+            } else if (simbolo.tipoVariable.equals("INTEGER")) {
+                Temporales.finalCode.add("  li $v0, 1");
+                Temporales.finalCode.add("  lw $a0, _" + n2);
+                Temporales.finalCode.add("  syscall");
+            } else if (simbolo.tipoVariable.equals("FLOAT")) {
+                Temporales.finalCode.add("  li $v0, 2");
+                Temporales.finalCode.add("  lw $a0, _" + n2);
+                Temporales.finalCode.add("  syscall");
+            } else if (simbolo.tipoVariable.equals("BOOLEAN")) {
+                Temporales.finalCode.add("  li $v0, 4");
+                Temporales.finalCode.add("  lw $a0, _" + n2);
+                Temporales.finalCode.add("  syscall");
+            }
+        }
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
