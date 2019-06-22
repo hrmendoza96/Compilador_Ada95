@@ -30,8 +30,6 @@ class Backpatching {
         for (Integer indice : lista) {
             TablaCuadruplos.asignarLinea(indice, etiqueta);
         }
-
-
         
     }
     

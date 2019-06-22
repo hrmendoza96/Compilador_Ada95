@@ -13,6 +13,7 @@ public class Nodo {
     public String arg2;
     
 
+    //Para usarse en temporal M
     int lineaCuadruplo;
 
     //Listas Para Cuadruplos

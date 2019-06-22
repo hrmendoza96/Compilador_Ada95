@@ -28,14 +28,23 @@ class Condicion {
 
     }
 
-    public static Nodo MetodoExpBool () {
-        Nodo nodo =  null;
-        return nodo;
-    }
+    public static Nodo MetodoOr(Nodo hijo1, String operador, Nodo M, Nodo hijo2){
+        Nodo nodo = new Nodo("condicion", Temporales.cont);
+        Temporales.cont++;
+
+        /*Nuevo Nodo: TERMINAL*/
+        Nodo nodoAnd = new Nodo("OR", operador, Temporales.cont);
+        Temporales.cont++;
 
 
-    public static Nodo MetodoOr(){
-        Nodo nodo = new Nodo();
+        /*Se añaden los hijos*/
+        nodo.AddHijo(hijo1);
+        nodo.AddHijo(nodoAnd);
+        nodo.AddHijo(hijo2);
+
+        Backpatching.completa(hijo1.listaFalsa, M.lineaCuadruplo);
+        nodo.listaFalsa = hijo2.listaFalsa;
+        nodo.listaVerdadera = Backpatching.fusion(hijo1.listaVerdadera, hijo2.listaVerdadera);
         return nodo;
     }
 

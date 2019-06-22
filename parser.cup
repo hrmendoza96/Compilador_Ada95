@@ -31,7 +31,7 @@ terminal String NUM;
 terminal String STRING;
 
 // No Terminales
-non terminal inicio, cuerpo_principal, comienza_cuerpo_principal, M;
+non terminal inicio, cuerpo_principal, comienza_cuerpo_principal, M, N, I;
 non terminal parametros, datos_parametros, tipo_parametro, tipo_declaracion, declarar_procedimiento, declarar_funcion, llamar_funcion, funcion, declarar_variable;
 non terminal tipo_variable, listar_ids;
 non terminal codigo;
@@ -333,14 +333,21 @@ comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 E
                             ;
 /*Esta es la forma en la que ese presenta el código. Se podrá poner cualquiera de estas opciones
 para comenzar a declarar código.*/
-codigo  ::= ciclo_for:child1 codigo:child2 {:
+codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo("codigo", Temporales.cont);
         Temporales.cont++;
- 
+
+        
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
+
+        Nodo m1 = (Nodo) childM1;
+        Nodo hijo1 = (Nodo) child1;
+        Nodo hijo2 = (Nodo) child2;
+        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+        nodo.listaSiguiente = hijo2.listaSiguiente;
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -350,13 +357,17 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         Nodo nodo = new Nodo("codigo", Temporales.cont);
         Temporales.cont++;
  
+        
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
+
+        Nodo hijo1 = (Nodo) child1;
+        nodo.listaSiguiente = hijo1.listaSiguiente;
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
         :}
-        | ciclo_while:child1 codigo:child2 {:
+        | ciclo_while:child1 M:childM1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo("codigo",Temporales.cont);
         Temporales.cont++;
@@ -364,6 +375,12 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
+
+        Nodo m1 = (Nodo) childM1;
+        Nodo hijo1 = (Nodo) child1;
+        Nodo hijo2 = (Nodo) child2;
+        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+        nodo.listaSiguiente = hijo2.listaSiguiente;
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -376,11 +393,14 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
 
+        Nodo hijo1 = (Nodo) child1;
+        nodo.listaSiguiente = hijo1.listaSiguiente;
+
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
         :}
-        | ciclo_loop:child1 codigo:child2 {:
+        | ciclo_loop:child1 M:childM1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo("codigo",Temporales.cont);
         Temporales.cont++;
@@ -388,6 +408,12 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
+
+        Nodo m1 = (Nodo) childM1;
+        Nodo hijo1 = (Nodo) child1;
+        Nodo hijo2 = (Nodo) child2;
+        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+        nodo.listaSiguiente = hijo2.listaSiguiente;
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -401,12 +427,15 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
 
+        Nodo hijo1 = (Nodo) child1;
+        nodo.listaSiguiente = hijo1.listaSiguiente;
+
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
 
         :}
-        | bloque_if:child1 codigo:child2 {:
+        | bloque_if:child1 M:childM1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo("codigo",Temporales.cont);
         Temporales.cont++;
@@ -414,6 +443,12 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
+
+        Nodo m1 = (Nodo) childM1;
+        Nodo hijo1 = (Nodo) child1;
+        Nodo hijo2 = (Nodo) child2;
+        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+        nodo.listaSiguiente = hijo2.listaSiguiente;
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -427,11 +462,14 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
 
+        Nodo hijo1 = (Nodo) child1;
+        nodo.listaSiguiente = hijo1.listaSiguiente;
+
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
 
         :}
-        | get:child1 codigo:child2 {:
+        | get:child1 M:childM1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo("codigo", Temporales.cont);
         Temporales.cont++;
@@ -439,6 +477,12 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
+
+        Nodo m1 = (Nodo) childM1;
+        Nodo hijo1 = (Nodo) child1;
+        Nodo hijo2 = (Nodo) child2;
+        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+        nodo.listaSiguiente = hijo2.listaSiguiente;
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -452,12 +496,15 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
 
+        Nodo hijo1 = (Nodo) child1;
+        nodo.listaSiguiente = hijo1.listaSiguiente;
+
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
 
         :}
-        | put:child1 codigo:child2 {:
+        | put:child1 M:childM1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo("codigo", Temporales.cont);
         Temporales.cont++;
@@ -465,6 +512,12 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
+
+        Nodo m1 = (Nodo) childM1;
+        Nodo hijo1 = (Nodo) child1;
+        Nodo hijo2 = (Nodo) child2;
+        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+        nodo.listaSiguiente = hijo2.listaSiguiente;
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -478,11 +531,14 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
 
+        Nodo hijo1 = (Nodo) child1;
+        nodo.listaSiguiente = hijo1.listaSiguiente;
+
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
 
         :}
-        | asignacion:child1 codigo:child2 {:
+        | asignacion:child1 M:childM1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo("codigo", Temporales.cont);
         Temporales.cont++;
@@ -490,6 +546,12 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
+
+        Nodo m1 = (Nodo) childM1;
+        Nodo hijo1 = (Nodo) child1;
+        Nodo hijo2 = (Nodo) child2;
+        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+        nodo.listaSiguiente = hijo2.listaSiguiente;
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -503,11 +565,14 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
 
+        Nodo hijo1 = (Nodo) child1;
+        nodo.listaSiguiente = hijo1.listaSiguiente;
+
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
 
         :}
-        | llamar_funcion:child1 codigo:child2 {:
+        | llamar_funcion:child1 M:childM1 codigo:child2 {:
         /*Se crea el nodo prinicipal*/
         Nodo nodo = new Nodo("codigo", Temporales.cont);
         Temporales.cont++;
@@ -515,6 +580,12 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
+
+        Nodo m1 = (Nodo) childM1;
+        Nodo hijo1 = (Nodo) child1;
+        Nodo hijo2 = (Nodo) child2;
+        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+        nodo.listaSiguiente = hijo2.listaSiguiente;
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -527,6 +598,9 @@ codigo  ::= ciclo_for:child1 codigo:child2 {:
  
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
+
+        Nodo hijo1 = (Nodo) child1;
+        nodo.listaSiguiente = hijo1.listaSiguiente;
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -1937,7 +2011,7 @@ tipo_variable   ::= INTEGER  {:
 /*================================BLOQUE IF======================================*/
 /*BLOQUE IF: Estructura de un bloque if que internamente manda a llamar non terminales de
 bloque elseif y del bloque else.*/
-bloque_if   ::= IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloque_else:child4 END IF SEMICOLON {:
+bloque_if   ::= IF condicion:child1 THEN M:childM1 codigo:child2 I:childI1 ELSE M:childM2 codigo:child3 END IF SEMICOLON {:
             /*Se crea el nodo prinicipal*/
             Nodo nodo = new Nodo("bloque_if", Temporales.cont);
             Temporales.cont++;
@@ -1946,86 +2020,149 @@ bloque_if   ::= IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloqu
             Nodo hijo1 = (Nodo) child1;
             Nodo hijo2 = (Nodo) child2;
             Nodo hijo3 = (Nodo) child3;
-            Nodo hijo4 = (Nodo) child4;
+            Nodo m1 = (Nodo) childM1;
+            Nodo m2 = (Nodo) childM2;
+            Nodo i1 = (Nodo) childI1;
 
             nodo.AddHijo(hijo1);
             nodo.AddHijo(hijo2);
             nodo.AddHijo(hijo3);
-            nodo.AddHijo(hijo4); 
 
-            String tempEtiq = "_etiq"+Temporales.contEtiq;
-            TablaCuadruplos.gen("IF"+hijo1.auxValores,hijo1.arg1,hijo1.arg2,tempEtiq);
-            Temporales.contEtiq++;
-            tempEtiq = "_etiq";
-            tempEtiq = tempEtiq + Temporales.contEtiq;
+            Backpatching.completa(hijo1.listaVerdadera, m1.lineaCuadruplo); 
+            Backpatching.completa(hijo1.listaFalsa, m2.lineaCuadruplo); 
 
-            TablaCuadruplos.gen("GOTO","","",tempEtiq);
-
-            tempEtiq = "_etiq";
-            tempEtiq = tempEtiq +(Temporales.contEtiq-=1);
-            TablaCuadruplos.gen("ETIQ","","",tempEtiq);
-            Temporales.contEtiq++;
+            //PENDIENTE
+            nodo.listaSiguiente = Backpatching.fusion(hijo2.listaSiguiente, Backpatching.fusion(i1.listaSiguiente, hijo3.listaSiguiente));
 
 
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
-            | IF condicion:child1 error codigo:child2 bloque_elsif:child3 bloque_else:child4 END IF SEMICOLON
-            | IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloque_else:child4 error IF SEMICOLON
-            | IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloque_else:child4 END error SEMICOLON
-            | IF condicion:child1 THEN codigo:child2 bloque_elsif:child3 bloque_else:child4 END IF error
-            ;
-
-//CONDICION = Condicion interna para los ifs y los ciclos loop y while.
-condicion   ::= expresion_booleana:child1 OR:n1 condicion:child2 {:
+            | IF condicion:child1 THEN M:childM1 codigo:child2 END IF SEMICOLON {:
             /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("condicion", Temporales.cont);
-            Temporales.cont++;
-
-            /*Nuevo Nodo: TERMINAL*/
-            Nodo nodoOr = new Nodo("OR", n1.toString(), Temporales.cont);
+            Nodo nodo = new Nodo("bloque_if", Temporales.cont);
             Temporales.cont++;
 
             /*Se añaden los hijos*/
-            nodo.AddHijo((Nodo) child1);
-            nodo.AddHijo(nodoOr);
-            nodo.AddHijo((Nodo) child2);
-            
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
-            RESULT = nodo;
-            :}
-            | expresion_booleana:child1 AND:n1 M:childM condicion:child2 {:
-            
             Nodo hijo1 = (Nodo) child1;
             Nodo hijo2 = (Nodo) child2;
-            Nodo m = (Nodo) childM;
-            Nodo nodo = Condicion.MetodoAnd(hijo1, n1.toString(), m, hijo2);
+            Nodo m1 = (Nodo) childM1;
+
+            nodo.AddHijo(hijo1);
+            nodo.AddHijo(hijo2);
+            
+            Backpatching.completa(hijo1.listaVerdadera, m1.lineaCuadruplo); 
+            nodo.listaSiguiente = Backpatching.fusion(hijo1.listaFalsa, hijo2.listaSiguiente);
+            
+
+
             
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
+            
+            :}
+            ;
+
+I   ::= {:
+
+        Nodo nodo = new Nodo();
+        int siguienteSalto = TablaCuadruplos.tablaCuadruplos.size(); 
+        nodo.listaSiguiente = Backpatching.crearLista(siguienteSalto);
+        TablaCuadruplos.gen("GOTO", "", "", "");
+        RESULT = nodo;
+
+    :}
+    ;
+
+// /*Bloque ELSEIF y Bloque ELSE que vienen del bloque if. Este puede incluir vacio ya que
+// no en todos los ifs se requiere un bloque else if.*/
+// bloque_elsif    ::= ELSIF condicion:child1 THEN codigo:child2 bloque_elsif:child3 {:
+//                 /*Se crea el nodo prinicipal*/
+//                 Nodo nodo = new Nodo("bloque_elsif", Temporales.cont);
+//                 Temporales.cont++;
+                
+//                 /*Se añaden los hijos*/
+//                 nodo.AddHijo((Nodo) child1);
+//                 nodo.AddHijo((Nodo) child2);
+//                 nodo.AddHijo((Nodo) child3);
+
+//                 /*Asignar el nodo al RESULT para continuar el recorrido*/
+//                 RESULT = nodo;
+//                 :}
+//                 | {:
+//                 /*Se crea el nodo prinicipal*/
+//                 Nodo nodo = new Nodo("VACIO", Temporales.cont);
+//                 Temporales.cont++;
+//                 /*Asignar el nodo al RESULT para continuar el recorrido*/
+//                 RESULT = nodo;
+//                 :}
+//                 | ELSIF condicion:child1 error codigo:child2 bloque_elsif:child3
+//                 ;
+
+// bloque_else ::= ELSE codigo:child1 {:
+//             /*Se crea el nodo prinicipal*/
+//             Nodo nodo = new Nodo("bloque_else", Temporales.cont);
+//             Temporales.cont++;
+            
+//             /*Se añaden los hijos*/
+//             nodo.AddHijo((Nodo) child1);
+
+//             /*Asignar el nodo al RESULT para continuar el recorrido*/
+//             RESULT = nodo;
+//             :}
+//             | {:
+//                 /*Se crea el nodo prinicipal*/
+//                 Nodo nodo = new Nodo("VACIO", Temporales.cont);
+//                 Temporales.cont++;
+//                 /*Asignar el nodo al RESULT para continuar el recorrido*/
+//                 RESULT = nodo;
+
+//             :}
+//             ;
+
+//CONDICION = Condicion interna para los ifs y los ciclos loop y while.
+condicion   ::= expresion_booleana:child1 OR:n1 M:childM expresion_booleana:child2 {:
+                Nodo hijo1 = (Nodo) child1;
+                Nodo hijo2 = (Nodo) child2;
+                Nodo m = (Nodo) childM;
+                Nodo nodo = Condicion.MetodoOr(hijo1, n1.toString(), m, hijo2);
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
+            :}
+            | expresion_booleana:child1 AND:n1 M:childM expresion_booleana:child2 {:
+            
+                Nodo hijo1 = (Nodo) child1;
+                Nodo hijo2 = (Nodo) child2;
+                Nodo m = (Nodo) childM;
+                Nodo nodo = Condicion.MetodoAnd(hijo1, n1.toString(), m, hijo2);
+                
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
             :}
             | expresion_booleana:child1 {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("expresion_booleana", Temporales.cont);
-            Temporales.cont++;     
+                /*Se crea el nodo prinicipal*/
+                Nodo nodo = new Nodo("expresion_booleana", Temporales.cont);
+                Temporales.cont++;     
 
-            /*Se añaden los hijos*/
-            nodo.AddHijo((Nodo) child1);
-            Nodo hijo = (Nodo) child1;
+                /*Se añaden los hijos*/
+                nodo.AddHijo((Nodo) child1);
+                Nodo hijo = (Nodo) child1;
+                
+                //Pasar listas
+                nodo.listaVerdadera = hijo.listaVerdadera;
+                nodo.listaFalsa = hijo.listaFalsa;
 
-            nodo.auxValores = hijo.auxValores;
-            nodo.arg1 = hijo.arg1;
-            nodo.arg2 = hijo.arg2;
-
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
-            RESULT = nodo;
+                /*Asignar el nodo al RESULT para continuar el recorrido*/
+                RESULT = nodo;
             :}
             ;
 
 M ::= {: 
         Nodo nodo = new Nodo();
-        nodo.lineaCuadruplo = TablaCuadruplos.tablaCuadruplos.size() ;
+        nodo.lineaCuadruplo = Temporales.contEtiq; // M.cuadruplo = siguienteCuadruplo
+        TablaCuadruplos.gen("ETIQ","","","_etiq"+nodo.lineaCuadruplo);
+        Temporales.contEtiq++;
         RESULT = nodo;
       :}
 ; 
@@ -2035,26 +2172,7 @@ expresion_booleana  ::= operando:child1 OPREL:n1 operando:child2 {:
                     Nodo hijo1 = (Nodo) child1;
                     Nodo hijo2 = (Nodo) child2;
                     Nodo nodo = null;
-                    if (auxiliar == "") {
-                        nodo = ExpresionBooleana.MetodoExpresionBooleana(hijo1, n1.toString(), hijo2);
-                    } else {
-                        /*Se crea el nodo prinicipal*/
-                        nodo = new Nodo("expresion_booleana", Temporales.cont);
-                        Temporales.cont++;
-
-                        /*Nuevo Nodo: TERMINAL*/
-                        Nodo nodoOPREL = new Nodo("OPREL", n1.toString(), Temporales.cont);
-                        Temporales.cont++;
-
-                        /*Se añaden los hijos*/
-                        nodo.AddHijo(hijo1);
-                        nodo.AddHijo(nodoOPREL);
-                        nodo.AddHijo(hijo2);
-                        nodo.arg1 = hijo1.value;
-                        nodo.arg2 = hijo2.value;
-                        nodo.auxValores = n1.toString();
-                    }
-                    /*Asignar el nodo al RESULT para continuar el recorrido*/
+                    nodo = ExpresionBooleana.MetodoExpresionBooleana(hijo1, n1.toString(), hijo2);
                     RESULT = nodo;
                     :}
                     | operando:child1 error operando:child2
@@ -2099,116 +2217,76 @@ operando    ::= NUM:n1 {:
             :}
             ;
 
-/*Bloque ELSEIF y Bloque ELSE que vienen del bloque if. Este puede incluir vacio ya que
-no en todos los ifs se requiere un bloque else if.*/
-bloque_elsif    ::= ELSIF condicion:child1 THEN codigo:child2 bloque_elsif:child3 {:
-                /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("bloque_elsif", Temporales.cont);
-                Temporales.cont++;
-                
-                /*Se añaden los hijos*/
-                nodo.AddHijo((Nodo) child1);
-                nodo.AddHijo((Nodo) child2);
-                nodo.AddHijo((Nodo) child3);
 
-                /*Asignar el nodo al RESULT para continuar el recorrido*/
-                RESULT = nodo;
-                :}
-                | {:
-                /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("VACIO", Temporales.cont);
-                Temporales.cont++;
-                /*Asignar el nodo al RESULT para continuar el recorrido*/
-                RESULT = nodo;
-                :}
-                | ELSIF condicion:child1 error codigo:child2 bloque_elsif:child3
-                ;
-
-bloque_else ::= ELSE codigo:child1 {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("bloque_else", Temporales.cont);
-            Temporales.cont++;
-            
-            /*Se añaden los hijos*/
-            nodo.AddHijo((Nodo) child1);
-
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
-            RESULT = nodo;
-            :}
-            | {:
-                /*Se crea el nodo prinicipal*/
-                Nodo nodo = new Nodo("VACIO", Temporales.cont);
-                Temporales.cont++;
-                /*Asignar el nodo al RESULT para continuar el recorrido*/
-                RESULT = nodo;
-
-            :}
-            ;
 
 
 /*==========================================CICLOS=====================================*/
 /* Ciclos LOOP, While, y For */
-ciclo_loop  ::= LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP SEMICOLON {:
+ciclo_loop  ::= LOOP M:childM1 codigo:child1 EXIT WHEN M:childM2 condicion:child2 SEMICOLON END LOOP SEMICOLON {:
             Nodo hijo1 = (Nodo) child1;
             Nodo hijo2 = (Nodo) child2;
-            Nodo nodo = Loop.MetodoLoop(hijo1, hijo2);
+            Nodo m1 = (Nodo) childM1;
+            Nodo m2 = (Nodo) childM2;
+            Nodo nodo = Loop.MetodoLoop(hijo1, m1, m2, hijo2);
             RESULT = nodo;
             :}
-            | LOOP codigo:child1 salir_ciclo:child2 error END LOOP SEMICOLON
-            | LOOP codigo:child1 salir_ciclo:child2 SEMICOLON error LOOP SEMICOLON
-            | LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END error SEMICOLON
-            | LOOP codigo:child1 salir_ciclo:child2 SEMICOLON END LOOP error
+            | LOOP M:childM1 codigo:child1 error WHEN M:childM2 condicion:child2 SEMICOLON END LOOP SEMICOLON
+            | LOOP M:childM1 codigo:child1 EXIT error M:childM2 condicion:child2 SEMICOLON END LOOP SEMICOLON
+            | LOOP M:childM1 codigo:child1 EXIT WHEN M:childM2 condicion:child2 error END LOOP SEMICOLON
+            | LOOP M:childM1 codigo:child1 EXIT WHEN M:childM2 condicion:child2 SEMICOLON error LOOP SEMICOLON
+            | LOOP M:childM1 codigo:child1 EXIT WHEN M:childM2 condicion:child2 SEMICOLON END error SEMICOLON
+            | LOOP M:childM1 codigo:child1 EXIT WHEN M:childM2 condicion:child2 SEMICOLON END LOOP error
             ;
 
-ciclo_while ::= WHILE {:
-                    String tempEtiq = "_etiq"+Temporales.contEtiq;
-                    TablaCuadruplos.gen("ETIQ","","",tempEtiq);
-                    Temporales.contEtiq++;
-                    auxiliar = "...";
-            :} condicion:child1 LOOP {:
+ciclo_while ::= WHILE M:childM1 condicion:child1 LOOP M:childM2 codigo:child2 END LOOP SEMICOLON {:
                 Nodo hijo1 = (Nodo) child1;
-                Nodo nodo = While.MetodoWhile(hijo1);
+                Nodo hijo2 = (Nodo) child2;
+                Nodo m1 = (Nodo) childM1;
+                Nodo m2 = (Nodo) childM2;
+                Nodo nodo = While.MetodoWhile(hijo1, m1, hijo2, m2);
                 /*Asignar el nodo al RESULT para continuar el recorrido*/
                 RESULT = nodo;
-            :}codigo:child2 END LOOP SEMICOLON {:
-                Nodo nodo = new Nodo("ciclo_while", Temporales.cont);
-                Nodo hijo2 = (Nodo) child2;
-                nodo.AddHijo(hijo2);
             :}
-
             ;
 
-ciclo_for   ::= FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 END LOOP SEMICOLON{:
+ciclo_for   ::= FOR M:childM1 ID:id IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 N:childN1 LOOP M:childM2 codigo:child1 END LOOP SEMICOLON{:
                 Nodo hijo1 = (Nodo) child1;
-                Nodo nodo = For.MetodoFor(hijo1, n1.toString(), n3.toString(), n5.toString());
+                Nodo m1 = (Nodo) childM1;
+                Nodo m2 = (Nodo) childM2;
+                Nodo n1 = (Nodo) childN1;
+                Nodo nodo = For.MetodoFor(hijo1, id.toString(), n3.toString(), n5.toString(), m1, m2, n1);
                 RESULT = nodo;
             :}
-            | FOR error IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 END LOOP SEMICOLON
-            | FOR ID:n1 error NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 END LOOP SEMICOLON
-            | FOR ID:n1 IN:n2 error DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 END LOOP SEMICOLON
-            | FOR ID:n1 IN:n2 NUM:n3 error NUM:n5 LOOP codigo:child1 END LOOP SEMICOLON
-            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 error LOOP codigo:child1 END LOOP SEMICOLON
-            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 error codigo:child1 END LOOP SEMICOLON
-            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 error LOOP SEMICOLON
-            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 END error SEMICOLON
-            | FOR ID:n1 IN:n2 NUM:n3 DOSPUNTOS:n4 NUM:n5 LOOP codigo:child1 END LOOP error
             ;
+N   ::= {:
+        Nodo nodo1 = new Nodo();
+        Nodo nodo2 = new Nodo();
+        //Reserva el espacio para comparar el primer numero
+        int siguienteSalto= TablaCuadruplos.tablaCuadruplos.size(); 
+        nodo1.listaVerdadera = Backpatching.crearLista(siguienteSalto);
+        nodo1.listaFalsa = Backpatching.crearLista(siguienteSalto + 1);
+        TablaCuadruplos.gen("if>=", "", "", "_etiq"+Temporales.contEtiq); //Apunta a la siguiente condicion para evaular
+        TablaCuadruplos.gen("GOTO", "", "", ""); //Esta posicion de la tabla es la que se guarda en el int siguienteSalto el cual apunta afuera del for
+        
+        //Crea Etiqueta Nueva para comparar segundo numero
+        TablaCuadruplos.gen("ETIQ", "", "","_etiq"+Temporales.contEtiq);
+        Temporales.contEtiq++;
 
-salir_ciclo ::= EXIT WHEN condicion:child1 {:
-            /*Se crea el nodo prinicipal*/
-            Nodo nodo = new Nodo("salir_ciclo", Temporales.cont);
-            Temporales.cont++;
 
-            /*Se añaden los hijos*/
-            nodo.AddHijo((Nodo) child1);
-            
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
-            RESULT = nodo;
-            :}
-            | error WHEN condicion:child1
-            | EXIT error condicion:child1
-            ;
+        //Reserva el espacio para comparar el siguiente numero
+        siguienteSalto = TablaCuadruplos.tablaCuadruplos.size(); 
+        nodo2.listaVerdadera = Backpatching.crearLista(siguienteSalto);
+        nodo2.listaFalsa = Backpatching.crearLista(siguienteSalto + 1);
+        TablaCuadruplos.gen("if<=", "", "", "_etiq"+Temporales.contEtiq); //Apunta a la nueva etiqueta que se generara en M2 dentro del for
+        TablaCuadruplos.gen("GOTO", "", "", ""); //Esta posicion de la tabla es la que se guarda en el int siguienteSalto el cual apunta afuera del for
 
+        Nodo nodoPrincipal= new Nodo();
+        nodoPrincipal.listaVerdadera = Backpatching.fusion(nodo1.listaVerdadera, nodo2.listaVerdadera);
+        nodoPrincipal.listaFalsa = Backpatching.fusion(nodo1.listaFalsa, nodo2.listaFalsa);
+
+        RESULT = nodoPrincipal;
+    :}
+    ;
 /*==========================================PUT y GET===========================================*/
 put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         /*Se crea el nodo prinicipal*/
@@ -2218,6 +2296,8 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
         /*Nuevo Nodo: TERMINAL*/
         Nodo nodoNum = new Nodo("NUM", n2.toString(), Temporales.cont);
         Temporales.cont++;
+
+        TablaCuadruplos.gen("PUT", "", "", n2.toString());
 
         /*Se añaden los hijos*/
         nodo.AddHijo(nodoNum);
@@ -2240,6 +2320,8 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
 
         /*Se añaden los hijos*/
         nodo.AddHijo(nodoString);
+
+        TablaCuadruplos.gen("PUT", "", "", n2.toString());
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -2258,6 +2340,8 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
 
         /*Se añaden los hijos*/
         nodo.AddHijo(nodoTrue);
+
+        TablaCuadruplos.gen("PUT", "", "", n2.toString());
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -2277,6 +2361,8 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
 
         /*Se añaden los hijos*/
         nodo.AddHijo(nodoFalse);
+
+        TablaCuadruplos.gen("PUT", "", "", n2.toString());
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -2296,6 +2382,8 @@ put ::= PUT PARIZQ:n1 NUM:n2 PARDER:n3 SEMICOLON {:
 
         /*Se añaden los hijos*/
         nodo.AddHijo(nodoID);
+
+        TablaCuadruplos.gen("PUT", "", "", n2.toString());
         
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -2316,6 +2404,8 @@ get ::= GET PARIZQ:n1 ID:n2 PARDER:n3 SEMICOLON {:
 
     /*Se añaden los hijos*/
     nodo.AddHijo(nodoId);
+
+    TablaCuadruplos.gen("GET", "", "", n2.toString());
     
     /*Asignar el nodo al RESULT para continuar el recorrido*/
     RESULT = nodo;
