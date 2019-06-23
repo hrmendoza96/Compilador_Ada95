@@ -23,7 +23,8 @@ public class Main {
         Graficar(recorrido(root), "AST_Output");
         TablaSimbolos.imprimir();
         TablaCuadruplos.imprimir();
-        TablaCuadruplos.imprimirIntermedio();
+        TablaCuadruplos.fillAndPrintCodigoIntermedio();
+        TablaCuadruplos.imprimirArrayListIntermedio();
         System.out.println("Succesful Compile.");
       } else {
         System.out.println("AST no generado por causa de error.");
