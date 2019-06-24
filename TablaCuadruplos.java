@@ -122,6 +122,7 @@ public class TablaCuadruplos{
                 
             }else{
                 cadena = cuadruplo.operador+ " " + cuadruplo.argumento1 + " " + cuadruplo.argumento2 + " " + cuadruplo.resultado;
+                codigoIntermedio.add(cadena);
             }
             System.out.println(cadena);
         }

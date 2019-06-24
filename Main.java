@@ -25,6 +25,9 @@ public class Main {
         TablaCuadruplos.imprimir();
         TablaCuadruplos.fillAndPrintCodigoIntermedio();
         TablaCuadruplos.imprimirArrayListIntermedio();
+        CodigoFinal.GenerarFinal(TablaCuadruplos.codigoIntermedio);
+
+
         System.out.println("Succesful Compile.");
       } else {
         System.out.println("AST no generado por causa de error.");
