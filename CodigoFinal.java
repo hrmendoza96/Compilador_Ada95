@@ -19,26 +19,31 @@ class CodigoFinal {
         codigoFinal.add("   .globl main");
         codigoFinal.add("main:");
         int index = 0;
+        String temporal = "";
 
         for (String cadena : codigoIntermedio){
             String cadenaOriginal = cadena;
             cadena = cadena.replaceAll("\\s+", ""); // Quitar espacios en la cadena
 
-            if (cadena.contains("=") && !cadena.contains(":")) { // If para los temporales, no asignacioens
+            if (cadena.contains("=") && !cadena.contains(":") && !cadena.contains("if")) { // If para los temporales, no asignacioens
                 String[] cadenaAuxiliar = cadena.split("="); // Se pone t a la izquierda y la opración a la derecha
                 // Codigo Final para expresiones aritméticas sin Floats
                 if (cadenaAuxiliar[1].contains("+") && !cadenaAuxiliar[1].contains(".")) {
                     String[] cadenaDividida = cadenaAuxiliar[1].split("\\+");
                     codigoFinal.add("   add $" + cadenaAuxiliar[0] + ", " + cadenaDividida[0] + ", " + cadenaDividida[1]);
+                    temporal = cadenaAuxiliar[0];
                 } else if (cadenaAuxiliar[1].contains("-")  && !cadenaAuxiliar[1].contains(".")) {
                     String[] cadenaDividida = cadenaAuxiliar[1].split("-");
                     codigoFinal.add("   sub $" + cadenaAuxiliar[0] + ", " + cadenaDividida[0] + ", " + cadenaDividida[1]);
+                    temporal = cadenaAuxiliar[0];
                 } else if (cadenaAuxiliar[1].contains("/")  && !cadenaAuxiliar[1].contains(".")) {
                     String[] cadenaDividida = cadenaAuxiliar[1].split("/");
                     codigoFinal.add("   div $" + cadenaAuxiliar[0] + ", " + cadenaDividida[0] + ", " + cadenaDividida[1]);
+                    temporal = cadenaAuxiliar[0];
                 } else if (cadenaAuxiliar[1].contains("*")  && !cadenaAuxiliar[1].contains(".")) {
                     String[] cadenaDividida = cadenaAuxiliar[1].split("\\*");
                     codigoFinal.add("   mul $" + cadenaAuxiliar[0] + ", " + cadenaDividida[0] + ", " + cadenaDividida[1]);
+                    temporal = cadenaAuxiliar[0];
                 }
 
             } else if (cadena.contains(":=")) { // If para asignacion de variables
@@ -56,7 +61,7 @@ class CodigoFinal {
                     if (index != 0) {
                         String cadenaAuxiliar2 = codigoIntermedio.get(index - 1);
                         if (cadenaAuxiliar2.contains("*") || cadenaAuxiliar2.contains("/") || cadenaAuxiliar2.contains("+") || cadenaAuxiliar2.contains("-") ) {
-                            codigoFinal.add("   sw " + cadenaAuxiliar[1] +  ", _" + cadenaAuxiliar[0]);
+                            codigoFinal.add("   sw $" + temporal +  ", _" + cadenaAuxiliar[0]);
                         } else {
                             codigoFinal.add("   li $t0, " + cadenaAuxiliar[1]);
                             codigoFinal.add("   sw $t0, " + "_" + cadenaAuxiliar[0]);
@@ -85,21 +90,82 @@ class CodigoFinal {
             } else if (cadena.contains("_etiq") && cadena.contains("goto") && cadena.contains("if")) { // final de if goto
                 String[] cadenaAuxiliar = cadena.split("if");
                 String[] nuevaCadena = cadenaAuxiliar[1].split("goto");
-                if (nuevaCadena[0].contains(">")) {
+                if (nuevaCadena[0].contains(">") && !nuevaCadena[0].contains("=")) {
                     String[] cadenaFinal = nuevaCadena[0].split(">");
-                    codigoFinal.add("   bgt " + cadenaFinal[0] + ", " + cadenaFinal[1] + ", " + nuevaCadena[1]);
-                } else if (nuevaCadena[0].contains("<")) {
+                    String loadWord1 = "$t0";
+                    String loadWord2 = "$t1";
+                    if(cadenaFinal[0].matches("-?\\d+(\\.\\d+)?")){
+                        codigoFinal.add("   lw "+ loadWord1 + ", "+ cadenaFinal[0]);
+                    }else{
+                        codigoFinal.add("   lw "+ loadWord1 + ", _"+ cadenaFinal[0]);
+                    }
+                    codigoFinal.add("   lw "+ loadWord1 + ", _"+ cadenaFinal[0]);
+                    if(variablesDeclaradas.contains(cadenaFinal[1])){
+                        codigoFinal.add("   lw "+ loadWord2 + ", _"+ cadenaFinal[1]);
+                    }else{
+                        codigoFinal.add("   lw "+ loadWord2 + ", "+ cadenaFinal[1]);
+                    }
+                    codigoFinal.add("   bgt " + loadWord1 + ", " + loadWord2 + ", " + nuevaCadena[1]);
+                } else if (nuevaCadena[0].contains("<") && !nuevaCadena[0].contains("=")) {
                     String[] cadenaFinal = nuevaCadena[0].split("<");
-                    codigoFinal.add("   blt " + cadenaFinal[0] + ", " + cadenaFinal[1] + ", " + nuevaCadena[1]);
+                    String loadWord1 = "$t0";
+                    String loadWord2 = "$t1";
+                    if(cadenaFinal[0].matches("-?\\d+(\\.\\d+)?")){
+                        codigoFinal.add("   lw "+ loadWord1 + ", "+ cadenaFinal[0]);
+                    }else{
+                        codigoFinal.add("   lw "+ loadWord1 + ", _"+ cadenaFinal[0]);
+                    }
+                    if(variablesDeclaradas.contains(cadenaFinal[1])){
+                        codigoFinal.add("   lw "+ loadWord2 + ", _"+ cadenaFinal[1]);
+                    }else{
+                        codigoFinal.add("   lw "+ loadWord2 + ", "+ cadenaFinal[1]);
+                    }
+                    codigoFinal.add("   blt " + loadWord1 + ", " + loadWord2 + ", " + nuevaCadena[1]);
                 } else if (nuevaCadena[0].contains(">=")) {
                     String[] cadenaFinal = nuevaCadena[0].split(">=");
-                    codigoFinal.add("   bge " + cadenaFinal[0] + ", " + cadenaFinal[1] + ", " + nuevaCadena[1]);
+                    String loadWord1 = "$t0";
+                    String loadWord2 = "$t1";
+                    if(cadenaFinal[0].matches("-?\\d+(\\.\\d+)?")){
+                        codigoFinal.add("   lw "+ loadWord1 + ", "+ cadenaFinal[0]);
+                    }else{
+                        codigoFinal.add("   lw "+ loadWord1 + ", _"+ cadenaFinal[0]);
+                    }
+                    if(variablesDeclaradas.contains(cadenaFinal[1])){
+                        codigoFinal.add("   lw "+ loadWord2 + ", _"+ cadenaFinal[1]);
+                    }else{
+                        codigoFinal.add("   lw "+ loadWord2 + ", "+ cadenaFinal[1]);
+                    }
+                    codigoFinal.add("   bge " + loadWord1 + ", " + loadWord2 + ", " + nuevaCadena[1]);
                 } else if (nuevaCadena[0].contains("<=")) {
                     String[] cadenaFinal = nuevaCadena[0].split("<=");
-                    codigoFinal.add("   ble " + cadenaFinal[0] + ", " + cadenaFinal[1] + ", " + nuevaCadena[1]);
+                    String loadWord1 = "$t0";
+                    String loadWord2 = "$t1";
+                    if(cadenaFinal[0].matches("-?\\d+(\\.\\d+)?")){
+                        codigoFinal.add("   lw "+ loadWord1 + ", "+ cadenaFinal[0]);
+                    }else{
+                        codigoFinal.add("   lw "+ loadWord1 + ", _"+ cadenaFinal[0]);
+                    }
+                    if(variablesDeclaradas.contains(cadenaFinal[1])){
+                        codigoFinal.add("   lw "+ loadWord2 + ", _"+ cadenaFinal[1]);
+                    }else{
+                        codigoFinal.add("   lw "+ loadWord2 + ", "+ cadenaFinal[1]);
+                    }
+                    codigoFinal.add("   ble " + loadWord1 + ", " + loadWord2 + ", " + nuevaCadena[1]);
                 } else if (nuevaCadena[0].contains("=")) {
                     String[] cadenaFinal = nuevaCadena[0].split("=");
-                    codigoFinal.add("   beq " + cadenaFinal[0] + ", " + cadenaFinal[1] + ", " + nuevaCadena[1]);
+                    String loadWord1 = "$t0";
+                    String loadWord2 = "$t1";
+                    if(cadenaFinal[0].matches("-?\\d+(\\.\\d+)?")){
+                        codigoFinal.add("   lw "+ loadWord1 + ", "+ cadenaFinal[0]);
+                    }else{
+                        codigoFinal.add("   lw "+ loadWord1 + ", _"+ cadenaFinal[0]);
+                    }
+                    if(variablesDeclaradas.contains(cadenaFinal[1])){
+                        codigoFinal.add("   lw "+ loadWord2 + ", _"+ cadenaFinal[1]);
+                    }else{
+                        codigoFinal.add("   lw "+ loadWord2 + ", "+ cadenaFinal[1]);
+                    }
+                    codigoFinal.add("   beq " + loadWord1 + ", " + loadWord2 + ", " + nuevaCadena[1]);
                 }
             } else if (cadena.contains("_etiq") && cadena.contains("goto") && !cadena.contains("if")) {
                 String[] nuevaCadena = cadena.split("goto");
@@ -140,7 +206,6 @@ class CodigoFinal {
                     }
                 }
             } else if (cadena.contains("GET")) {
-                System.out.println("Cadena en GET:" + cadena);
                 String[] cadenaNueva = cadena.split("GET");
                 for (Simbolo simbolo : TablaSimbolos.tablaSimbolos) {
                     String nombre = simbolo.nombre;
@@ -188,10 +253,13 @@ class CodigoFinal {
                 for (Simbolo s : TablaSimbolos.tablaSimbolos) {
                     if (cadenaAuxiliar[0].equals(s.nombre) && !variablesDeclaradas.contains(cadenaAuxiliar[0])) {
                         if (s.tipoVariable.equals("INTEGER")){
-                            codigoFinal.add("   _" + cadenaAuxiliar[0] + " .word 0");
+                            codigoFinal.add("   _" + cadenaAuxiliar[0] + ": .word 0");
                             variablesDeclaradas.add(cadenaAuxiliar[0]);
                         } else if (s.tipoVariable.equals("BOOLEAN")) {
-                            codigoFinal.add("   _" + cadenaAuxiliar[0] + " .word 0");
+                            codigoFinal.add("   _" + cadenaAuxiliar[0] + ": .word 0");
+                            variablesDeclaradas.add(cadenaAuxiliar[0]);
+                        } else if (s.tipoVariable.equals("STRINGTYPE")){
+                            codigoFinal.add("   _" + cadenaAuxiliar[0] + ": .space 100");
                             variablesDeclaradas.add(cadenaAuxiliar[0]);
                         }
                     }  

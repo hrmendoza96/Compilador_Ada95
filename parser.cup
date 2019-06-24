@@ -304,12 +304,7 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {:
                     ; 
 
 /*Este es el área donde comenzará el codigo del programa.*/
-comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 {:
-                                // Agregamos más contenido básico al código final.
-                                // Temporales.finalCode.add("  .text");
-                                // Temporales.finalCode.add("  .globl main");
-                                // Temporales.finalCode.add("main:");
-                            :}codigo:child2 END:n2 ID:n3 SEMICOLON:n4 {:
+comienza_cuerpo_principal   ::= tipo_declaracion:child1 BEGIN:n1 codigo:child2 END:n2 ID:n3 SEMICOLON:n4 {:
                             /*Se crea el nodo prinicipal*/
                             Nodo nodo = new Nodo("comienza_cuerpo_principal",Temporales.cont);
                             Temporales.cont++;
@@ -1566,22 +1561,11 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             /*Asignar el nodo al RESULT para continuar el recorrido*/
 
             try {
-                Nodo hijo2 = (Nodo) child2;
-                TablaCuadruplos.gen(n3, hijo2.temporal, "", n1);  
+                TablaCuadruplos.gen(n3, exp.value, "", n1);  
                 Temporales.tempNum = 0;  
             } catch (Exception e) {
                 System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
-
-             //CODIGO FINAL
-            // String numero = exp.value;
-            // if (type.value.equals("FLOAT") || type.value.equals("INTEGER")) {
-            //     if (numero.contains(".")) {
-            //         Temporales.finalCode.add("  _" + n1 + ": .float " + numero);
-            //     } else {
-            //         Temporales.finalCode.add("  _" + n1 + ": .word " + numero);
-            //     }
-            // }
 
             RESULT = nodo;
             :}
@@ -1631,10 +1615,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
 
-            
-            // CODIGO FINAL
-            // Temporales.finalCode.add("  _" + n1 + ": .word 1");
-            /*Asignar el nodo al RESULT para continuar el recorrido*/
 
             RESULT = nodo;
             :}

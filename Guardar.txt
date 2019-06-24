@@ -24,3 +24,14 @@ for i in 1 .. 5 loop
 end loop;
 
 
+siguiente:= 111;
+   var := 10 - 1;
+   var := 5 * 10;
+   siguiente:=10;
+   if var >= 1 then
+      put("Get Menor");
+      get(var);
+   end if;
+   if var < 2 then
+      put("Get Mayor");
+   end if;
