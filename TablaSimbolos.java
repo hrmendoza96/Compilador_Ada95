@@ -106,13 +106,13 @@ public class TablaSimbolos {
             //System.out.println("Termino de imprimir");
             return simbolo;
         } else {
-            System.out.println("NO se agrego a la tabla de simbolos.");
+            System.out.println("No se agrego a la tabla de simbolos.");
             return null;
         }
     }
 
     static public String eliminar(String nombre) {
-        System.out.println("Eliminando variable: " + nombre);
+        //System.out.println("Eliminando variable: " + nombre);
         try {
             Simbolo s = buscar(nombre);
             tablaSimbolos.remove(s);
@@ -143,14 +143,14 @@ public class TablaSimbolos {
             //System.out.println("Termino de imprimir");
             return simbolo;
         } else {
-            System.out.println("NO se agrego a la tabla de simbolos.");
+            System.out.println("No se agrego a la tabla de simbolos.");
             return null;
         }
     }
 
 
     static public Simbolo insertar(String nombre, Object valor, Boolean constante) {
-        System.out.println("\nIngreso a insertar valor a variable.");
+        //System.out.println("\nIngreso a insertar valor a variable.");
         Simbolo simbolo = buscar(nombre);
         int pos = tablaSimbolos.indexOf(simbolo);
         // La variable existe
@@ -161,9 +161,9 @@ public class TablaSimbolos {
             //tablaSimbolos.remove(nombre);//Elimino para actualizar
             //tablaSimbolos.put(nombre, simbolo);
             tablaSimbolos.set(pos, simbolo);
-            System.out.println("Variable actualizada");
+            //System.out.println("Variable actualizada");
             //imprimir();
-            System.out.println("Saliendo de insertar de TablaSimbolos\n");
+            //System.out.println("Saliendo de insertar de TablaSimbolos\n");
             return simbolo;
         } else
             return null;
@@ -184,13 +184,14 @@ public class TablaSimbolos {
     }
 
     static public void imprimir() {
-        System.out.println("\nIngresando a imprimir de TablaSimbolos");
-        System.out.println("    Valores de la tabla de simbolos:");
+        System.out.println("\nTABLA DE SIMBOLOS:");
+        System.out.println("============================================================:");
         for (Simbolo s : tablaSimbolos)
             System.out.println(String.format(
                     "      " + "| Nombre: %s | valor: %s | tipoVariable: %s | tipoConstante: %s | Function: %s | Ambito: %s |",
                     s.nombre, s.valor, s.tipoVariable, s.tipoConstante, s.isFunction, s.ambito));
-        System.out.println("Saliendo de imprimir en TablaSimbolos\n ");
+        System.out.println("Saliendo de imprimir en TablaSimbolos");
+        System.out.println("============================================================:\n");
     }
 
 }

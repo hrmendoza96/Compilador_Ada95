@@ -23,12 +23,12 @@ procedure ProcedimientoUno  is
 
    varFueraUNO, varPruebaFueraUno: Integer;
 
-   procedure ProdDentroUno (W, X, M, D: IN Integer; P: IN String; Z: IN Boolean) is
+   procedure ProdDentroUno (W, X, M, D: IN OUT Integer; P: IN String; Z: IN Boolean) is
       varCINCO, varPruebaBooleano: Boolean;
       
       procedure ProdAnidado () is
          varAnid, varPruebaString: String;
-         procedure ProdAnidadoDOS (S: IN Integer) is
+         procedure ProdAnidadoDOS (S: OUT Integer) is
          varAnidDOS, varPruebaStringDOS: String;
          begin
             Put("Texto del ANIDADO");

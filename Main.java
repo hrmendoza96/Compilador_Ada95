@@ -24,7 +24,7 @@ public class Main {
         TablaSimbolos.imprimir();
         TablaCuadruplos.imprimir();
         TablaCuadruplos.fillAndPrintCodigoIntermedio();
-        TablaCuadruplos.imprimirArrayListIntermedio();
+       // TablaCuadruplos.imprimirArrayListIntermedio();
         CodigoFinal.GenerarFinal(TablaCuadruplos.codigoIntermedio);
 
 

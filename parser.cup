@@ -30,10 +30,10 @@ parser code
 :}
 
 // Terminales
-terminal PROCEDURE, FUNCTION, RETURN, IS, BEGIN, END, IF, THEN, ELSE, ELSIF, FOR, IN, OUT, WHILE, LOOP;
-terminal AND,OR,XOR,FALSE,TRUE,EXIT,WHEN,NULL,GET,PUT;
+terminal PROCEDURE, FUNCTION, RETURN, IS, BEGIN, END, IF, THEN, ELSE, FOR, IN, OUT, WHILE, LOOP;
+terminal AND,OR,FALSE,TRUE,EXIT,WHEN,NULL,GET,PUT;
 terminal INTEGER,FLOAT,BOOLEAN,STRINGTYPE;
-terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,SEMICOLON,COMA, DOSPUNTOS, PUNTO;
+terminal ASIGNACION,DECLARACION,OPREL,OPMULTIPLICACION,OPSUMA,PARDER,PARIZQ,SEMICOLON,COMA, DOSPUNTOS;
 terminal String ID;
 terminal String NUM;
 terminal String STRING;
@@ -44,15 +44,12 @@ non terminal parametros, datos_parametros, tipo_parametro, tipo_declaracion, dec
 non terminal tipo_variable, listar_ids;
 non terminal codigo;
 non terminal condicion, operando, expresion_booleana;
-non terminal ciclo_loop, ciclo_for, ciclo_while, salir_ciclo, bloque_if, bloque_elsif, bloque_else, procedimiento;
-non terminal expresion_aritmetica, E, E_prima, T, T_prima, F;
+non terminal ciclo_loop, ciclo_for, ciclo_while, bloque_if, procedimiento;
+non terminal expresion_aritmetica;
 non terminal asignacion,get,put;
 
 // Tipos de datos para Tabla de Símbolos
-terminal Intger ENTERO;
 terminal String NUMFLOAT;
-terminal String TEXTO;
-terminal Boolean BOOLEANO;
 
 // Precedencia de Operadores - de menor a mayor
 precedence left OPREL;
@@ -234,7 +231,7 @@ cuerpo_principal    ::= PROCEDURE:n1 ID:n2 parametros:child1 IS:n3 {:
                         for(String temporal : variablesEnParametros){
                             if(TablaSimbolos.buscar(temporal) != null){ //Significa que la variable YA existe
                                 TablaSimbolos.setAmbito(temporal, cadenaAmbito);
-                                System.out.println("Asignandole Ambito:"+cadenaAmbito+ " a: "+temporal);
+                                //System.out.println("Asignandole Ambito:"+cadenaAmbito+ " a: "+temporal);
                             }
                         }
 
@@ -349,11 +346,16 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
 
-        Nodo m1 = (Nodo) childM1;
-        Nodo hijo1 = (Nodo) child1;
-        Nodo hijo2 = (Nodo) child2;
-        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
-        nodo.listaSiguiente = hijo2.listaSiguiente;
+        try{
+            Nodo m1 = (Nodo) childM1;
+            Nodo hijo1 = (Nodo) child1;
+            Nodo hijo2 = (Nodo) child2;
+            Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+            nodo.listaSiguiente = hijo2.listaSiguiente;
+        }catch(Exception e){
+            
+        }
+        
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -367,8 +369,13 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
 
-        Nodo hijo1 = (Nodo) child1;
-        nodo.listaSiguiente = hijo1.listaSiguiente;
+        try{
+            Nodo hijo1 = (Nodo) child1;
+            nodo.listaSiguiente = hijo1.listaSiguiente;
+        }catch(Exception e){
+
+        }
+        
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -382,11 +389,16 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
 
-        Nodo m1 = (Nodo) childM1;
-        Nodo hijo1 = (Nodo) child1;
-        Nodo hijo2 = (Nodo) child2;
-        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
-        nodo.listaSiguiente = hijo2.listaSiguiente;
+        try{
+            Nodo m1 = (Nodo) childM1;
+            Nodo hijo1 = (Nodo) child1;
+            Nodo hijo2 = (Nodo) child2;
+            Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+            nodo.listaSiguiente = hijo2.listaSiguiente;
+        }catch(Exception e){
+
+        }
+        
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -399,8 +411,13 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
 
-        Nodo hijo1 = (Nodo) child1;
-        nodo.listaSiguiente = hijo1.listaSiguiente;
+        try{
+            Nodo hijo1 = (Nodo) child1;
+            nodo.listaSiguiente = hijo1.listaSiguiente;
+        }catch(Exception e){
+
+        }
+        
 
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -415,11 +432,16 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
 
-        Nodo m1 = (Nodo) childM1;
-        Nodo hijo1 = (Nodo) child1;
-        Nodo hijo2 = (Nodo) child2;
-        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
-        nodo.listaSiguiente = hijo2.listaSiguiente;
+        try{
+            Nodo m1 = (Nodo) childM1;
+            Nodo hijo1 = (Nodo) child1;
+            Nodo hijo2 = (Nodo) child2;
+            Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+            nodo.listaSiguiente = hijo2.listaSiguiente;
+        }catch(Exception e){
+
+        }
+        
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -433,8 +455,13 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
 
-        Nodo hijo1 = (Nodo) child1;
-        nodo.listaSiguiente = hijo1.listaSiguiente;
+        try{
+            Nodo hijo1 = (Nodo) child1;
+            nodo.listaSiguiente = hijo1.listaSiguiente;
+        }catch(Exception e){
+
+        }
+        
 
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -450,12 +477,17 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
 
-        Nodo m1 = (Nodo) childM1;
-        Nodo hijo1 = (Nodo) child1;
-        Nodo hijo2 = (Nodo) child2;
-        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
-        nodo.listaSiguiente = hijo2.listaSiguiente;
+        try{
+            Nodo m1 = (Nodo) childM1;
+            Nodo hijo1 = (Nodo) child1;
+            Nodo hijo2 = (Nodo) child2;
+            Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+            nodo.listaSiguiente = hijo2.listaSiguiente;
 
+        }catch(Exception e){
+
+        }
+        
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
 
@@ -468,8 +500,13 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
 
-        Nodo hijo1 = (Nodo) child1;
-        nodo.listaSiguiente = hijo1.listaSiguiente;
+        try{
+            Nodo hijo1 = (Nodo) child1;
+            nodo.listaSiguiente = hijo1.listaSiguiente;
+        }catch(Exception e){
+
+        }
+        
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -484,11 +521,16 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
 
-        Nodo m1 = (Nodo) childM1;
-        Nodo hijo1 = (Nodo) child1;
-        Nodo hijo2 = (Nodo) child2;
-        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
-        nodo.listaSiguiente = hijo2.listaSiguiente;
+        try{
+            Nodo m1 = (Nodo) childM1;
+            Nodo hijo1 = (Nodo) child1;
+            Nodo hijo2 = (Nodo) child2;
+            Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+            nodo.listaSiguiente = hijo2.listaSiguiente;
+        }catch(Exception e){
+
+        }
+        
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -502,8 +544,13 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
 
-        Nodo hijo1 = (Nodo) child1;
-        nodo.listaSiguiente = hijo1.listaSiguiente;
+        try{
+            Nodo hijo1 = (Nodo) child1;
+            nodo.listaSiguiente = hijo1.listaSiguiente;
+        }catch(Exception e){
+
+        }
+        
 
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -519,11 +566,16 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
 
-        Nodo m1 = (Nodo) childM1;
-        Nodo hijo1 = (Nodo) child1;
-        Nodo hijo2 = (Nodo) child2;
-        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
-        nodo.listaSiguiente = hijo2.listaSiguiente;
+        try{
+            Nodo m1 = (Nodo) childM1;
+            Nodo hijo1 = (Nodo) child1;
+            Nodo hijo2 = (Nodo) child2;
+            Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+            nodo.listaSiguiente = hijo2.listaSiguiente;
+        }catch(Exception e){
+
+        }
+        
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -557,11 +609,16 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
 
-        Nodo m1 = (Nodo) childM1;
-        Nodo hijo1 = (Nodo) child1;
-        Nodo hijo2 = (Nodo) child2;
-        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
-        nodo.listaSiguiente = hijo2.listaSiguiente;
+        try{
+            Nodo m1 = (Nodo) childM1;
+            Nodo hijo1 = (Nodo) child1;
+            Nodo hijo2 = (Nodo) child2;
+            Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+            nodo.listaSiguiente = hijo2.listaSiguiente;
+        }catch(Exception e){
+
+        }
+        
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -575,8 +632,14 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
 
-        Nodo hijo1 = (Nodo) child1;
-        nodo.listaSiguiente = hijo1.listaSiguiente;
+        try{
+            Nodo hijo1 = (Nodo) child1;
+            nodo.listaSiguiente = hijo1.listaSiguiente;
+        }catch(Exception e){
+
+        }
+        
+        
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -591,11 +654,16 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         nodo.AddHijo((Nodo) child1);
         nodo.AddHijo((Nodo) child2);
 
-        Nodo m1 = (Nodo) childM1;
-        Nodo hijo1 = (Nodo) child1;
-        Nodo hijo2 = (Nodo) child2;
-        Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
-        nodo.listaSiguiente = hijo2.listaSiguiente;
+        try{
+            Nodo m1 = (Nodo) childM1;
+            Nodo hijo1 = (Nodo) child1;
+            Nodo hijo2 = (Nodo) child2;
+            Backpatching.completa(hijo1.listaSiguiente, m1.lineaCuadruplo);
+            nodo.listaSiguiente = hijo2.listaSiguiente;
+        }catch(Exception e){
+
+        }
+        
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -609,8 +677,13 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         /*Se añaden los hijos*/
         nodo.AddHijo((Nodo) child1);
 
-        Nodo hijo1 = (Nodo) child1;
-        nodo.listaSiguiente = hijo1.listaSiguiente;
+        try{
+            Nodo hijo1 = (Nodo) child1;
+            nodo.listaSiguiente = hijo1.listaSiguiente;
+        }catch(Exception e){
+
+        }
+        
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
@@ -625,13 +698,13 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
                 if (type.getValue() != null) {
                     nodo = new Nodo("EXPRESION",type.getValue(), Temporales.cont, type.getTipo());
                     Temporales.cont++;
-                    System.out.println(type.getValue());
+                    //System.out.println(type.getValue());
                     RESULT = nodo;
                 } else {
 
                 } 
             } catch (Exception e) {
-                System.out.println("No sé cuál es el error.");
+                System.out.println("Error en el Retorno de Expresion Aritmetica.");
             }
             Temporales.cont++;
 
@@ -652,7 +725,7 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
 
                 } 
             } catch (Exception e) {
-                System.out.println("No sé cuál es el error.");
+                System.out.println("Error en el Retorno de Expresion Aritmetica.");
             }
             Temporales.cont++;
             /*Asignar el nodo al RESULT para continuar el recorrido*/
@@ -1103,7 +1176,7 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS {:
                         for(String temporal : variablesEnParametros){
                             if(TablaSimbolos.buscar(temporal) != null){ //Significa que la variable YA existe
                                 TablaSimbolos.setAmbito(temporal, cadenaAmbito);
-                                System.out.println("Asignandole Ambito:"+cadenaAmbito+ " a: "+temporal);
+                                //System.out.println("Asignandole Ambito:"+cadenaAmbito+ " a: "+temporal);
                             }
                         }
 
@@ -1189,7 +1262,7 @@ procedimiento   ::= PROCEDURE ID:n2 parametros:child1 IS {:
                         for(String temporal : variablesEnParametros){
                             if(TablaSimbolos.buscar(temporal) != null){ //Significa que la variable YA existe
                                 TablaSimbolos.setAmbito(temporal, cadenaAmbito);
-                                System.out.println("Asignandole Ambito:"+cadenaAmbito+ " a: "+temporal);
+                                //System.out.println("Asignandole Ambito:"+cadenaAmbito+ " a: "+temporal);
                             }
                         }
 
@@ -1329,8 +1402,6 @@ declarar_funcion    ::= FUNCTION ID:n1 parametros:child1 RETURN tipo_variable:ch
                     Nodo nodoId = new Nodo("ID", n1.toString(), Temporales.cont);
                     Temporales.cont++;
 
-                    System.out.println("Entra");
-
                     /*Se añaden los hijos*/
                     nodo.AddHijo(nodoId);
                     nodo.AddHijo((Nodo) child1);
@@ -1425,7 +1496,7 @@ declarar_variable   ::= ID:n1 COMA:n2 declarar_variable:child1 {:
                     Nodo hijo = (Nodo) child1;
                     nodo.value = n1 + "," + hijo.value;
                     nodo.tipo = hijo.getTipo();
-                    System.out.println("Aqui estan las VARIABLES del procedure: " + nodo.value);
+                    //System.out.println("Aqui estan las VARIABLES del procedure: " + nodo.value);
 
 
                     try{
@@ -1568,7 +1639,6 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                 TablaCuadruplos.gen(n3, exp.value, "", n1);  
                 Temporales.tempNum = 0;  
             } catch (Exception e) {
-                System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
 
             RESULT = nodo;
@@ -1745,7 +1815,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                     //Verificar el tipo de la variable
                     if(temporal.tipoVariable.equals("INTEGER")){ //Verificar si es int
                         String temp2 = type.getValue();
-                        System.out.println("expresion_aritmetica:"+temp2);
+                        //System.out.println("expresion_aritmetica:"+temp2);
                         if(temp2.contains(".")){//Verifica si se trata de asignar un float a un int
                             System.out.println("Error: Tipos Incompatibles. No se puede asignar un Float a Entero.");
                             ErroresSemanticos.add("Error:  Tipos Incompatibles. No se puede asignar un Float a Entero.");
@@ -1755,7 +1825,7 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
                         }
                     }else if (temporal.tipoVariable.equals("FLOAT")){
                         String temp2 = type.getValue();
-                        System.out.println("expresion_aritmetica:"+temp2);
+                        //System.out.println("expresion_aritmetica:"+temp2);
                         if(!temp2.contains(".")){//Verifica si se trata de asignar un float a un int
                             System.out.println("Error: Tipos Incompatibles. No se puede asignar un Entero a Float.");
                             ErroresSemanticos.add("Error:  Tipos Incompatibles. No se puede asignar un Entero a Float.");
@@ -1782,26 +1852,9 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             nodo.value = n1 + "," + hijo.ambito;
 
             try {
-                TablaCuadruplos.gen(n2,hijo.value,"", n1);    
-                System.out.println("Se TablaCuadruplos.genero el cuádruplo.");            
+                TablaCuadruplos.gen(n2,hijo.value,"", n1);              
             } catch (Exception e) {
-                System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
-            
-            //CODIGO FINAL
-            // String numero = hijo.value;
-            // if (numero.contains(".")) {
-            //     float valor = Float.parseFloat(numero);
-            //     Temporales.finalCode.add("  l.s $f" + contadorFinalFloats + ", " + valor ); // Load Word para floats
-            //     Temporales.finalCode.add("  s.s $f" + contadorFinalFloats + ", _" + n1); // Store Word para floats
-            //     contadorFinalFloats++;
-            // } else {
-            //     int valor =Integer.parseInt(numero);
-            //     Temporales.finalCode.add("  li $t" + contadorFinal + ", " + valor ); // Load Word para int
-            //     Temporales.finalCode.add("  sw $t" + contadorFinal + ", _" + n1); // Store Word para int
-            //     contadorFinal++;
-
-            // }
             /*Asignar el nodo al RESULT para continuar el recorrido*/
             RESULT = nodo;
             :}
@@ -1841,10 +1894,8 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             }
 
             try {
-                TablaCuadruplos.gen(n2,n3,"", n1);    
-                System.out.println("Se TablaCuadruplos.genero el cuádruplo.");            
+                TablaCuadruplos.gen(n2,n3,"", n1);               
             } catch (Exception e) {
-                System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
             
             // // CODIGO FINAL
@@ -1890,10 +1941,8 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             }
 
             try {
-                TablaCuadruplos.gen(n2,n3,"", n1);    
-                System.out.println("Se TablaCuadruplos.genero el cuádruplo.");            
+                TablaCuadruplos.gen(n2,n3,"", n1);               
             } catch (Exception e) {
-                System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
 
             // // CODIGO FINAL
@@ -1939,10 +1988,8 @@ asignacion  ::= ID:n1 COMA:n2 asignacion:child1 {:
             }
 
             try {
-                TablaCuadruplos.gen(n2,n3,"", n1);    
-                System.out.println("Se TablaCuadruplos.genero el cuádruplo.");            
+                TablaCuadruplos.gen(n2,n3,"", n1);               
             } catch (Exception e) {
-                System.out.println("No se TablaCuadruplos.genera cuadruplo en asignacion.");
             }
 
             // //CODIGO FINAL

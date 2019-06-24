@@ -67,7 +67,7 @@ ELSE = ("else")
 END = ("end")
 IF = ("if")
 THEN = ("then")
-ELSIF = ("elsif")
+
 
 // Palabras Reservadas
 EXIT = ("exit")
@@ -102,7 +102,6 @@ LOOP = ("loop")
     {IF} { return new Symbol(sym.IF, yycolumn, yyline, yytext()); }
     {THEN} { return new Symbol(sym.THEN, yycolumn, yyline, yytext()); } 
     {ELSE} { return new Symbol(sym.ELSE, yycolumn, yyline, yytext()); }
-    {ELSIF} { return new Symbol(sym.ELSIF, yycolumn, yyline, yytext()); }
     {FOR} { return new Symbol(sym.FOR, yycolumn, yyline, yytext()); }
     {IN} { return new Symbol(sym.IN, yycolumn, yyline, yytext()); }
     {OUT} { return new Symbol(sym.OUT, yycolumn, yyline, yytext()); }

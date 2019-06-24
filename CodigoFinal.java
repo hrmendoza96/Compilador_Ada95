@@ -1,4 +1,13 @@
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.Scanner;
 
 class CodigoFinal {
 
@@ -239,6 +248,31 @@ class CodigoFinal {
         }
         System.out.println("============================================================:");
 
+        File archivo = new File("./Test.asm");
+        generarArchivo(archivo, codigoFinal);
+    }
+
+    public static void generarArchivo(File archivo, ArrayList<String> codigo){
+        FileWriter fw = null;
+        BufferedWriter bw = null;
+        try {
+            fw = new FileWriter(archivo, false);
+            bw = new BufferedWriter(fw);
+            for (String cadena : codigo) {
+                bw.write(cadena);
+                bw.write("\n");
+            }
+            bw.flush();
+            System.out.println("Archivo Test.asm Generado Exitosamente");
+        } catch (Exception e) {
+        } finally {
+            try {
+                bw.close();
+                fw.close();
+            } catch (Exception e) {
+            }
+        }
+        
     }
 
     public static void MetodoVariables() {
