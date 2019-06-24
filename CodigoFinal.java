@@ -99,11 +99,10 @@ class CodigoFinal {
                     }else{
                         codigoFinal.add("   lw "+ loadWord1 + ", _"+ cadenaFinal[0]);
                     }
-                    codigoFinal.add("   lw "+ loadWord1 + ", _"+ cadenaFinal[0]);
                     if(variablesDeclaradas.contains(cadenaFinal[1])){
                         codigoFinal.add("   lw "+ loadWord2 + ", _"+ cadenaFinal[1]);
                     }else{
-                        codigoFinal.add("   lw "+ loadWord2 + ", "+ cadenaFinal[1]);
+                        loadWord2 = cadenaFinal[1];
                     }
                     codigoFinal.add("   bgt " + loadWord1 + ", " + loadWord2 + ", " + nuevaCadena[1]);
                 } else if (nuevaCadena[0].contains("<") && !nuevaCadena[0].contains("=")) {
@@ -118,7 +117,7 @@ class CodigoFinal {
                     if(variablesDeclaradas.contains(cadenaFinal[1])){
                         codigoFinal.add("   lw "+ loadWord2 + ", _"+ cadenaFinal[1]);
                     }else{
-                        codigoFinal.add("   lw "+ loadWord2 + ", "+ cadenaFinal[1]);
+                        loadWord2 = cadenaFinal[1];
                     }
                     codigoFinal.add("   blt " + loadWord1 + ", " + loadWord2 + ", " + nuevaCadena[1]);
                 } else if (nuevaCadena[0].contains(">=")) {
@@ -133,7 +132,7 @@ class CodigoFinal {
                     if(variablesDeclaradas.contains(cadenaFinal[1])){
                         codigoFinal.add("   lw "+ loadWord2 + ", _"+ cadenaFinal[1]);
                     }else{
-                        codigoFinal.add("   lw "+ loadWord2 + ", "+ cadenaFinal[1]);
+                        loadWord2 = cadenaFinal[1];
                     }
                     codigoFinal.add("   bge " + loadWord1 + ", " + loadWord2 + ", " + nuevaCadena[1]);
                 } else if (nuevaCadena[0].contains("<=")) {
@@ -148,7 +147,7 @@ class CodigoFinal {
                     if(variablesDeclaradas.contains(cadenaFinal[1])){
                         codigoFinal.add("   lw "+ loadWord2 + ", _"+ cadenaFinal[1]);
                     }else{
-                        codigoFinal.add("   lw "+ loadWord2 + ", "+ cadenaFinal[1]);
+                        loadWord2 = cadenaFinal[1];
                     }
                     codigoFinal.add("   ble " + loadWord1 + ", " + loadWord2 + ", " + nuevaCadena[1]);
                 } else if (nuevaCadena[0].contains("=")) {
@@ -163,7 +162,7 @@ class CodigoFinal {
                     if(variablesDeclaradas.contains(cadenaFinal[1])){
                         codigoFinal.add("   lw "+ loadWord2 + ", _"+ cadenaFinal[1]);
                     }else{
-                        codigoFinal.add("   lw "+ loadWord2 + ", "+ cadenaFinal[1]);
+                        loadWord2 = cadenaFinal[1];
                     }
                     codigoFinal.add("   beq " + loadWord1 + ", " + loadWord2 + ", " + nuevaCadena[1]);
                 }
