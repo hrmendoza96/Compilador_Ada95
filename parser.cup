@@ -538,7 +538,11 @@ codigo  ::= ciclo_for:child1 M:childM1 codigo:child2 {:
         nodo.AddHijo((Nodo) child1);
 
         Nodo hijo1 = (Nodo) child1;
-        nodo.listaSiguiente = hijo1.listaSiguiente;
+        try {
+            nodo.listaSiguiente = hijo1.listaSiguiente;
+        } catch (Exception e) {
+
+        }
 
         /*Asignar el nodo al RESULT para continuar el recorrido*/
         RESULT = nodo;
